@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'tl-ui',
-  templateUrl: './tl-ui.component.html',
-  styleUrls: ['./tl-ui.component.css']
+  template: `<p>tl-ui works!!!</p>`,
+  styles: []
 })
 export class TlUiComponent implements OnInit {
 
