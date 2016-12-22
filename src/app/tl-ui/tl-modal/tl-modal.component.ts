@@ -6,7 +6,7 @@ import { TlModalModel, TlModalResult } from './tl-modal.interface';
 
   <div class="modal-backdrop fade in" ></div>
 
-  <div role="" class="modal" style="display: block" (click)="onClose({didConfirm: false, method: 'backdrop'})">
+  <div role="dialog" class="modal" style="display: block" (click)="onClose({didConfirm: false, method: 'backdrop'})">
     <div class="modal-dialog" role="document" 
       [class.modal-sm]="modalModel.config.switchToSmall" 
       (click)="$event.stopPropagation();"
@@ -35,7 +35,7 @@ import { TlModalModel, TlModalResult } from './tl-modal.interface';
   </div><!-- /.modal -->
 
 </div>`,
-  styleUrls: [],
+  styles: [],
   changeDetection: 0
 })
 export class TlModalComponent {

@@ -5,7 +5,7 @@ import { DebugElement } from '@angular/core';
 
 import { TlUiExamplesComponent } from './tl-ui-examples.component';
 
-describe('TlUiExamplesComponent', () => {
+xdescribe('TlUiExamplesComponent', () => {
   let component: TlUiExamplesComponent;
   let fixture: ComponentFixture<TlUiExamplesComponent>;
 

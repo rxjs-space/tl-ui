@@ -5,7 +5,7 @@ import { DebugElement } from '@angular/core';
 
 import { TlModalExamplesComponent } from './tl-modal-examples.component';
 
-describe('TlModalExamplesComponent', () => {
+xdescribe('TlModalExamplesComponent', () => {
   let component: TlModalExamplesComponent;
   let fixture: ComponentFixture<TlModalExamplesComponent>;
 
