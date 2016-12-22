@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
-import { TlModalInput } from './tl-ui';
+import { TlModalModel } from './tl-ui';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -10,16 +10,7 @@ import { TlModalInput } from './tl-ui';
 })
 export class AppComponent {
   title = 'app works!';
-  modalInput: TlModalInput = {
-    content: {
-      header: 'Modal Title hoho',
-      body: 'body hoho &hellip;',
-      footer: 'footer hoho',
-      cancel: 'cancel hoho',
-      save: 'Save hoho'
-    },
-    showingRxx: new BehaviorSubject(false)
-  }
+
 
   closeResult: string;
 
@@ -43,9 +34,7 @@ export class AppComponent {
     }
   }
 
-  onModalOutput(event) {
-    console.log(event);
-  }
+
 
 
 }

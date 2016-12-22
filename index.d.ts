@@ -1,1 +1,1 @@
-export { TlUiModule } from './src/app/tl-ui/tl-ui.module';
+export * from './src/app/tl-ui';

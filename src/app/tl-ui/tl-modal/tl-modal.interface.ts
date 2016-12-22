@@ -1,18 +1,24 @@
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
 
-export interface TlModalOutput {
+export interface TlModalResult {
   didConfirm: boolean;
-  clickedOn: 'x' | 'backdrop' | 'save' | 'cancel';
+  method: 'x' | 'backdrop' | 'save' | 'cancel';
 }
 
-export interface TlModalInput {
+export interface TlModalConfig {
+  switchToSmall?: boolean;
+  showAnimatino?: boolean;
+}
+
+export interface TlModalModel {
   content: {
     header: string;
     body: string;
-    footer: string;
-    cancel: string;
+    cancel?: string;
     save?: string;
   };
   showingRxx: BehaviorSubject<boolean>;
-  config?: string;
+  resultRxx: Subject<TlModalResult>;
+  config?: TlModalConfig;
 }

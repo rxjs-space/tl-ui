@@ -10,22 +10,20 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
-var tl_ui_component_1 = require('./tl-ui.component');
-var tl_modal_module_1 = require('./tl-modal/tl-modal.module');
-var TlUiModule = (function () {
-    function TlUiModule() {
+var tl_modal_component_1 = require('./tl-modal.component');
+var TlModalModule = (function () {
+    function TlModalModule() {
     }
-    TlUiModule = __decorate([
+    TlModalModule = __decorate([
         core_1.NgModule({
             imports: [
-                common_1.CommonModule,
-                tl_modal_module_1.TlModalModule
+                common_1.CommonModule
             ],
-            declarations: [tl_ui_component_1.TlUiComponent],
-            exports: [tl_ui_component_1.TlUiComponent, tl_modal_module_1.TlModalModule],
+            declarations: [tl_modal_component_1.TlModalComponent],
+            exports: [tl_modal_component_1.TlModalComponent]
         }), 
         __metadata('design:paramtypes', [])
-    ], TlUiModule);
-    return TlUiModule;
+    ], TlModalModule);
+    return TlModalModule;
 }());
-exports.TlUiModule = TlUiModule;
+exports.TlModalModule = TlModalModule;

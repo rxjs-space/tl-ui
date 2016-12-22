@@ -1,3 +1,9 @@
-<p>
-  tl-modal-examples works!
-</p>
+<div class="card">
+  <h4 class="card-header">tl-modal-examples</h4>
+  <div class="card-block">
+    <tl-modal [modalModel]="modalModel"></tl-modal>
+    <button class="btn btn-lg btn-outline-primary" (click)="modalModel.showingRxx.next(true)">Show modal</button>
+    <hr>
+    <p>Result: {{modalModel.resultRxx | async | json}}</p>
+  </div>
+</div>

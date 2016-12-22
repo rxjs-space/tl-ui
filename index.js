@@ -1,3 +1,5 @@
 "use strict";
-var tl_ui_module_1 = require('./src/app/tl-ui/tl-ui.module');
-exports.TlUiModule = tl_ui_module_1.TlUiModule;
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+__export(require('./src/app/tl-ui'));
