@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Optional} from '@angular/core';
 import { TlAccordionConfigService } from './tl-accordion-config.service';
 import { TlAccordionModel, TlAccordionPanel } from './tl-accordion.interface';
 import { accordinAnimations } from './tl-accordion.component.animation';
+import * as util from '../_shared/util';
 @Component({
   selector: 'tl-accordion',
   templateUrl: './tl-accordion.component.html',
@@ -16,21 +17,21 @@ export class TlAccordionComponent implements OnInit {
   private showAnimation: boolean;
   private lastExpandedPanel: TlAccordionPanel;
   constructor(@Optional() private configService: TlAccordionConfigService) {
-    if (!this.configService) { // if no such provider, will 'new' one here.
+    if (util.isNull(this.configService)) { // if no such provider, will 'new' one here.
       this.configService = new TlAccordionConfigService();
     }
   }
 
   ngOnInit() {
     // init expandOneOnly, showAnimation
-    if (typeof this.accordionModel.config === 'undefined') {
+    if (util.isNullOrUndefined(this.accordionModel.config)) {
       this.expandOneOnly = this.configService.expandOneOnly;
       this.showAnimation = this.configService.showAnimation;
     } else {
-      if (typeof this.accordionModel.config.expandOneOnly === 'undefined') {
+      if (util.isNullOrUndefined(this.accordionModel.config.expandOneOnly)) {
         this.expandOneOnly = this.configService.expandOneOnly;
       } else { this.expandOneOnly = this.accordionModel.config.expandOneOnly; }
-      if (typeof this.accordionModel.config.showAnimation === 'undefined') {
+      if (util.isNullOrUndefined(this.accordionModel.config.showAnimation)) {
         this.showAnimation = this.configService.showAnimation;
       } else { this.showAnimation = this.accordionModel.config.showAnimation; }
     }

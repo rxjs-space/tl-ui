@@ -11,6 +11,11 @@ export interface TlModalConfig {
   showAnimation?: boolean;
 }
 
+export interface TlModalConfigForService {
+  switchToSmall: boolean;
+  showAnimation: boolean;
+}
+
 export interface TlModalModel {
   content: {
     header: string;

@@ -10,6 +10,11 @@ export interface TlAccordionConfig {
   showAnimation?: boolean;
 }
 
+export interface TlAccordionConfigForService {
+  expandOneOnly: boolean;
+  showAnimation: boolean;
+}
+
 export interface TlAccordionModel {
   panels: TlAccordionPanel[];
   config?: TlAccordionConfig;

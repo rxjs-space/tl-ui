@@ -19,7 +19,8 @@ export class TlModalExamplesComponent {
     showingRxx: new BehaviorSubject(false),
     resultRxx: new Subject(),
     config: {
-      switchToSmall: true
+      switchToSmall: true,
+      showAnimation: true
     }
   };
 

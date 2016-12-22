@@ -7,7 +7,7 @@ import { DebugElement } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subject } from 'rxjs/Subject';
 
-import { TlModalComponent, TlModalModel, TlModalResult } from './index';
+import { TlModalComponent, TlModalModel, TlModalResult, TlModalConfigService } from './index';
 
 @Component({
   template: `
@@ -37,7 +37,8 @@ class TestHostComponent {
   };
 }
 
-describe('TlModalComponent', () => {
+fdescribe('TlModalComponent', () => {
+  let TlModalConfigServiceStub: TlModalConfigService;
   let hostFxt: ComponentFixture<TestHostComponent>;
   let hostCmp: TestHostComponent;
   let hostButton: DebugElement;
@@ -48,8 +49,15 @@ describe('TlModalComponent', () => {
 
 
   beforeEach(async(() => {
+    TlModalConfigServiceStub = {
+      showAnimation: false,
+      switchToSmall: true
+    };
     TestBed.configureTestingModule({
-      declarations: [ TestHostComponent, TlModalComponent ]
+      declarations: [ TestHostComponent, TlModalComponent ],
+      providers: [{
+        provide: TlModalConfigService, useValue: TlModalConfigServiceStub
+      }]
     })
     .compileComponents();
   }));
@@ -64,6 +72,11 @@ describe('TlModalComponent', () => {
     focusCmp = focusEl.componentInstance;
     hostFxt.detectChanges();
   });
+
+  it('should inject the config', () => {
+    expect(focusEl.injector.get(TlModalConfigService)).toEqual(TlModalConfigServiceStub);
+    expect(focusCmp['configService']).toEqual(TlModalConfigServiceStub);
+ });
 
   it('should create', () => {
     expect(focusCmp).toBeTruthy();
