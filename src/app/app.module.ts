@@ -5,7 +5,6 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TlUiExamplesModule } from './tl-ui-examples';
 
 @NgModule({
@@ -16,7 +15,6 @@ import { TlUiExamplesModule } from './tl-ui-examples';
     BrowserModule,
     FormsModule,
     HttpModule,
-    NgbModule.forRoot(),
     TlUiExamplesModule
   ],
   providers: [],

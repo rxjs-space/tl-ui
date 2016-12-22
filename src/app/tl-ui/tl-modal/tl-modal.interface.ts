@@ -8,7 +8,7 @@ export interface TlModalResult {
 
 export interface TlModalConfig {
   switchToSmall?: boolean;
-  showAnimatino?: boolean;
+  showAnimation?: boolean;
 }
 
 export interface TlModalModel {

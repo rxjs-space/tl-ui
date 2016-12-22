@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ModuleWithProviders } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TlModalComponent } from './tl-modal.component';
 
@@ -9,4 +9,11 @@ import { TlModalComponent } from './tl-modal.component';
   declarations: [TlModalComponent],
   exports: [TlModalComponent]
 })
-export class TlModalModule { }
+export class TlModalModule {
+  static withProviders(): ModuleWithProviders {
+    return {
+      ngModule: TlModalModule,
+      // providers: [TlModalConfigService]
+    }
+  }
+}
