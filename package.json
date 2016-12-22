@@ -9,7 +9,9 @@
     "test": "ng test",
     "pree2e": "webdriver-manager update",
     "e2e": "protractor",
+    "gc": "ng g component",
     "gm": "ng g module",
+    "gmr": "ng g module --routing",
     "tsi": "tsc --init",
     "prepublish": "tsc -p tsconfig.json"
   },

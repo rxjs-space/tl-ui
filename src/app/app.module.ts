@@ -6,7 +6,8 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TlUiModule } from './tl-ui/tl-ui.module';
+import { TlUiModule } from './tl-ui';
+import { TlUiExamplesModule } from './tl-ui-examples';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { TlUiModule } from './tl-ui/tl-ui.module';
     FormsModule,
     HttpModule,
     TlUiModule,
-    NgbModule.forRoot()
+    NgbModule.forRoot(),
+    TlUiExamplesModule
   ],
   providers: [],
   bootstrap: [AppComponent]
