@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "license": "MIT",
   "angular-cli": {},
+  "author": "https://github.com/rxjs-space/tl-ui/graphs/contributors",
+  "main": "src/app/tl-ui/dist/index.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -15,7 +17,11 @@
     "gmr": "ng g module --routing",
     "tsi": "tsc --init",
     "prepublish": "tsc -p tsconfig.json",
-    "ngi": "ng init"
+    "ngi": "ng init",
+    "prod": "ng serve --prod",
+    "buildp": "ng build --prod",
+    "buildpa": "ng build --prod --aot",
+    "ghpa": "ng github-pages:deploy --aot"
   },
   "private": false,
   "dependencies": {},
@@ -50,5 +56,8 @@
     "tslint": "^4.0.2",
     "typescript": "~2.0.3",
     "zone.js": "^0.7.2"
+  },
+  "peerDependencies": {
+    "bootstrap": "^4.0.0-alpha.5"
   }
 }

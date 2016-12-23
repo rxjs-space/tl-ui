@@ -5,8 +5,39 @@ import { accordinAnimations } from './tl-accordion.component.animation';
 import * as util from '../_shared/util';
 @Component({
   selector: 'tl-accordion',
-  templateUrl: './tl-accordion.component.html',
-  styleUrls: ['./tl-accordion.component.scss'],
+  template: `
+    <div class="card" *ngIf="panels.length === 0">
+      <div class="card-header">No panels provided.</div>
+    </div>
+    <div class="card" *ngIf="panels.length > 0">
+
+      <!--<template ngFor let-panel [ngForOf]="panels">-->
+      <ng-container *ngFor="let panel of panels">
+
+        <a href role="tab" class="card-header" 
+          [style.display]="'block'"
+          [innerHTML]="panel.title"
+          (click)="onTitleClick($event, panel)"
+          [class.text-muted]="panel.disabled"
+        ></a>
+
+        <div *ngIf="!panel.disabled && showAnimation"
+          role="tablpanel" class="card-block" 
+          [innerHTML]="panel.content" 
+          [@panelContentState]="panel.expanded ? 'expanded' : 'collapsed'"
+        ></div>
+
+        <div *ngIf="!panel.disabled && !showAnimation"
+          role="tablpanel" class="card-block" 
+          [innerHTML]="panel.content" 
+          [style.display]="panel.expanded ? null : 'none'"
+        ></div>
+        
+      </ng-container>  
+      <!--</template>-->
+    </div>
+  `,
+  styles: [],
   changeDetection: 0,
   animations: accordinAnimations
 })

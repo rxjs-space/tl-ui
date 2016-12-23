@@ -34,5 +34,4 @@ testem.log
 .DS_Store
 Thumbs.db
 
-/src/**/*.d.ts
-/src/**/*.js
+/src/app/**/dist

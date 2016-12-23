@@ -4,12 +4,15 @@ import { TlUiComponent } from './tl-ui.component';
 import { TlModalModule } from './tl-modal';
 import { TlAccordionModule } from './tl-accordion';
 
-const tlUiModules = [
+export const tlUiModules = [
   TlModalModule,
   TlAccordionModule
 ];
 
-const tlUiModulesWithProviders = tlUiModules.map(m => m.withProviders());
+export const tlUiModulesWithProviders = [
+  TlModalModule.withProviders(),
+  TlAccordionModule.withProviders()
+];
 
 @NgModule({
   imports: [CommonModule, ...tlUiModulesWithProviders],
