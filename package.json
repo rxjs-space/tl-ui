@@ -10,7 +10,7 @@
     "start": "ng serve",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "ng test",
-    "pree2e": "webdriver-manager update",
+    "pree2e": "webdriver-manager update --standalone false --gecko false",
     "e2e": "protractor",
     "gc": "ng g component",
     "gm": "ng g module",
@@ -21,7 +21,8 @@
     "prod": "ng serve --prod",
     "buildp": "ng build --prod",
     "buildpa": "ng build --prod --aot",
-    "ghpa": "ng github-pages:deploy --aot"
+    "ghpa": "ng github-pages:deploy --aot",
+    "hmr": "ng serve --hmr -e=dev-hmr"
   },
   "private": false,
   "dependencies": {},
@@ -35,6 +36,7 @@
     "@angular/platform-browser": "^2.3.1",
     "@angular/platform-browser-dynamic": "^2.3.1",
     "@angular/router": "^3.3.1",
+    "@angularclass/hmr": "^1.2.2",
     "@ng-bootstrap/ng-bootstrap": "^1.0.0-alpha.15",
     "@types/jasmine": "2.5.38",
     "@types/node": "^6.0.42",
