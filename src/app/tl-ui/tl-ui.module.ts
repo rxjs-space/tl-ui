@@ -15,7 +15,7 @@ const tlUiModulesWithProviders = tlUiModules.map(m => m.withProviders());
   imports: [CommonModule, ...tlUiModulesWithProviders],
   exports: tlUiModules
 })
-class TlUiModuleWithProviders {}
+export class TlUiModuleWithProviders {}
 
 
 @NgModule({

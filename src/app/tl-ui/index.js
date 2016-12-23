@@ -7,3 +7,4 @@ exports.TlUiModule = tl_ui_module_1.TlUiModule;
 var tl_ui_component_1 = require('./tl-ui.component');
 exports.TlUiComponent = tl_ui_component_1.TlUiComponent;
 __export(require('./tl-modal'));
+__export(require('./tl-accordion'));

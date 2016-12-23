@@ -6,7 +6,11 @@ export interface TlModalResult {
 }
 export interface TlModalConfig {
     switchToSmall?: boolean;
-    showAnimatino?: boolean;
+    showAnimation?: boolean;
+}
+export interface TlModalConfigForService {
+    switchToSmall: boolean;
+    showAnimation: boolean;
 }
 export interface TlModalModel {
     content: {

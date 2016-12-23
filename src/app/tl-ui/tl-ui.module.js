@@ -11,18 +11,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var tl_ui_component_1 = require('./tl-ui.component');
-var tl_modal_module_1 = require('./tl-modal/tl-modal.module');
+var tl_modal_1 = require('./tl-modal');
+var tl_accordion_1 = require('./tl-accordion');
+var tlUiModules = [
+    tl_modal_1.TlModalModule,
+    tl_accordion_1.TlAccordionModule
+];
+var tlUiModulesWithProviders = tlUiModules.map(function (m) { return m.withProviders(); });
+var TlUiModuleWithProviders = (function () {
+    function TlUiModuleWithProviders() {
+    }
+    TlUiModuleWithProviders = __decorate([
+        core_1.NgModule({
+            imports: [common_1.CommonModule].concat(tlUiModulesWithProviders),
+            exports: tlUiModules
+        }), 
+        __metadata('design:paramtypes', [])
+    ], TlUiModuleWithProviders);
+    return TlUiModuleWithProviders;
+}());
 var TlUiModule = (function () {
     function TlUiModule() {
     }
+    TlUiModule.withProviders = function () {
+        return { ngModule: TlUiModuleWithProviders };
+    };
     TlUiModule = __decorate([
         core_1.NgModule({
-            imports: [
-                common_1.CommonModule,
-                tl_modal_module_1.TlModalModule
-            ],
+            imports: [common_1.CommonModule].concat(tlUiModules),
             declarations: [tl_ui_component_1.TlUiComponent],
-            exports: [tl_ui_component_1.TlUiComponent, tl_modal_module_1.TlModalModule],
+            exports: tlUiModules,
         }), 
         __metadata('design:paramtypes', [])
     ], TlUiModule);

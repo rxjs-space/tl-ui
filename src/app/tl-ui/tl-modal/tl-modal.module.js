@@ -11,9 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var core_1 = require('@angular/core');
 var common_1 = require('@angular/common');
 var tl_modal_component_1 = require('./tl-modal.component');
+var tl_modal_config_service_1 = require('./tl-modal-config.service');
 var TlModalModule = (function () {
     function TlModalModule() {
     }
+    TlModalModule.withProviders = function () {
+        return {
+            ngModule: TlModalModule,
+            providers: [tl_modal_config_service_1.TlModalConfigService]
+        };
+    };
     TlModalModule = __decorate([
         core_1.NgModule({
             imports: [
