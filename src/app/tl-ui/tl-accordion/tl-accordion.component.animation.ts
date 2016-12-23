@@ -1,5 +1,5 @@
-import { trigger, state, style, transition, animate, keyframes } from '@angular/core';
-export const accordinAnimations = [
+import { trigger, state, style, transition, animate, keyframes, AnimationEntryMetadata } from '@angular/core';
+export const accordinAnimations: AnimationEntryMetadata[] = [
   trigger('panelContentState', [
     state('expanded', style({
       height: '*',

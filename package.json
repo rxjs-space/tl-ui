@@ -14,7 +14,7 @@
     "gm": "ng g module",
     "gmr": "ng g module --routing",
     "tsi": "tsc --init",
-    "prepublisha": "tsc -p tsconfig.json",
+    "prepublish": "tsc -p tsconfig.json",
     "ngi": "ng init"
   },
   "private": false,

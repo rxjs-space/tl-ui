@@ -1,5 +1,6 @@
-import { trigger, state, style, transition, animate, keyframes } from '@angular/core';
-export const accordionAnimations = [
+import { trigger, state, style, transition, animate, keyframes, AnimationEntryMetadata } from '@angular/core';
+
+export const accordionAnimations: AnimationEntryMetadata[] = [
   trigger('modalDialogState', [
     // state('in', style({transform: 'translateY(0)'})),
     transition('void => *', [
