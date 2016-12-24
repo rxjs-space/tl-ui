@@ -76,7 +76,7 @@ fdescribe('TlAccordionComponent', () => {
     expect(focusCmp['panels'][0].expanded).toBe(false); // model [0] is collapsed
     expect(focusCmp['panels'][1].expanded).toBe(true); // model [1] is expanded
 
-    if (TlAccordionConfigServiceStub.showAnimation) {tick(500);} // don't know how to reset stub.showAnimation and recompile during test
+    if (TlAccordionConfigServiceStub.showAnimation) {tick(300);} // don't know how to reset stub.showAnimation and recompile during test
 
     expect(contentElArr[0].styles['display']).toBe('none', 'dom [0] is collapsed, after animation');
     expect(contentElArr[1].styles['display']).toBeNull('dom [1] is style.display is not explicitly set.');
@@ -91,7 +91,7 @@ fdescribe('TlAccordionComponent', () => {
     hostFxt.detectChanges();
     expect(focusCmp['panels'][1].expanded).toBe(false); // model [0] is collapsed
     expect(focusCmp['panels'][0].expanded).toBe(true); // model [1] is expanded
-    if (TlAccordionConfigServiceStub.showAnimation) {tick(500);} // don't know how to set stub.showAnimation during test
+    if (TlAccordionConfigServiceStub.showAnimation) {tick(300);} // don't know how to set stub.showAnimation during test
     expect(contentElArr[1].styles['display']).toBe('none', 'dom [0] is collapsed, after animation');
     expect(contentElArr[0].styles['display']).toBeNull('dom [1] is style.display is not explicitly set.');
 
