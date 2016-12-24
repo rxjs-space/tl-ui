@@ -1,5 +1,5 @@
 import { trigger, state, style, transition, animate, keyframes, AnimationEntryMetadata } from '@angular/core';
-export const slideInOutAnimation: AnimationEntryMetadata =
+export const TlSlideInOutAnimation: AnimationEntryMetadata =
   trigger('slideInOutState', [
     transition('void => *', [
       style({opacity: 0, transform: 'translateX(-100%)'}),
