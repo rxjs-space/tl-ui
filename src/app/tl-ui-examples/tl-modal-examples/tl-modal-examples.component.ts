@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subject } from 'rxjs/Subject';
-import { TlModalModel } from '../../tl-ui';
+import { TlModalModel, TlSlideInOutAnimation } from '../../tl-ui';
 
 @Component({
   selector: 'tl-modal-examples',
   templateUrl: './tl-modal-examples.component.html',
-  styleUrls: ['./tl-modal-examples.component.scss']
+  styleUrls: ['./tl-modal-examples.component.scss'],
+  animations: [TlSlideInOutAnimation]
 })
 export class TlModalExamplesComponent {
   modalModel: TlModalModel = {

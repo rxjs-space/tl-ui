@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { TlAccordionModel } from '../../tl-ui';
+import { TlAccordionModel, TlSlideInOutAnimation } from '../../tl-ui';
 
 @Component({
   selector: 'tl-accordion-examples',
   templateUrl: './tl-accordion-examples.component.html',
-  styleUrls: ['./tl-accordion-examples.component.scss']
+  styleUrls: ['./tl-accordion-examples.component.scss'],
+  animations: [TlSlideInOutAnimation]
 })
 export class TlAccordionExamplesComponent {
   private accordionModel: TlAccordionModel = {
