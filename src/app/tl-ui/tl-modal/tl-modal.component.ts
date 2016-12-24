@@ -91,20 +91,20 @@ export class TlModalComponent implements OnInit, OnDestroy {
   @Input() modalModel: TlModalModel;
   @HostBinding('attr.tabindex') private tabindex = -1; // so we can do el.focus() on tl-modal element
 
-  private modalTriggerEl: any;
+  private triggerEl: any;
   private subscriptions_: Subscription[] = [];
 
   constructor(
     @Optional() private configService: TlModalConfigService,
     private el: ElementRef, private renderer: Renderer
   ) {
-    if (util.isNull(this.configService)) {
+    if (util.isNull(this.configService)) { // if configService was not injected
       this.configService = new TlModalConfigService();
     }
   }
 
   @HostListener('keyup.esc') private exitOnEscKeyUp() {
-    this.modalModel.showingRxx.next({showing: false});
+    this.onClose({didConfirm: false, method: 'esc'})
   }
 
   ngOnInit() {
@@ -113,7 +113,7 @@ export class TlModalComponent implements OnInit, OnDestroy {
       .filter(s => s.showing)
       .subscribe((s) => {
         this.renderer.invokeElementMethod(this.el.nativeElement, 'focus', []);
-        this.modalTriggerEl = s.triggerEvent.target;
+        this.triggerEl = s.triggerEvent.target; // is this op cross-platform compatible?
       });
     this.subscriptions_.push(subShow_);
 
@@ -121,9 +121,9 @@ export class TlModalComponent implements OnInit, OnDestroy {
     let subHide = this.modalModel.showingRxx
       .filter(s => !s.showing)
       .subscribe(() => {
-        if (this.modalTriggerEl) {
-          this.renderer.invokeElementMethod(this.modalTriggerEl, 'focus', []);
-          this.modalTriggerEl = null;
+        if (this.triggerEl) {
+          this.renderer.invokeElementMethod(this.triggerEl, 'focus', []);
+          this.triggerEl = null;
         }
       });
     this.subscriptions_.push(subHide);

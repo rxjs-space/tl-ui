@@ -1,6 +1,6 @@
 /* tslint:disable:no-unused-variable */
 import { Component } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, TestComponentRenderer } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
@@ -9,13 +9,18 @@ import { Subject } from 'rxjs/Subject';
 
 import { TlModalComponent, TlModalModel, TlModalResult, TlModalConfigService } from './index';
 
+/*
+  focus change is not tested yet.
+*/
+
 @Component({
   template: `
     <div class="card">
       <h4 class="card-header">tl-modal-examples</h4>
       <div class="card-block">
         <tl-modal [modalModel]="modalModel"></tl-modal>
-        <button class="btn btn-lg btn-outline-primary" (click)="modalModel.showingRxx.next(true)">Show modal</button>
+        <button class="btn btn-lg btn-outline-primary" 
+          (click)="modalModel.showingRxx.next({showing: true, triggerEvent: $event})">Show modal</button>
         <hr>
         <p>Result: {{modalModel.resultRxx | async | json}}</p>
       </div>
@@ -29,7 +34,7 @@ class TestHostComponent {
       cancel: 'cancel hoho',
       save: 'Save hoho'
     },
-    showingRxx: new BehaviorSubject(false),
+    showingRxx: new BehaviorSubject({showing: false}),
     resultRxx: new Subject(),
     config: {
       switchToSmall: true
@@ -37,7 +42,7 @@ class TestHostComponent {
   };
 }
 
-fdescribe('TlModalComponent', () => {
+describe('TlModalComponent', () => {
   let TlModalConfigServiceStub: TlModalConfigService;
   let hostFxt: ComponentFixture<TestHostComponent>;
   let hostCmp: TestHostComponent;
@@ -87,15 +92,17 @@ fdescribe('TlModalComponent', () => {
   });
 
   it('should show modal when click on trigger button', () => {
-    hostButton.triggerEventHandler('click', {});
+    hostButton.triggerEventHandler('click', {target: hostButton.nativeElement});
     hostFxt.detectChanges();
     let modalEl = hostFxt.debugElement.query(By.css('.modal'));
     expect(modalEl).toBeTruthy();
   });
 
   it('should close the modal with correct output when click on "x"', () => {
-    hostButton.triggerEventHandler('click', {});
+    hostButton.triggerEventHandler('click', {target: hostButton.nativeElement});
     hostFxt.detectChanges();
+    expect(focusCmp['triggerEl']).toBe(hostButton.nativeElement); // set focusCmp.triggerEl property
+
     let xEl = hostFxt.debugElement.query(By.css('.close'));
 
     let result;
@@ -106,11 +113,12 @@ fdescribe('TlModalComponent', () => {
     hostFxt.detectChanges();
     let modalEl = hostFxt.debugElement.query(By.css('.modal'));
     expect(modalEl).toBeFalsy();
+    expect(focusCmp['triggerEl']).toBeNull();
     sub_.unsubscribe();
   });
 
   it('should close the modal with correct output when click on "cancel"', () => {
-    hostButton.triggerEventHandler('click', {});
+    hostButton.triggerEventHandler('click', {target: hostButton.nativeElement});
     hostFxt.detectChanges();
     let cancelEl = hostFxt.debugElement.query(By.css('.btn-secondary'));
 
@@ -126,7 +134,7 @@ fdescribe('TlModalComponent', () => {
   });
 
   it('should close the modal with correct output when click on "backdrop"', () => {
-    hostButton.triggerEventHandler('click', {});
+    hostButton.triggerEventHandler('click', {target: hostButton.nativeElement});
     hostFxt.detectChanges();
     let modalEl = hostFxt.debugElement.query(By.css('.modal'));
 
@@ -142,7 +150,7 @@ fdescribe('TlModalComponent', () => {
   });
 
   it('should close the modal with correct output when click on "save"', () => {
-    hostButton.triggerEventHandler('click', {});
+    hostButton.triggerEventHandler('click', {target: hostButton.nativeElement});
     hostFxt.detectChanges();
     let saveEl = hostFxt.debugElement.query(By.css('.btn-primary'));
 
@@ -157,5 +165,19 @@ fdescribe('TlModalComponent', () => {
     sub_.unsubscribe();
   });
 
+  it('should close the modal with correct output when keyup.esc', () => {
+    hostButton.triggerEventHandler('click', {target: hostButton.nativeElement});
+    hostFxt.detectChanges();
+
+    let result;
+    let sub_ = modalModel.resultRxx.subscribe(r => result = r);
+    focusEl.triggerEventHandler('keyup.esc', {});
+    expect(result).toEqual(<TlModalResult>{didConfirm: false, method: 'esc'});
+
+    hostFxt.detectChanges();
+    let modalEl = hostFxt.debugElement.query(By.css('.modal'));
+    expect(modalEl).toBeFalsy();
+    sub_.unsubscribe();
+  });
 
 });

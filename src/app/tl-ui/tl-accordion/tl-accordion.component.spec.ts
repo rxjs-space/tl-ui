@@ -27,7 +27,7 @@ class TestHostComponent {
   };
 }
 
-fdescribe('TlAccordionComponent', () => {
+describe('TlAccordionComponent', () => {
   let hostCmp: TestHostComponent;
   let hostFxt: ComponentFixture<TestHostComponent>;
 

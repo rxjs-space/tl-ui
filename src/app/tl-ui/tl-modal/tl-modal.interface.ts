@@ -3,7 +3,7 @@ import { Subject } from 'rxjs/Subject';
 
 export interface TlModalResult {
   didConfirm: boolean;
-  method: 'x' | 'backdrop' | 'save' | 'cancel';
+  method: 'x' | 'backdrop' | 'save' | 'cancel' | 'esc';
 }
 
 export interface TlModalConfig {
