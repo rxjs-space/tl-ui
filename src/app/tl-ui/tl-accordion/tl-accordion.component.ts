@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Optional} from '@angular/core';
 import { TlAccordionConfigService } from './tl-accordion-config.service';
 import { TlAccordionModel, TlAccordionPanel } from './tl-accordion.interface';
 import { accordinAnimations } from './tl-accordion.component.animation';
-import * as util from '../_shared/util';
+import * as util from '../+shared/util';
 @Component({
   selector: 'tl-accordion',
   template: `

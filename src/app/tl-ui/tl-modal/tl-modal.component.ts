@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Optional } from '@angular/core';
 import { TlModalModel, TlModalResult } from './tl-modal.interface';
 import { TlModalConfigService } from './tl-modal-config.service';
 import { accordionAnimations } from './tl-modal.component.animation';
-import * as util from '../_shared/util';
+import * as util from '../+shared/util';
 
 @Component({
   selector: 'tl-modal',
