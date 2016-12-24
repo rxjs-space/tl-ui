@@ -16,6 +16,11 @@ export interface TlModalConfigForService {
   showAnimation: boolean;
 }
 
+export interface TlModalShowingEvent {
+  showing: boolean;
+  triggerEvent?: any;
+}
+
 export interface TlModalModel {
   content: {
     header: string;
@@ -23,7 +28,7 @@ export interface TlModalModel {
     cancel?: string;
     save?: string;
   };
-  showingRxx: BehaviorSubject<boolean>;
+  showingRxx: BehaviorSubject<TlModalShowingEvent>;
   resultRxx: Subject<TlModalResult>;
   config?: TlModalConfig;
 }

@@ -1,4 +1,7 @@
-import { Component, OnInit, Input, Optional } from '@angular/core';
+import {Component, OnInit, OnDestroy, Input, Optional,
+  HostBinding, HostListener, ElementRef, Renderer } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import 'rxjs/add/operator/filter';
 import { TlModalModel, TlModalResult } from './tl-modal.interface';
 import { TlModalConfigService } from './tl-modal-config.service';
 import { accordionAnimations } from './tl-modal.component.animation';
@@ -7,7 +10,7 @@ import * as util from '../+shared/util';
 @Component({
   selector: 'tl-modal',
   template: `
-  <ng-container *ngIf="modalModel.config.showAnimation && modalModel.showingRxx | async">
+  <ng-container *ngIf="modalModel.config.showAnimation && (modalModel.showingRxx | async).showing">
 
     <div [@modalBackdropState]
       class="modal-backdrop fade in" 
@@ -44,7 +47,7 @@ import * as util from '../+shared/util';
     </div><!-- /.modal -->
   </ng-container>
 
-  <ng-container *ngIf="!modalModel.config.showAnimation && modalModel.showingRxx | async">
+  <ng-container *ngIf="!modalModel.config.showAnimation && (modalModel.showingRxx | async).showing">
 
     <div 
       class="modal-backdrop fade in" 
@@ -84,15 +87,48 @@ import * as util from '../+shared/util';
   changeDetection: 0,
   animations: accordionAnimations
 })
-export class TlModalComponent implements OnInit {
+export class TlModalComponent implements OnInit, OnDestroy {
   @Input() modalModel: TlModalModel;
-  constructor(@Optional() private configService: TlModalConfigService) {
+  @HostBinding('attr.tabindex') private tabindex = -1; // so we can do el.focus() on tl-modal element
+
+  private modalTriggerEl: any;
+  private subscriptions_: Subscription[] = [];
+
+  constructor(
+    @Optional() private configService: TlModalConfigService,
+    private el: ElementRef, private renderer: Renderer
+  ) {
     if (util.isNull(this.configService)) {
       this.configService = new TlModalConfigService();
     }
   }
 
+  @HostListener('keyup.esc') private exitOnEscKeyUp() {
+    this.modalModel.showingRxx.next({showing: false});
+  }
+
   ngOnInit() {
+    // focus on tl-modal when triggered
+    let subShow_ = this.modalModel.showingRxx
+      .filter(s => s.showing)
+      .subscribe((s) => {
+        this.renderer.invokeElementMethod(this.el.nativeElement, 'focus', []);
+        this.modalTriggerEl = s.triggerEvent.target;
+      });
+    this.subscriptions_.push(subShow_);
+
+    // resume focus to triggerElement when tl-modal closed
+    let subHide = this.modalModel.showingRxx
+      .filter(s => !s.showing)
+      .subscribe(() => {
+        if (this.modalTriggerEl) {
+          this.renderer.invokeElementMethod(this.modalTriggerEl, 'focus', []);
+          this.modalTriggerEl = null;
+        }
+      });
+    this.subscriptions_.push(subHide);
+
+    // init config
     if (util.isNullOrUndefined(this.modalModel.config)) {
       this.modalModel.config = this.configService;
     } else {
@@ -106,8 +142,12 @@ export class TlModalComponent implements OnInit {
   }
 
   onClose(modalResult: TlModalResult) {
-    this.modalModel.showingRxx.next(false);
+    this.modalModel.showingRxx.next({showing: false});
     this.modalModel.resultRxx.next(modalResult);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions_.forEach(sub_ => sub_.unsubscribe());
   }
 
 }

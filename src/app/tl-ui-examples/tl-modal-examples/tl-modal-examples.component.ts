@@ -17,7 +17,7 @@ export class TlModalExamplesComponent {
       cancel: 'cancel hoho',
       save: 'Save hoho'
     },
-    showingRxx: new BehaviorSubject(false),
+    showingRxx: new BehaviorSubject({showing: false}),
     resultRxx: new Subject(),
     config: {
       switchToSmall: true,
