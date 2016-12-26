@@ -27,7 +27,7 @@ export class TlAlertExamplesComponent implements OnInit {
         config: {
           type: randomType,
           durationInSec: Math.random() * 10,
-          showSecLeft: true
+          showSecLeft: Boolean(Math.round(Math.random())) // randomly true, false
         }
       });
   }

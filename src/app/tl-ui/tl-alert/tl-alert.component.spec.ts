@@ -53,16 +53,16 @@ class TestHostComponent {
     ];
     this.alertSerivce.alertRxx
       .next({
-        content: contents[randomType],
+        content: contents[2],
         config: {
-          type: randomType
+          type: 2
         }
       });
   }
 
 }
 
-fdescribe('TlAlertComponent', () => {
+describe('TlAlertComponent', () => {
 
   let hostFxt: ComponentFixture<TestHostComponent>;
   let hostCmp: TestHostComponent;
@@ -114,6 +114,8 @@ fdescribe('TlAlertComponent', () => {
           secLeft: 3
         },
       }, 'alertInstance will be set by Subject data and operation in ngOnInit');
+    let alertEl = hostFxt.debugElement.query(By.css('.alert-info'));
+    expect(alertEl).toBeTruthy();
     let alertContentEl = hostFxt.debugElement.query(By.css('.col-xs-9'));
     expect(alertContentEl.nativeElement.innerHTML).toBe('Info');
     let alertCountDownEl = hostFxt.debugElement.query(By.css('.text-muted'));
@@ -126,25 +128,12 @@ fdescribe('TlAlertComponent', () => {
     discardPeriodicTasks();
   }));
 
-  xit('should add one (auto-close) alert and close manually', () => {
+  it('should add one (auto-close) alert and close manually', fakeAsync(() => {
     let alertInstance;
     let sub_ = focusCmp['alertService']['alertRxx'].subscribe(a => alertInstance = a);
     hostButtonAutoClose.triggerEventHandler('click', {});
     hostFxt.detectChanges();
-    // expect(alertInstance).toEqual({
-    //     content: `Info`,
-    //     config: {
-    //       type: 1,
-    //       durationInSec: 2,
-    //       showSecLeft: true,
-    //       showing: true,
-    //       secLeft: 3
-    //     },
-    //   }, 'alertInstance will be set by Subject data and operation in ngOnInit');
-    // let alertContentEl = hostFxt.debugElement.query(By.css('.col-xs-9'));
-    // expect(alertContentEl.nativeElement.innerHTML).toBe('Info');
-    // let alertCountDownEl = hostFxt.debugElement.query(By.css('.text-muted'));
-    // expect(alertCountDownEl.nativeElement.innerHTML).toBe('3');
+
     let closeEl = hostFxt.debugElement.query(By.css('.close'));
     expect(closeEl.nativeElement.innerHTML).toContain('aria-hidden');
     closeEl.triggerEventHandler('click', {});
@@ -152,27 +141,27 @@ fdescribe('TlAlertComponent', () => {
     let alertContentEl = hostFxt.debugElement.query(By.css('.col-xs-9'));
     expect(alertContentEl).toBeFalsy();
     sub_.unsubscribe();
-  });
-//x
-  xit('should add one (auto-close) alert and close manually', fakeAsync(() => {
+    tick(3000);
+  }));
+
+  it('should add one (non-auto-close) alert and close manually', fakeAsync(() => {
     let alertInstance;
     let sub_ = focusCmp['alertService']['alertRxx'].subscribe(a => alertInstance = a);
-    hostButtonAutoClose.triggerEventHandler('click', {});
+    hostButtonNonAutoClose.triggerEventHandler('click', {});
     hostFxt.detectChanges();
     expect(alertInstance).toEqual({
-        content: `Info`,
+        content: `Warning`,
         config: {
-          type: 1,
-          durationInSec: 2,
-          showSecLeft: true,
-          showing: true,
-          secLeft: 3
+          type: 2,
+          showing: true
         },
       }, 'alertInstance will be set by Subject data and operation in ngOnInit');
+    let alertEl = hostFxt.debugElement.query(By.css('.alert-warning'));
+    expect(alertEl).toBeTruthy();
+
     let alertContentEl = hostFxt.debugElement.query(By.css('.col-xs-9'));
-    expect(alertContentEl.nativeElement.innerHTML).toBe('Info');
-    let alertCountDownEl = hostFxt.debugElement.query(By.css('.text-muted'));
-    expect(alertCountDownEl.nativeElement.innerHTML).toBe('3');
+    expect(alertContentEl.nativeElement.innerHTML).toBe('Warning');
+
     let closeEl = hostFxt.debugElement.query(By.css('.close'));
     expect(closeEl.nativeElement.innerHTML).toContain('aria-hidden');
     closeEl.triggerEventHandler('click', {});
