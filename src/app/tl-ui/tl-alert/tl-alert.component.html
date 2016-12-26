@@ -1,12 +1,17 @@
-<ng-container *ngIf="alerts.length">
+<ng-container *ngIf="alertsSet.size">
   <div class="tl-alerts">
-    <ng-container *ngFor="let alert of alerts; let i = index">
+    <ng-container *ngFor="let alert of alertsSet">
 
       <div class="alert alert-dismissible tl-alert" [ngClass]="setClasses(alert)" role="alert">
-        <button type="button" class="close" aria-label="Close" (click)="alerts.splice(i, 1)">
+        <button type="button" class="close" aria-label="Close" (click)="alertsSet.delete(alert)">
           <span aria-hidden="true">&times;</span>
         </button>
-        <div [innerHTML]="alert.content"></div>
+        <div class="row">
+          <div class="col-xs-1" *ngIf="alert.config.showSecLeft">
+            <small class="text-muted">{{ alert.config.secLeft }}</small>
+          </div>
+          <div class="col-xs-9" [innerHTML]="alert.content"></div>
+        </div>
       </div>
 
     </ng-container>

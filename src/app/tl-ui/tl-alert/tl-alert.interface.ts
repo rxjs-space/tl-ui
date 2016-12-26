@@ -1,5 +1,12 @@
+export enum TlAlertConfigType {
+  Success, Info, Warning, Danger
+}
+
 export interface TlAlertConfig {
-  type: 'success' | 'info' | 'warning' | 'danger';
+  type: TlAlertConfigType;
+  duration?: number;
+  showSecLeft?: boolean;
+  secLeft?: number;
 }
 
 export interface TlAlert {

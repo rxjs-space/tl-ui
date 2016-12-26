@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TlSlideInOutAnimation, TlAlertService } from '../../tl-ui';
+import { TlSlideInOutAnimation, TlAlertService, TlAlertConfigType } from '../../tl-ui';
 @Component({
   selector: 'tl-alert-examples',
   templateUrl: './tl-alert-examples.component.html',
@@ -14,7 +14,22 @@ export class TlAlertExamplesComponent implements OnInit {
   }
 
   sendAlert() {
-    this.alertSerivce.alertRxx.next({content: 'tablet', config: {type: 'success'}});
+    let randomType = Math.floor(Math.random() * 4);
+    let contents = [
+      `<strong>Success</strong>`,
+      `Info`,
+      `Warning`,
+      `Danger`
+    ];
+    this.alertSerivce.alertRxx
+      .next({
+        content: contents[randomType],
+        config: {
+          type: randomType,
+          duration: Math.random() * 1000 * 10,
+          showSecLeft: true
+        }
+      });
   }
 
 }
