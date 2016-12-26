@@ -65,7 +65,10 @@ export class TlAlertComponent implements OnInit, OnDestroy {
           Observable.interval(1000).take(durInSec) // .take will do the clearInterval
             .subscribe(() => --a.config.secLeft);
           setTimeout(() => {
-            this.alertsSet.delete(a); // if a is already delete by user, this line will return false, not error;
+            a.config.showing = false;
+            if (!this.showAnimation) { // if showAnimation, will delete in animation callback
+              this.alertsSet.delete(a); // if a is already delete by user, this line will return false, not error;
+            }
           }, durInSec * 1000);
         } else {
           this.alertsSet.add(a);
