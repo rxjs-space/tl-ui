@@ -1,11 +1,6 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/observable/interval';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/startWith';
 import { TlAlertService } from './tl-alert.service';
 import { TlAlert, TlAlertConfigType } from './tl-alert.interface';
 
@@ -17,7 +12,7 @@ import { TlAlert, TlAlertConfigType } from './tl-alert.interface';
 export class TlAlertComponent implements OnInit, OnDestroy {
   alertsSet: Set<TlAlert> = new Set();
   subscriptions_: Subscription[] = [];
-  constructor(private alertService: TlAlertService) {}
+  constructor(private alertService: TlAlertService) {} // inject TlAlertService to receive data
 
   durationInSec(durationInput) {  // duration can be 3~10
     let duration;
@@ -46,7 +41,7 @@ export class TlAlertComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     const sub_ = this.alertService.alertRxx
-      .do(a => {
+      .subscribe(a => {
         let durInSec = this.durationInSec(a.config.duration);
         // show how many seconds left to close the alert automatically
         a.config.secLeft = durInSec;
@@ -58,8 +53,7 @@ export class TlAlertComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           this.alertsSet.delete(a); // if a is already delete by user, this line will return false, not error;
         }, durInSec * 1000);
-      })
-      .subscribe();
+      });
   }
 
   ngOnDestroy() {
