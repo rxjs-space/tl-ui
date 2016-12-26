@@ -1,40 +1,51 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { TlAlertService } from './tl-alert.service';
-import { TlAlert, TlAlertConfigType } from './tl-alert.interface';
+import 'rxjs/add/observable/interval';
+import 'rxjs/add/operator/take';
+import { TlAlertActionService } from './tl-alert-action.service';
+import { TlAlert, TlAlertType } from './tl-alert.interface';
+import { alertAnimations } from './tl-alert.component.animation';
+import { isNullOrUndefined } from '../+shared/util';
 
 @Component({
   selector: 'tl-alert',
+  // use <tl-alert [showAnimation]="true"></tl-alert> at root component whose module imported TlUiModule.withProviders()
   templateUrl: './tl-alert.component.html',
   styleUrls: ['./tl-alert.component.scss'],
+  animations: alertAnimations
 })
 export class TlAlertComponent implements OnInit, OnDestroy {
+  @Input() showAnimation: boolean = false;
   alertsSet: Set<TlAlert> = new Set();
   subscriptions_: Subscription[] = [];
-  constructor(private alertService: TlAlertService) {} // inject TlAlertService to receive data
+  constructor(private alertService: TlAlertActionService) {} // inject TlAlertService to receive data
 
-  durationInSec(durationInput) {  // duration can be 3~10
+  adjustDuration(durationInput) {  // duration can be 3~10
     let duration;
     switch (true) {
-      case durationInput && durationInput > 10 * 1000:
-        duration = 10 * 1000; break;
-      case durationInput && durationInput < 3 * 1000:
-        duration = 3 * 1000; break;
-      case !durationInput:
-        duration = 5 * 1000; break;
+      case durationInput > 10:
+        duration = 10; break;
+      case durationInput < 3:
+        duration = 3; break;
       default:
-        duration = durationInput;
+        duration = Math.round(durationInput);
     }
-    return Math.round(duration / 1000);
+    return duration;
+  }
+
+  closeAlert(alert: TlAlert) {
+    if (alert.config.showing === false) {
+      this.alertsSet.delete(alert);
+    }
   }
 
   setClasses(alert: TlAlert) {
     let classes =  {
-      'alert-success': alert.config.type === TlAlertConfigType.Success,
-      'alert-info': alert.config.type === TlAlertConfigType.Info,
-      'alert-warning': alert.config.type === TlAlertConfigType.Warning,
-      'alert-danger': alert.config.type === TlAlertConfigType.Danger,
+      'alert-success': alert.config.type === TlAlertType.Success,
+      'alert-info': alert.config.type === TlAlertType.Info,
+      'alert-warning': alert.config.type === TlAlertType.Warning,
+      'alert-danger': alert.config.type === TlAlertType.Danger,
     };
     return classes;
   }
@@ -42,17 +53,23 @@ export class TlAlertComponent implements OnInit, OnDestroy {
   ngOnInit() {
     const sub_ = this.alertService.alertRxx
       .subscribe(a => {
-        let durInSec = this.durationInSec(a.config.duration);
-        // show how many seconds left to close the alert automatically
-        a.config.secLeft = durInSec;
-        this.alertsSet.add(a);
-        setInterval(() => {
-          --a.config.secLeft;
-        }, 1000);
-        // close the alert automatically
-        setTimeout(() => {
-          this.alertsSet.delete(a); // if a is already delete by user, this line will return false, not error;
-        }, durInSec * 1000);
+        a.config.showing = true; // a helper for animation
+
+        let durationInput = a.config.durationInSec;
+        // if durationInput is a valid number, show countdown
+        if (!isNullOrUndefined(durationInput) && !isNaN(durationInput)) {
+          let durInSec = this.adjustDuration(a.config.durationInSec);
+          // show how many seconds left to close the alert automatically
+          a.config.secLeft = durInSec;
+          this.alertsSet.add(a);
+          Observable.interval(1000).take(durInSec) // .take will do the clearInterval
+            .subscribe(() => --a.config.secLeft);
+          setTimeout(() => {
+            this.alertsSet.delete(a); // if a is already delete by user, this line will return false, not error;
+          }, durInSec * 1000);
+        } else {
+          this.alertsSet.add(a);
+        }
       });
   }
 

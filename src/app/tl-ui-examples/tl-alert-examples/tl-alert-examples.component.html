@@ -6,7 +6,14 @@
         (click)="sendAlert()">Show alert (random type, duration)
       </button>
     </div>
-    <div>Put <code>&lt;tl-alert&gt;&lt;/tl-alert&gt;</code> at the root component whose module imported <code>TlUiModule.withProviders()</code>.</div>
+    <br>
+    <div>
+      <button class="btn btn-lg btn-info"
+        (click)="sendAlertInfinite()">Show alert (random type, 'infinite' duration)
+      </button>
+    </div>
+    <br>
+    <div>Put <code>&lt;tl-alert [showAnimation]="true"&gt;&lt;/tl-alert&gt;</code> at the root component whose module imported <code>TlUiModule.withProviders()</code>.</div>
   </div>
 </div>
-<!-- put <tl-alert></tl-alert> in the root component's template' -->
+<!-- put <tl-alert [showAnimation]="true"></tl-alert> in the root component's template' -->

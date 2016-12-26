@@ -1,16 +1,16 @@
 /* tslint:disable:no-unused-variable */
 
 import { TestBed, async, inject } from '@angular/core/testing';
-import { TlAlertService } from './tl-alert.service';
+import { TlAlertActionService } from './tl-alert-action.service';
 
 describe('TlAlertService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TlAlertService]
+      providers: [TlAlertActionService]
     });
   });
 
-  it('should ...', inject([TlAlertService], (service: TlAlertService) => {
+  it('should ...', inject([TlAlertActionService], (service: TlAlertActionService) => {
     expect(service).toBeTruthy();
   }));
 });

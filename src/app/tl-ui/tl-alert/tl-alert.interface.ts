@@ -1,15 +1,20 @@
-export enum TlAlertConfigType {
+export interface TlAlertGlobalConfig {
+  showAnimation: boolean;
+}
+
+export enum TlAlertType {
   Success, Info, Warning, Danger
 }
 
-export interface TlAlertConfig {
-  type: TlAlertConfigType;
-  duration?: number;
+export interface TlAlertLocalConfig {
+  type: TlAlertType;
+  durationInSec?: number;
   showSecLeft?: boolean;
   secLeft?: number;
+  showing?: boolean;
 }
 
 export interface TlAlert {
   content: any;
-  config?: TlAlertConfig;
+  config: TlAlertLocalConfig;
 }

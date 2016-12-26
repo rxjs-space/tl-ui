@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TlSlideInOutAnimation, TlAlertService, TlAlertConfigType } from '../../tl-ui';
+import { TlSlideInOutAnimation, TlAlertActionService, TlAlertType } from '../../tl-ui';
 @Component({
   selector: 'tl-alert-examples',
   templateUrl: './tl-alert-examples.component.html',
@@ -8,7 +8,7 @@ import { TlSlideInOutAnimation, TlAlertService, TlAlertConfigType } from '../../
 })
 export class TlAlertExamplesComponent implements OnInit {
 
-  constructor(private alertSerivce: TlAlertService) { }
+  constructor(private alertSerivce: TlAlertActionService) { }
 
   ngOnInit() {
   }
@@ -26,8 +26,25 @@ export class TlAlertExamplesComponent implements OnInit {
         content: contents[randomType],
         config: {
           type: randomType,
-          duration: Math.random() * 1000 * 10,
+          durationInSec: Math.random() * 10,
           showSecLeft: true
+        }
+      });
+  }
+
+  sendAlertInfinite() {
+    let randomType = Math.floor(Math.random() * 4);
+    let contents = [
+      `<strong>Success</strong>`,
+      `Info`,
+      `Warning`,
+      `Danger`
+    ];
+    this.alertSerivce.alertRxx
+      .next({
+        content: contents[randomType],
+        config: {
+          type: randomType
         }
       });
   }

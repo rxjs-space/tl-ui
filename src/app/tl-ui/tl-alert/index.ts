@@ -1,3 +1,6 @@
 export { TlAlertModule } from './tl-alert.module';
-export { TlAlertService } from './tl-alert.service';
-export { TlAlert, TlAlertConfig, TlAlertConfigType } from './tl-alert.interface';
+export { TlAlertComponent } from './tl-alert.component';
+export { TlAlertActionService } from './tl-alert-action.service';
+export { TlAlert, TlAlertLocalConfig, TlAlertType, TlAlertGlobalConfig } from './tl-alert.interface';
+
+
