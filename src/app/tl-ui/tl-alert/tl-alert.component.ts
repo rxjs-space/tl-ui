@@ -16,9 +16,9 @@ import { isNullOrUndefined } from '../+shared/util';
   animations: alertAnimations
 })
 export class TlAlertComponent implements OnInit, OnDestroy {
-  @Input() showAnimation: boolean = false;
-  alertsSet: Set<TlAlert> = new Set();
-  subscriptions_: Subscription[] = [];
+  @Input() private showAnimation: boolean = false;
+  private alertsSet: Set<TlAlert> = new Set();
+  private subscriptions_: Subscription[] = [];
   constructor(private alertService: TlAlertActionService) {} // inject TlAlertService to receive data
 
   adjustDuration(durationInput) {  // duration can be 3~10
