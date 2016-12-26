@@ -9,6 +9,7 @@ import { Tl0Component } from './tl-0/tl-0.component';
 import { TlModalExamplesComponent } from './tl-modal-examples/tl-modal-examples.component';
 import { TlUiModule } from '../tl-ui';
 import { TlAccordionExamplesComponent } from './tl-accordion-examples/tl-accordion-examples.component';
+import { TlAlertExamplesComponent } from './tl-alert-examples/tl-alert-examples.component';
 
 @NgModule({
   imports: [
@@ -17,7 +18,7 @@ import { TlAccordionExamplesComponent } from './tl-accordion-examples/tl-accordi
     TlUiModule.withProviders(),
     NgbModule.forRoot()
   ],
-  declarations: [TlUiExamplesComponent, Tl0Component, TlModalExamplesComponent, TlAccordionExamplesComponent, ],
+  declarations: [TlUiExamplesComponent, Tl0Component, TlModalExamplesComponent, TlAccordionExamplesComponent, TlAlertExamplesComponent, ],
   exports: [TlUiExamplesComponent]
 })
 export class TlUiExamplesModule { }

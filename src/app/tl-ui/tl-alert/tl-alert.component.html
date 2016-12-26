@@ -1,0 +1,14 @@
+<ng-container *ngIf="alerts.length">
+  <div class="tl-alerts">
+    <ng-container *ngFor="let alert of alerts; let i = index">
+
+      <div class="alert alert-dismissible tl-alert" [ngClass]="setClasses(alert)" role="alert">
+        <button type="button" class="close" aria-label="Close" (click)="alerts.splice(i, 1)">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div [innerHTML]="alert.content"></div>
+      </div>
+
+    </ng-container>
+  </div>
+</ng-container>
