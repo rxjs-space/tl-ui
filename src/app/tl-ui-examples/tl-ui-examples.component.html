@@ -18,24 +18,17 @@
       >Components</a>
       <a class="nav-link dropdown-toggle nav-cover"  
         href role="button"
-        (click)="clickDropDown($event);dropdownToggle.open=!dropdownToggle.open;"
+        (click)="clickDropDown($event, dropdownToggle);dropdownToggle.open=!dropdownToggle.open;"
         aria-haspopup="true" [attr.aria-expanded]="dropdownToggle.open || false"
         #dropdownToggle
       >Components</a>
 
       <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
-        <a class="dropdown-item" 
-          routerLink="/components/modal" routerLinkActive="active"
+        <a *ngFor="let cmp of components"
+          class="dropdown-item" 
+          [routerLink]="'/components/'+cmp.path" routerLinkActive="active"
           (click)="dropdownToggle.open=false"
-        >Modal</a>
-        <a class="dropdown-item" 
-          routerLink="/components/accordion" routerLinkActive="active"
-          (click)="dropdownToggle.open=false"
-        >Accordion</a>
-        <a class="dropdown-item" 
-          routerLink="/components/alert" routerLinkActive="active"
-          (click)="dropdownToggle.open=false"
-        >Alert</a>
+        >{{cmp.name}}</a>
       </div>
     </li>
   </ul>
@@ -53,9 +46,9 @@
       <div class="bd-toc-item active">
         <div class="card-header">Components</div>
         <nav class="nav nav-pills nav-stacked bd-sidenav">
-          <a class="nav-link" routerLink="/components/modal" routerLinkActive="active">Modal</a>
-          <a class="nav-link" routerLink="/components/accordion" routerLinkActive="active">Accordion</a>
-          <a class="nav-link" routerLink="/components/alert" routerLinkActive="active">Alert</a>
+          <a *ngFor="let cmp of components"
+            class="nav-link" [routerLink]="'/components/'+cmp.path" routerLinkActive="active"
+          >{{cmp.name}}</a>
         </nav>
       </div>
     </div>
