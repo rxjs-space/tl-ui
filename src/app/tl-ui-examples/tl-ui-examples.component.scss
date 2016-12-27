@@ -1,7 +1,16 @@
 // .container {
 //   max-width: 800px;
 // }
+// @import '~bootstrap/scss/_variables.scss';
 
 .card {
   padding: 0;
 }
+
+.nav-cover {
+  position: absolute;
+  top: 0;
+  margin-left: 0 !important;
+  color: transparent;
+}
+

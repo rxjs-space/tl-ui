@@ -12,4 +12,7 @@ export class TlUiExamplesComponent implements OnInit {
   ngOnInit() {
   }
 
+  clickDropDown(event) {
+    event.preventDefault();
+  }
 }
