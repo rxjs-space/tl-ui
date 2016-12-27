@@ -48,22 +48,16 @@
 <div class="container">
   <div class="row">
 
-    <div class="col-xs-6 push-xs-3 col-sm-3 push-sm-9 bd-sidebar card hidden-xs-down">
-
+    <div class="card col-xs-6 push-xs-3 col-sm-3 push-sm-9 bd-sidebar hidden-xs-down">
+      
       <div class="bd-toc-item active">
-        <ul class="nav nav-pills nav-stacked bd-sidenav">
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/components/modal" routerLinkActive="active">Modal</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/components/accordion" routerLinkActive="active">Accordion</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/components/alert" routerLinkActive="active">Alert</a>
-          </li>
-        </ul>
+        <div class="card-header">Components</div>
+        <nav class="nav nav-pills nav-stacked bd-sidenav">
+          <a class="nav-link" routerLink="/components/modal" routerLinkActive="active">Modal</a>
+          <a class="nav-link" routerLink="/components/accordion" routerLinkActive="active">Accordion</a>
+          <a class="nav-link" routerLink="/components/alert" routerLinkActive="active">Alert</a>
+        </nav>
       </div>
-
     </div>
 
     <div class="col-xs-12 col-sm-9 pull-sm-3 bd-content">
