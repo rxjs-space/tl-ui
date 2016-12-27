@@ -8,9 +8,13 @@ import { TlAlertExamplesComponent } from './tl-alert-examples/tl-alert-examples.
 
 const routes: Routes = [
   { path: '', pathMatch: 'full', component: Tl0Component },
-  { path: 'modal', component: TlModalExamplesComponent },
-  { path: 'accordion', component: TlAccordionExamplesComponent },
-  { path: 'alert', component: TlAlertExamplesComponent }
+  { path: 'components', children: [
+    { path: '', pathMatch: 'full', redirectTo: 'modal' },
+    { path: 'modal', component: TlModalExamplesComponent },
+    { path: 'accordion', component: TlAccordionExamplesComponent },
+    { path: 'alert', component: TlAlertExamplesComponent }
+  ]},
+
 ];
 
 @NgModule({
