@@ -10,6 +10,7 @@ import { TlModalExamplesComponent } from './tl-modal-examples/tl-modal-examples.
 import { TlUiModule } from '../tl-ui';
 import { TlAccordionExamplesComponent } from './tl-accordion-examples/tl-accordion-examples.component';
 import { TlNotificationExamplesComponent } from './tl-notification-examples/tl-notification-examples.component';
+import { InitialCapPipe } from './+shared/pipes/initial-cap.pipe';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { TlNotificationExamplesComponent } from './tl-notification-examples/tl-n
     Tl0Component,
     TlModalExamplesComponent,
     TlAccordionExamplesComponent,
-    TlNotificationExamplesComponent, ],
+    TlNotificationExamplesComponent,
+    InitialCapPipe, ],
   exports: [TlUiExamplesComponent]
 })
 export class TlUiExamplesModule { }

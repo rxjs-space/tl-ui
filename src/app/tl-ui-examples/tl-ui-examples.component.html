@@ -16,6 +16,7 @@
       <a class="nav-link dropdown-toggle" 
         routerLink="/components" routerLinkActive="active" 
       >Components</a>
+      <!--nav-cover, which will cover above dropdown-toggle so to disable its click event-->
       <a class="nav-link dropdown-toggle nav-cover"  
         href role="button"
         (click)="clickDropDown($event, dropdownToggle);dropdownToggle.open=!dropdownToggle.open;"
@@ -28,8 +29,12 @@
           class="dropdown-item" 
           [routerLink]="'/components/'+cmp.path" routerLinkActive="active"
           (click)="dropdownToggle.open=false"
-        >{{cmp.name}}</a>
+        >{{cmp.path | initialCap}}</a>
       </div>
+
+    </li>
+    <li class="nav-item hidden-sm-up" *ngIf="urlParts[urlParts.length-2]==='components'">
+      <a class="nav-link active"><small>/ {{urlParts[urlParts.length-1] | initialCap}}</small></a>
     </li>
   </ul>
   <!--<form class="form-inline float-xs-right">
@@ -37,6 +42,7 @@
     <button class="btn btn-outline-success" type="submit">Search</button>
   </form>-->
 </nav>
+
 <br>
 <div class="container">
   <div class="row">
@@ -48,7 +54,7 @@
         <nav class="nav nav-pills nav-stacked bd-sidenav">
           <a *ngFor="let cmp of components"
             class="nav-link" [routerLink]="'/components/'+cmp.path" routerLinkActive="active"
-          >{{cmp.name}}</a>
+          >{{cmp.path | initialCap}}</a>
         </nav>
       </div>
     </div>
