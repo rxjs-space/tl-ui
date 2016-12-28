@@ -1,0 +1,21 @@
+<div [@TlSlideInOutState] class="card">
+  <h4 class="card-header">Tl-Notification-Examples!</h4>
+  <div class="card-block">
+    <div>
+      <p>random type, random duration, random countdown, random show countdown</p>
+      <button class="btn btn-lg btn-primary"
+        (click)="sendNotification()">Show notification
+      </button>
+    </div>
+    <hr>
+    <div>
+      <p>random type, 'infinite' duration</p>
+      <button class="btn btn-lg btn-outline-primary"
+        (click)="sendNotificationInfinite()">Show notification
+      </button>
+    </div>
+    <hr>
+    <div>Put <code>&lt;tl-notification [showAnimation]="true"&gt;&lt;/tl-notification&gt;</code> at the root component whose module imported <code>TlUiModule.withProviders()</code>.</div>
+  </div>
+</div>
+<!-- put <tl-notification [showAnimation]="true"></tl-notification> in the root component's template' -->

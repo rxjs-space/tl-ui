@@ -3,19 +3,19 @@ import { CommonModule } from '@angular/common';
 import { TlUiComponent } from './tl-ui.component';
 import { TlModalModule } from './tl-modal';
 import { TlAccordionModule } from './tl-accordion';
-import { TlAlertModule } from './tl-alert';
-import { TlAlertComponent } from './tl-alert/tl-alert.component';
+import { TlNotificationModule } from './tl-notification';
+import { TlNotificationComponent } from './tl-notification/tl-notification.component';
 
 export const tlUiModulesArr = [
   TlModalModule,
   TlAccordionModule,
-  TlAlertModule
+  TlNotificationModule
 ];
 
 export const tlUiModulesWithProvidersArr = [
   TlModalModule.withProviders(),
   TlAccordionModule.withProviders(),
-  TlAlertModule.withProviders()
+  TlNotificationModule.withProviders()
 ];
 
 @NgModule({
@@ -27,7 +27,7 @@ export class TlUiModuleWithProviders {}
 
 @NgModule({
   imports: [CommonModule, ...tlUiModulesArr],
-  declarations: [TlUiComponent, TlAlertComponent],
+  declarations: [TlUiComponent, TlNotificationComponent],
   exports: tlUiModulesArr,
 })
 export class TlUiModule {

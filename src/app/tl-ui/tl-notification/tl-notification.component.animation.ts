@@ -1,7 +1,7 @@
 import { trigger, state, style, transition, animate, keyframes, AnimationEntryMetadata } from '@angular/core';
 
-export const alertAnimations: AnimationEntryMetadata[] = [
-  trigger('alertState', [
+export const notificationAnimations: AnimationEntryMetadata[] = [
+  trigger('notificationState', [
     // state('in', style({transform: 'translateY(0)'})),
     transition('void => *', [
       style({opacity: 0, transform: 'translateX(-100%)'}),
