@@ -4,7 +4,6 @@ import { TlUiComponent } from './tl-ui.component';
 import { TlModalModule } from './tl-modal';
 import { TlAccordionModule } from './tl-accordion';
 import { TlNotificationModule } from './tl-notification';
-import { TlNotificationComponent } from './tl-notification/tl-notification.component';
 
 export const tlUiModulesArr = [
   TlModalModule,
@@ -27,7 +26,7 @@ export class TlUiModuleWithProviders {}
 
 @NgModule({
   imports: [CommonModule, ...tlUiModulesArr],
-  declarations: [TlUiComponent, TlNotificationComponent],
+  declarations: [TlUiComponent],
   exports: tlUiModulesArr,
 })
 export class TlUiModule {

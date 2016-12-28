@@ -23,6 +23,7 @@
     "prod": "ng serve --prod",
     "buildp": "ng build --prod",
     "buildpa": "ng build --prod --aot",
+    "buildpag": "ng build --prod --aot --bh /tl-ui/",
     "ghpa": "ng github-pages:deploy --aot",
     "hmr": "ng serve --hmr -e=dev-hmr"
   },
