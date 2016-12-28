@@ -4,7 +4,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { Tl0Component } from './tl-0/tl-0.component';
 import { TlModalExamplesComponent } from './tl-modal-examples/tl-modal-examples.component';
 import { TlAccordionExamplesComponent } from './tl-accordion-examples/tl-accordion-examples.component';
-import { TlNotificationExamplesComponent } from './tl-alert-examples/tl-notification-examples.component';
+import { TlNotificationExamplesComponent } from './tl-notification-examples/tl-notification-examples.component';
 
 export const examplePaths = [
   { path: 'modal', component: TlModalExamplesComponent },

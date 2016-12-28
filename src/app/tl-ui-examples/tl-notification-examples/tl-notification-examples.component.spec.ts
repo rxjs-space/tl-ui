@@ -3,9 +3,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
 
-import { TlNotificationExamplesComponent } from './tl-alert-examples.component';
+import { TlNotificationExamplesComponent } from './tl-notification-examples.component';
 
-xdescribe('TlAlertExamplesComponent', () => {
+xdescribe('TlNotificationExamplesComponent', () => {
   let component: TlNotificationExamplesComponent;
   let fixture: ComponentFixture<TlNotificationExamplesComponent>;
 
