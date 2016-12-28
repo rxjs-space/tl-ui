@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { sortedExamplePaths } from './tl-ui-examples-routing.module';
+import { examplePaths } from './tl-ui-examples-routing.module';
 
 @Component({
   selector: 'tl-ui-examples',
@@ -11,7 +11,12 @@ export class TlUiExamplesComponent implements OnInit {
   private dropDownHeaderClickCount: number = 0;
   // components to be an array like [{path: 'modal', name: 'Modal'}]
   // name is to be used in the links
-  private components: any[] = sortedExamplePaths
+  private components: any[] = examplePaths
+    .sort((a, b) => {
+      if (a.path > b.path) {return 1; }
+      if (a.path < b.path) {return -1; }
+      return 0;
+    })
     .map(e => ({
       path: e.path, name: e.path[0].toUpperCase() + e.path.substr(1, e.path.length - 1)
     }));
