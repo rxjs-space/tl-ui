@@ -12,30 +12,8 @@
     <li class="nav-item hidden-xs-down">
       <a class="nav-link" routerLink="/components" routerLinkActive="active">Components</a>
     </li>
-    <div class="nav-item dropdown hidden-sm-up" [class.open]="dropdownToggle.open">
-      <a class="nav-link dropdown-toggle" 
-        routerLink="/components" routerLinkActive="active" 
-      >Components</a>
-      <!--nav-cover, which will cover above dropdown-toggle so to disable its click event-->
-      <a class="nav-link dropdown-toggle nav-cover"  
-        href role="button"
-        (click)="clickDropDown($event, dropdownToggle);dropdownToggle.open=!dropdownToggle.open;"
-        aria-haspopup="true" [attr.aria-expanded]="dropdownToggle.open || false"
-        #dropdownToggle
-      >Components</a>
-
-      <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
-        <a *ngFor="let cmp of components"
-          class="dropdown-item" 
-          [routerLink]="'/components/'+cmp.path" routerLinkActive="active"
-          (click)="dropdownToggle.open=false"
-        >{{cmp.path | initialCap}}</a>
-      </div>
-
-    </div>
-    <li class="nav-item hidden-sm-up" *ngIf="urlParts[urlParts.length-2]==='components'">
-      <a class="nav-link active"><small>/ {{urlParts[urlParts.length-1] | initialCap}}</small></a>
-    </li>
+    <tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
+    <tl-dropdown-active-aside [dropdownModel]="dropdownModel"></tl-dropdown-active-aside>
   </ul>
   <!--<form class="form-inline float-xs-right">
     <input class="form-control" type="text" placeholder="Search">

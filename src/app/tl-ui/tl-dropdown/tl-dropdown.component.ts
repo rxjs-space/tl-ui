@@ -3,6 +3,7 @@ import { Component, HostBinding, HostListener,
   Renderer, ElementRef
  } from '@angular/core';
 
+import { TlDropdownModel } from './tl-dropdown.interface';
 
 @Component({
   selector: 'tl-dropdown',
@@ -10,16 +11,22 @@ import { Component, HostBinding, HostListener,
   styleUrls: ['./tl-dropdown.component.scss']
 })
 export class TlDropdownComponent implements OnInit {
-  @Input() items: {name: string, path: string}[] = [{
-    name: 'accordion', path: 'accordion'
-  }];
+
+  @Input() dropdownModel: TlDropdownModel;
   @HostBinding('class.open') open: boolean = false;
 
-  constructor(private renderer: Renderer, private el: ElementRef) { }
+  constructor(
+    private renderer: Renderer,
+    private el: ElementRef
+  ) { }
 
   ngOnInit() {
     // add 'dropdown' class to host el
-    this.renderer.setElementClass(this.el.nativeElement, 'dropdown', true);
+    const hostClasses = ['dropdown'].concat(this.dropdownModel.hostClasses);
+    hostClasses.forEach(c => {
+      this.renderer.setElementClass(this.el.nativeElement, c, true);
+    });
+
   }
 
   clickOnToggler(event) {

@@ -1,17 +1,29 @@
-<a class="nav-link dropdown-toggle" 
-  routerLink="/components" routerLinkActive="active" 
->Components</a>
+<a [class]="dropdownModel.toggler.classes ? dropdownModel.toggler.classes.join(' ') : ''" 
+  [class.dropdown-toggle]="true"
+  [routerLink]="'/' + dropdownModel.toggler.path" routerLinkActive="active" 
+>{{dropdownModel.toggler.name}}</a>
 <!--toggle-cover, which will cover above dropdown-toggle so to disable its click event-->
 <!--toggle-cover, with it, we can see the effect of [routerLinkActive="active"], but click on it will not take us anywhere but toggle the dropdown -->
-<a class="nav-link dropdown-toggle toggle-cover"  
+<a [class]="(dropdownModel.toggler.classes ? dropdownModel.toggler.classes.join(' ') : '') + ' toggle-cover'" 
+  [class.dropdown-toggle]="true"
   href role="button"
   (click)="clickOnToggler($event);"
   aria-haspopup="true" [attr.aria-expanded]="open || false"
->Components</a>
+>{{dropdownModel.toggler.name}}</a>
+
 
 <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
-  <a *ngFor="let item of items"
-    class="dropdown-item" 
-    [routerLink]="'/components/'+item.path" routerLinkActive="active"
+  <a *ngFor="let item of dropdownModel.items"
+    [class]="item.classes ? item.classes.join(' ') : ''" 
+    [class.dropdown-item]="true"
+    [routerLink]="'/' + dropdownModel.toggler.path + '/' + item.path" 
+    routerLinkActive="active"
   >{{item.name}}</a>
 </div>
+
+
+
+<!--
+    <li class="nav-item hidden-sm-up" *ngIf="urlParts[urlParts.length-2]==='components'">
+      <a class="nav-link active"><small>/ {{urlParts[urlParts.length-1] | initialCap}}</small></a>
+    </li>-->

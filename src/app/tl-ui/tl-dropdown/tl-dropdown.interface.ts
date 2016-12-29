@@ -1,8 +1,10 @@
-type thing = {name: string, path: string, classes?: string[]};
+export type TlDropdownThing = {name: string, path: string, classes?: string[]};
 
 export interface TlDropdownModel {
-  toggler: thing;
-  items: thing[];
+  hostClasses?: string[];
+  toggler: TlDropdownThing;
+  items: TlDropdownThing[];
+  showActiveAside?: boolean;
 }
 
 export interface TlDropdownConfig {
