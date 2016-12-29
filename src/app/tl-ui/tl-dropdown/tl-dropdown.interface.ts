@@ -1,8 +1,8 @@
-export interface TlDropdown {
-  toggleName: string;
-  toggleLink: string;
-  items: string[];
-  itemLinks: string[];
+type thing = {name: string, path: string, classes?: string[]};
+
+export interface TlDropdownModel {
+  toggler: thing;
+  items: thing[];
 }
 
 export interface TlDropdownConfig {

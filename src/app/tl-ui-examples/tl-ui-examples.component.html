@@ -12,7 +12,7 @@
     <li class="nav-item hidden-xs-down">
       <a class="nav-link" routerLink="/components" routerLinkActive="active">Components</a>
     </li>
-    <li class="nav-item dropdown hidden-sm-up" [class.open]="dropdownToggle.open">
+    <div class="nav-item dropdown hidden-sm-up" [class.open]="dropdownToggle.open">
       <a class="nav-link dropdown-toggle" 
         routerLink="/components" routerLinkActive="active" 
       >Components</a>
@@ -32,7 +32,7 @@
         >{{cmp.path | initialCap}}</a>
       </div>
 
-    </li>
+    </div>
     <li class="nav-item hidden-sm-up" *ngIf="urlParts[urlParts.length-2]==='components'">
       <a class="nav-link active"><small>/ {{urlParts[urlParts.length-1] | initialCap}}</small></a>
     </li>

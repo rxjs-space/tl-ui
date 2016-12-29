@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostBinding, HostListener,
+  Input, OnInit,
+  Renderer, ElementRef
+ } from '@angular/core';
+
 
 @Component({
   selector: 'tl-dropdown',
@@ -6,10 +10,25 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./tl-dropdown.component.scss']
 })
 export class TlDropdownComponent implements OnInit {
+  @Input() items: {name: string, path: string}[] = [{
+    name: 'accordion', path: 'accordion'
+  }];
+  @HostBinding('class.open') open: boolean = false;
 
-  constructor() { }
+  constructor(private renderer: Renderer, private el: ElementRef) { }
 
   ngOnInit() {
+    // add 'dropdown' class to host el
+    this.renderer.setElementClass(this.el.nativeElement, 'dropdown', true);
   }
 
+  clickOnToggler(event) {
+    event.preventDefault();
+    event.stopPropagation(); // to work with @HostListener('document:click')
+    this.open = !this.open;
+  }
+
+  @HostListener('document:click') onHostClick() {
+    this.open = false;
+  }
 }

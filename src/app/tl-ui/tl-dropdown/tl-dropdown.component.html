@@ -1,3 +1,17 @@
-<p>
-  tl-dropdown works!
-</p>
+<a class="nav-link dropdown-toggle" 
+  routerLink="/components" routerLinkActive="active" 
+>Components</a>
+<!--toggle-cover, which will cover above dropdown-toggle so to disable its click event-->
+<!--toggle-cover, with it, we can see the effect of [routerLinkActive="active"], but click on it will not take us anywhere but toggle the dropdown -->
+<a class="nav-link dropdown-toggle toggle-cover"  
+  href role="button"
+  (click)="clickOnToggler($event);"
+  aria-haspopup="true" [attr.aria-expanded]="open || false"
+>Components</a>
+
+<div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
+  <a *ngFor="let item of items"
+    class="dropdown-item" 
+    [routerLink]="'/components/'+item.path" routerLinkActive="active"
+  >{{item.name}}</a>
+</div>
