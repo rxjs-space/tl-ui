@@ -30,9 +30,9 @@
       <div class="bd-toc-item active">
         <div class="card-header" style="color:indigo"><strong>Components</strong></div>
         <nav class="nav nav-pills nav-stacked bd-sidenav">
-          <a *ngFor="let cmp of components"
-            class="nav-link" [routerLink]="'/components/'+cmp.path" routerLinkActive="active"
-          >{{cmp.path | initialCap}}</a>
+          <a *ngFor="let item of dropdownModel.items"
+            class="nav-link" [routerLink]="'/components/'+item.path" routerLinkActive="active"
+          >{{item.path | initialCap}}</a>
         </nav>
       </div>
     </div>
