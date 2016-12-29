@@ -15,6 +15,6 @@ export class TlModalModule {
     return {
       ngModule: TlModalModule,
       providers: [TlModalConfigService]
-    }
+    };
   }
 }

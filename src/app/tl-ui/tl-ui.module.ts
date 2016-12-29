@@ -4,17 +4,20 @@ import { TlUiComponent } from './tl-ui.component';
 import { TlModalModule } from './tl-modal';
 import { TlAccordionModule } from './tl-accordion';
 import { TlNotificationModule } from './tl-notification';
+import { TlDropdownModule } from './tl-dropdown';
 
 export const tlUiModulesArr = [
   TlModalModule,
   TlAccordionModule,
-  TlNotificationModule
+  TlNotificationModule,
+  TlDropdownModule
 ];
 
 export const tlUiModulesWithProvidersArr = [
   TlModalModule.withProviders(),
   TlAccordionModule.withProviders(),
-  TlNotificationModule.withProviders()
+  TlNotificationModule.withProviders(),
+  TlDropdownModule.withProviders()
 ];
 
 @NgModule({
