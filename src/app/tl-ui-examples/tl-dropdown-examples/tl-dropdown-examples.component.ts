@@ -11,7 +11,7 @@ import { examplePaths } from '../tl-ui-examples-routing.module';
 export class TlDropdownExamplesComponent implements OnInit {
 
   dropdownModel: TlDropdownModel = {
-    toggler: {name: 'Group'},
+    toggler: {name: 'Group', classes: ['btn', 'btn-secondary']},
     items: [{name: 'Item1'}, {name: 'Item2'}],
     itemSelectedRxx: new Subject()
   };

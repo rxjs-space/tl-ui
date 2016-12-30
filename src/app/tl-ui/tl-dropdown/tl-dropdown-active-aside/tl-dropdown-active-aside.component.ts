@@ -5,6 +5,7 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/startWith';
 import { TlDropdownModel } from '../tl-dropdown.interface';
 
 
@@ -15,7 +16,7 @@ import { TlDropdownModel } from '../tl-dropdown.interface';
 })
 export class TlDropdownActiveAsideComponent implements OnInit {
   @Input() dropdownModel: TlDropdownModel;
-  activePathNameRx: Observable<any>;
+  activeNameRx: Observable<any>;
   constructor(
     private router: Router,
     private el: ElementRef,
@@ -23,14 +24,14 @@ export class TlDropdownActiveAsideComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    if (this.dropdownModel.hostClasses) {
+    if (this.dropdownModel.hostClasses) { // set tl-dropdown-active-aside tag class to be same as tl-dropdown tag class
       this.dropdownModel.hostClasses.forEach(c => {
         this.renderer.setElementClass(this.el.nativeElement, c, true);
       });
     }
 
     if (this.dropdownModel.forNav) { // if forNav, listen on nav event and turn path to name
-      this.activePathNameRx = this.router.events
+      this.activeNameRx = this.router.events
         .filter(e => e instanceof NavigationEnd)
         .map(e => {
           let url = e.url.replace(/[;?].*/, ''); // delete queryParams and optional params
@@ -52,6 +53,10 @@ export class TlDropdownActiveAsideComponent implements OnInit {
             return Observable.of('');
           }
         });
+    } else {
+      this.activeNameRx = this.dropdownModel.itemSelectedRxx
+        .map(item => `/ ${item.name}`)
+        .startWith('');
     }
   }
 

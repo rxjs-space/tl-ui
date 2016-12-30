@@ -22,7 +22,7 @@ export class TlDropdownComponent implements OnInit {
 
   ngOnInit() {
     // add 'dropdown' class to host el
-    const hostClasses = ['dropdown'].concat(this.dropdownModel.hostClasses);
+    const hostClasses = ['dropdown'].concat(this.dropdownModel.hostClasses ? this.dropdownModel.hostClasses : []);
     hostClasses.forEach(c => {
       this.renderer.setElementClass(this.el.nativeElement, c, true);
     });
