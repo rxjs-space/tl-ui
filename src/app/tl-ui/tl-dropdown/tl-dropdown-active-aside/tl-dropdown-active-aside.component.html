@@ -1,5 +1,11 @@
-<ng-container *ngIf="dropdownModel.showActiveAside">
+<ng-container *ngIf="dropdownModel.forNav">
   <a [class]="(dropdownModel.toggler.classes ?  dropdownModel.toggler.classes.join(' ') : '') + ' active'">
     <small>{{activePathNameRx|async}}</small>
+  </a>
+</ng-container>
+
+<ng-container *ngIf="!dropdownModel.forNav">
+  <a [class]="(dropdownModel.toggler.classes ?  dropdownModel.toggler.classes.join(' ') : '') + ' active'">
+    <small>/ {{(dropdownModel.itemSelectedRxx|async)?.name}}</small>
   </a>
 </ng-container>

@@ -1,23 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { TlDropdownModel, TlDropdownThing } from '../../tl-ui';
+import { Subject } from 'rxjs/Subject';
+import { TlDropdownModel, TlSlideInOutAnimation } from '../../tl-ui';
 import { examplePaths } from '../tl-ui-examples-routing.module';
 @Component({
   selector: 'tl-dropdown-examples',
   templateUrl: './tl-dropdown-examples.component.html',
-  styleUrls: ['./tl-dropdown-examples.component.scss']
+  styleUrls: ['./tl-dropdown-examples.component.scss'],
+  animations: [TlSlideInOutAnimation]
 })
 export class TlDropdownExamplesComponent implements OnInit {
+
   dropdownModel: TlDropdownModel = {
-    hostClasses: ['nav-item', 'hidden-sm-up'],
-    toggler: {name: 'Components', path: 'components', classes: ['nav-link']},
-    items: examplePaths
-      .sort((a, b) => {
-        if (a.path > b.path) {return 1; }
-        if (a.path < b.path) {return -1; }
-        return 0;
-      })
-      .map(e => ({name: e.path, path: e.path})),
-    showActiveAside: true
+    toggler: {name: 'Group'},
+    items: [{name: 'Item1'}, {name: 'Item2'}],
+    itemSelectedRxx: new Subject()
   };
 
   constructor() { }

@@ -3,7 +3,7 @@ import { Component, HostBinding, HostListener,
   Renderer, ElementRef
  } from '@angular/core';
 
-import { TlDropdownModel } from './tl-dropdown.interface';
+import { TlDropdownModel, TlDropdownThing } from './tl-dropdown.interface';
 
 @Component({
   selector: 'tl-dropdown',
@@ -34,6 +34,12 @@ export class TlDropdownComponent implements OnInit {
     event.stopPropagation(); // to work with @HostListener('document:click')
     this.open = !this.open;
   }
+
+  clickOnItem(event, item: TlDropdownThing) {
+    event.preventDefault();
+    this.dropdownModel.itemSelectedRxx.next(item);
+  }
+
 
   @HostListener('document:click') onHostClick() {
     this.open = false;
