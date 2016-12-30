@@ -12,7 +12,8 @@ import { TlDropdownModel } from '../tl-dropdown.interface';
 @Component({
   selector: 'tl-dropdown-active-aside',
   templateUrl: './tl-dropdown-active-aside.component.html',
-  styleUrls: ['./tl-dropdown-active-aside.component.scss']
+  styleUrls: ['./tl-dropdown-active-aside.component.scss'],
+  changeDetection: 0
 })
 export class TlDropdownActiveAsideComponent implements OnInit {
   @Input() dropdownModel: TlDropdownModel;

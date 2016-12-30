@@ -64,7 +64,8 @@ import { isNullOrUndefined } from '../+shared/util';
       border-radius: 0;
     }
   `],
-  animations: notificationAnimations
+  animations: notificationAnimations,
+  // changeDetection: 0 // cannot use onPush here, because notificationsSet is not Observable
 })
 export class TlNotificationComponent implements OnInit, OnDestroy {
   @Input() private showAnimation: boolean = false;

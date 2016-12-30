@@ -8,7 +8,8 @@ import { TlDropdownModel, TlDropdownThing } from './tl-dropdown.interface';
 @Component({
   selector: 'tl-dropdown',
   templateUrl: './tl-dropdown.component.html',
-  styleUrls: ['./tl-dropdown.component.scss']
+  styleUrls: ['./tl-dropdown.component.scss'],
+  changeDetection: 0
 })
 export class TlDropdownComponent implements OnInit {
 
