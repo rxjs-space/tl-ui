@@ -33,8 +33,10 @@
   >{{dropdownModel.toggler.name}}</a>
   <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
     <a *ngFor="let item of dropdownModel.items"
+      href
       [class]="item.classes ? item.classes.join(' ') : ''" 
       [class.dropdown-item]="true"
+      [class.active] = "(dropdownModel.itemSelectedRxx | async) === item"
       (click)="clickOnItem($event, item);"
     >{{item.name}}</a>
   </div>

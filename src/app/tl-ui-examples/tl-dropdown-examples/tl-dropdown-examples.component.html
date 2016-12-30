@@ -5,11 +5,13 @@
   <div class="card-block">
     <h6>'forNav' dropdown</h6>
     <p>In order to see 'forNav' dropdown example, please shrink the window width to under 575px and checkout the dropdown in the top nav bar.</p>
-    <p>code...</p>
     <hr>
     <h6>'NonForNav' dropdown</h6>
     <tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
     <tl-dropdown-active-aside [dropdownModel]="dropdownModel"></tl-dropdown-active-aside>
     <p>Selection: {{dropdownModel.itemSelectedRxx | async | json}}</p>
+    <hr>
+    <p>Template code:</p>
+    <pre><code>{{htmlStr}}</code></pre>
   </div>
 </div>
