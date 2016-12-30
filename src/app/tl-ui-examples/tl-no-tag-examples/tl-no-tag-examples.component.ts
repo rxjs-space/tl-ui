@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { TlSlideInOutAnimation } from '../../tl-ui';
-
 @Component({
-  selector: 'tl-0',
-  templateUrl: './tl-0.component.html',
-  styleUrls: ['./tl-0.component.scss'],
+  selector: 'tl-no-tag-examples',
+  templateUrl: './tl-no-tag-examples.component.html',
+  styleUrls: ['./tl-no-tag-examples.component.scss'],
   animations: [TlSlideInOutAnimation]
 })
-export class Tl0Component implements OnInit {
+export class TlNoTagExamplesComponent implements OnInit {
+
   constructor() { }
 
   ngOnInit() {

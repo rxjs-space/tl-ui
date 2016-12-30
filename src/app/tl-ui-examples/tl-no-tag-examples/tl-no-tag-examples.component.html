@@ -1,0 +1,13 @@
+<div [@TlSlideInOutState] class="card">
+  <h4 class="card-header">tl-no-tag examples</h4>
+  <div class="card-block">
+    <p>There's no such thing as a 'tl-no-tag' component -- we will not remove the wrapping tag here.</p>
+    <p>This is just a hack -- you can bring the template of a component out of that component.</p>
+    <p>The result will be that the componet tag and its template standing next to each other, instead of component tag wrapping its template.</p>
+    <p>It's not straight forward. Please checkout the source code of this example for detail.</p>
+    <hr>
+    <tl-no-tag #source></tl-no-tag>
+    <template [ngTemplateOutlet]="source.tmp"></template>
+    <template [ngTemplateOutlet]="source.tmp"></template>
+  </div>
+</div>
