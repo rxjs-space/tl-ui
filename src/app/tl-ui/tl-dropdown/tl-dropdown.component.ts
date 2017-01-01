@@ -10,12 +10,14 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/switchMap';
 import { TlDropdownModel, TlDropdownThing } from './tl-dropdown.interface';
+import { dropdownAnimations } from './tl-dropdown.component.animation';
 
 @Component({
   selector: 'tl-dropdown',
   templateUrl: './tl-dropdown.component.html',
   styleUrls: ['./tl-dropdown.component.scss'],
-  changeDetection: 0
+  changeDetection: 0,
+  animations: dropdownAnimations
 })
 export class TlDropdownComponent implements OnInit {
   private subscriptions: Subscription[] = [];

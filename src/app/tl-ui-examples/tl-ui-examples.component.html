@@ -15,10 +15,8 @@
     <tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
     <li *ngIf="dropdownModel.navigationEndAfterItemSeletedRxx | async"
       [class]="dropdownModel.hostClasses.join(' ')">
-      <a href class="nav-link active">
-        <small>/ 
-          {{dropdownModel.navigationEndAfterItemSeletedRxx | async}}
-        </small>
+      <a href [class]="dropdownModel.toggler.classes.join(' ') + ' active'">
+        <small>/ {{dropdownModel.navigationEndAfterItemSeletedRxx | async}}</small>
       </a>
     </li>
   </ul>

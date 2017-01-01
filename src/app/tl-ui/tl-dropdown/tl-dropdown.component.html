@@ -13,7 +13,8 @@
   >{{dropdownModel.toggler.name}}</a>
 
 
-  <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
+  <div [@dropdownState]="open ? 'expanded' : 'collapsed'"
+    class="dropdown-menu" aria-labelledby="supportedContentDropdown">
     <a *ngFor="let item of dropdownModel.items"
       [class]="item.classes ? item.classes.join(' ') : ''" 
       [class.dropdown-item]="true"
@@ -31,7 +32,8 @@
     href role="button"
     aria-haspopup="true" [attr.aria-expanded]="open || false"
   >{{dropdownModel.toggler.name}}</a>
-  <div class="dropdown-menu" aria-labelledby="supportedContentDropdown">
+  <div [@dropdownState]="open ? 'expanded' : 'collapsed'"
+     class="dropdown-menu" aria-labelledby="supportedContentDropdown">
     <a *ngFor="let item of dropdownModel.items"
       href
       [class]="item.classes ? item.classes.join(' ') : ''" 
