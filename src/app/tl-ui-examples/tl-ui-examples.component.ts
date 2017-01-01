@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import { examplePaths } from './tl-ui-examples-routing.module';
 import { TlDropdownModel } from '../tl-ui';
@@ -26,7 +27,8 @@ export class TlUiExamplesComponent implements OnInit, OnDestroy {
         return 0;
       })
       .map(e => ({name: initialCap.transform(e.path), path: e.path})),
-    itemSelectedRxx: new Subject()
+    itemSelectedRxx: new BehaviorSubject(null),
+    navigationEndAfterItemSeletedRxx: new BehaviorSubject(null)
   };
 
   constructor() {}

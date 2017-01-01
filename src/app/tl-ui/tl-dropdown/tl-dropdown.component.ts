@@ -2,7 +2,13 @@ import { Component, HostBinding, HostListener,
   Input, OnInit,
   Renderer, ElementRef
  } from '@angular/core';
-
+import { Router, NavigationEnd } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/switchMap';
 import { TlDropdownModel, TlDropdownThing } from './tl-dropdown.interface';
 
 @Component({
@@ -12,13 +18,14 @@ import { TlDropdownModel, TlDropdownThing } from './tl-dropdown.interface';
   changeDetection: 0
 })
 export class TlDropdownComponent implements OnInit {
-
+  private subscriptions: Subscription[] = [];
   @Input() dropdownModel: TlDropdownModel;
   @HostBinding('class.open') open: boolean = false;
 
   constructor(
     private renderer: Renderer,
-    private el: ElementRef
+    private el: ElementRef,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -27,6 +34,33 @@ export class TlDropdownComponent implements OnInit {
     hostClasses.forEach(c => {
       this.renderer.setElementClass(this.el.nativeElement, c, true);
     });
+
+
+    if (this.dropdownModel.forNav) { // if forNav, listen on nav event and ask navigationEndAfterItemSeletedRxx to emit
+      const sub_ = this.router.events
+        .filter(e => e instanceof NavigationEnd)
+        .map(e => {
+          let url = e.url.replace(/[;?].*/, ''); // delete queryParams and optional params
+          let arr = url.split('/');
+          // if url === '/components/accordion', arr will be ['', 'components', 'accordion']
+          arr.splice(0, 1); // arr will be ['components', 'accordion']
+          return arr;
+        })
+        .switchMap(arr => {
+          const togglerPathIndex = arr.indexOf(this.dropdownModel.toggler.path);
+          // if we have someting like ['components', 'accordion'] or ['components', 'accordion', 'xyz']
+          if (togglerPathIndex > -1 && togglerPathIndex < arr.length - 1) {
+            const navEndItemPath = arr[togglerPathIndex + 1]; // this is 'accordion'
+            // and following is 'Accordion'
+            const navEndItemName = this.dropdownModel.items.filter(item => item.path === navEndItemPath)[0].name;
+            return Observable.of(navEndItemName);
+          } else {
+            return Observable.of('');
+          }
+        })
+        .subscribe(this.dropdownModel.navigationEndAfterItemSeletedRxx);
+        this.subscriptions.push(sub_);
+    }
 
   }
 
@@ -44,5 +78,9 @@ export class TlDropdownComponent implements OnInit {
 
   @HostListener('document:click') onHostClick() {
     this.open = false;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub_ => sub_.unsubscribe());
   }
 }

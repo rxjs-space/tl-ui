@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { TlDropdownModel, TlSlideInOutAnimation } from '../../tl-ui';
 import { examplePaths } from '../tl-ui-examples-routing.module';
 @Component({
@@ -16,7 +16,7 @@ export class TlDropdownExamplesComponent implements OnInit {
   dropdownModel: TlDropdownModel = {
     toggler: {name: 'Group', classes: ['btn', 'btn-outline-primary']},
     items: [{name: 'Item1'}, {name: 'Item2'}],
-    itemSelectedRxx: new Subject()
+    itemSelectedRxx: new BehaviorSubject(null)
   };
 
   constructor() { }

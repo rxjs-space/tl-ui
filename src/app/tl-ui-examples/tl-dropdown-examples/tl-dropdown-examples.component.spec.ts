@@ -5,7 +5,7 @@ import { DebugElement } from '@angular/core';
 
 import { TlDropdownExamplesComponent } from './tl-dropdown-examples.component';
 
-describe('TlDropdownExamplesComponent', () => {
+xdescribe('TlDropdownExamplesComponent', () => {
   let component: TlDropdownExamplesComponent;
   let fixture: ComponentFixture<TlDropdownExamplesComponent>;
 

@@ -5,7 +5,7 @@ import { DebugElement } from '@angular/core';
 
 import { TlNoTagExamplesComponent } from './tl-no-tag-examples.component';
 
-describe('TlNoTagExamplesComponent', () => {
+xdescribe('TlNoTagExamplesComponent', () => {
   let component: TlNoTagExamplesComponent;
   let fixture: ComponentFixture<TlNoTagExamplesComponent>;
 

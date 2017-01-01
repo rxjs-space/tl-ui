@@ -1,4 +1,4 @@
-import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export type TlDropdownThing = {name: string, path?: string, classes?: string[]};
 
 export interface TlDropdownModel {
@@ -7,7 +7,8 @@ export interface TlDropdownModel {
   activeAsideClasses?: string[];
   toggler: TlDropdownThing;
   items: TlDropdownThing[];
-  itemSelectedRxx: Subject<TlDropdownThing>;
+  itemSelectedRxx: BehaviorSubject<TlDropdownThing>;
+  navigationEndAfterItemSeletedRxx?: BehaviorSubject<string>;
 }
 
 export interface TlDropdownConfig {

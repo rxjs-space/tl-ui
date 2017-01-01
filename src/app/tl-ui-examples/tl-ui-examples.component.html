@@ -13,7 +13,14 @@
       <a class="nav-link" routerLink="/components" routerLinkActive="active">Components</a>
     </li>
     <tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
-    <tl-dropdown-active-aside [dropdownModel]="dropdownModel"></tl-dropdown-active-aside>
+    <li *ngIf="dropdownModel.navigationEndAfterItemSeletedRxx | async"
+      [class]="dropdownModel.hostClasses.join(' ')">
+      <a href class="nav-link active">
+        <small>/ 
+          {{dropdownModel.navigationEndAfterItemSeletedRxx | async}}
+        </small>
+      </a>
+    </li>
   </ul>
   <!--<form class="form-inline float-xs-right">
     <input class="form-control" type="text" placeholder="Search">

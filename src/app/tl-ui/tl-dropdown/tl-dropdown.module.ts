@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TlDropdownComponent } from './tl-dropdown.component';
 import { TlDropdownConfigService } from './tl-dropdown-config.service';
-import { TlDropdownActiveAsideComponent } from './tl-dropdown-active-aside/tl-dropdown-active-aside.component';
 
 @NgModule({
   imports: [
     CommonModule,
     RouterModule
   ],
-  declarations: [TlDropdownComponent, TlDropdownActiveAsideComponent],
-  exports: [TlDropdownComponent, TlDropdownActiveAsideComponent]
+  declarations: [TlDropdownComponent],
+  exports: [TlDropdownComponent]
 })
 export class TlDropdownModule {
   static withProviders(): ModuleWithProviders {
