@@ -35,8 +35,8 @@ export class TlUiExamplesComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    const sub_ = this.dropdownModel.itemSelectedRxx.subscribe(console.log);
-    this.subscriptions.push(sub_);
+    // const sub_ = this.dropdownModel.itemSelectedRxx.subscribe(console.log);
+    // this.subscriptions.push(sub_);
   }
 
   ngOnDestroy() {
