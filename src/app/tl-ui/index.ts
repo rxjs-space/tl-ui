@@ -6,4 +6,5 @@ export * from './tl-modal';
 export * from './tl-accordion';
 export * from './tl-notification';
 export * from './tl-dropdown';
+export * from './tl-clipboard';
 

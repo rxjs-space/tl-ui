@@ -6,13 +6,15 @@ import { TlAccordionModule } from './tl-accordion';
 import { TlNotificationModule } from './tl-notification';
 import { TlDropdownModule } from './tl-dropdown';
 import { TlNoTagModule } from './tl-no-tag';
+import { TlClipboardModule } from './tl-clipboard';
 
 export const tlUiModulesArr = [
   TlModalModule,
   TlAccordionModule,
   TlNotificationModule,
   TlDropdownModule,
-  TlNoTagModule
+  TlNoTagModule,
+  TlClipboardModule
 ];
 
 export const tlUiModulesWithProvidersArr = [
@@ -20,7 +22,8 @@ export const tlUiModulesWithProvidersArr = [
   TlAccordionModule.withProviders(),
   TlNotificationModule.withProviders(),
   TlDropdownModule.withProviders(),
-  TlNoTagModule
+  TlNoTagModule,
+  TlClipboardModule
 ];
 
 @NgModule({
