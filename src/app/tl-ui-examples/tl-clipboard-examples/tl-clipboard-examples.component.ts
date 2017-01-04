@@ -22,8 +22,4 @@ export class TlClipboardExamplesComponent implements OnInit {
     this.clipboard.copy(element);
   }
 
-  log(event) {
-    console.log(event);
-  }
-
 }
