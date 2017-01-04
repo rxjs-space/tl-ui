@@ -8,20 +8,31 @@ export class TlClipboardService {
   tryIt(command: string) {
     try {
       let successful = document.execCommand(command);
-      // let msg = successful ? 'successful' : 'unsuccessful';
-      // console.log('Cutting text command was ' + msg);
+      let msg = successful ? 'successful' : 'unsuccessful';
+      console.log(command + ' text command was ' + msg);
     } catch (err) {
       console.log('Oops, unable to ' + command + '.');
     }
   }
 
+  checkSupport(command: string) {
+    let isSupported = document.queryCommandSupported(command);
+    if (!isSupported) {
+      throw(new Error(`document.execCommand(${command}) is not supported. Please ${command} manually.`));
+    }
+  }
+
   copy(element: any) {
-    let copySupported = document.queryCommandSupported('copy');
-    if (!copySupported) {throw(new Error('copy by document.execCommand is not supported. Please copy manually.'))};
+    this.checkSupport('copy');
+
+    if (element.textContent.length === 0 && element.value.length === 0) {
+      console.log('nothing to copy.');
+      return;
+    }
 
     let hasSelect = !!element.select;
 
-    if (hasSelect) { // if it's an input or textarea element
+    if (hasSelect) { // if it's an input or a textarea element
       element.select();
       this.tryIt('copy');
     } else { // not input or textarea element
@@ -34,5 +45,6 @@ export class TlClipboardService {
     }
 
   }
+
 
 }

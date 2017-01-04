@@ -7,13 +7,15 @@ import { TlAccordionExamplesComponent } from './tl-accordion-examples/tl-accordi
 import { TlNotificationExamplesComponent } from './tl-notification-examples/tl-notification-examples.component';
 import { TlDropdownExamplesComponent } from './tl-dropdown-examples/tl-dropdown-examples.component';
 import { TlNoTagExamplesComponent } from './tl-no-tag-examples/tl-no-tag-examples.component';
+import { TlClipboardExamplesComponent } from './tl-clipboard-examples/tl-clipboard-examples.component';
 
 export const examplePaths = [
   { path: 'modal', component: TlModalExamplesComponent },
   { path: 'accordion', component: TlAccordionExamplesComponent },
   { path: 'notification', component: TlNotificationExamplesComponent },
   { path: 'dropdown', component: TlDropdownExamplesComponent },
-  { path: 'notag', component: TlNoTagExamplesComponent }
+  { path: 'notag', component: TlNoTagExamplesComponent },
+  { path: 'clipboard', component: TlClipboardExamplesComponent }
 ];
 
 const routes: Routes = [

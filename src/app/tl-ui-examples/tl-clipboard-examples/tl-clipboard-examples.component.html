@@ -1,0 +1,38 @@
+<div [@TlSlideInOutState] class="card">
+  <h4 class="card-header">tl-clipboard examples</h4>
+  <div class="card-block">
+    <p>
+      Examples of using TlClipboardService.
+    </p>
+
+    <form>
+
+      <div class="input-group">
+
+        <input type="text" class="form-control" placeholder="type something here ..." #el>
+        <span class="input-group-btn">
+          <button class="btn btn-secondary" type="button" 
+            (click)="copy(el)"
+          >Copy</button>
+        </span>
+
+      </div>
+
+      <br>
+
+      <!--<textarea class="form-control" placeholder="click here and ctrl + v to paste."
+        (click)="target.value = '';" #target>-->
+      <textarea rows="8" 
+        class="form-control"
+        placeholder="click here and ctrl + v to paste."
+        (click)="target.value = '';" #target></textarea>
+    </form>
+
+    <hr>
+    <div>
+      <pre><code [innerHTML]="codeExample" #code>
+      </code></pre>
+      <button class="btn btn-outline-primary" (click)="copy(code)">Copy above code.</button>
+    </div>
+  </div>
+</div>

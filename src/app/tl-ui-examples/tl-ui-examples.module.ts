@@ -13,6 +13,7 @@ import { TlNotificationExamplesComponent } from './tl-notification-examples/tl-n
 import { InitialCapPipe } from './+shared/pipes/initial-cap.pipe';
 import { TlDropdownExamplesComponent } from './tl-dropdown-examples/tl-dropdown-examples.component';
 import { TlNoTagExamplesComponent } from './tl-no-tag-examples/tl-no-tag-examples.component';
+import { TlClipboardExamplesComponent } from './tl-clipboard-examples/tl-clipboard-examples.component';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { TlNoTagExamplesComponent } from './tl-no-tag-examples/tl-no-tag-example
     TlNotificationExamplesComponent,
     InitialCapPipe,
     TlDropdownExamplesComponent,
-    TlNoTagExamplesComponent, ],
+    TlNoTagExamplesComponent,
+    TlClipboardExamplesComponent, ],
   exports: [TlUiExamplesComponent]
 })
 export class TlUiExamplesModule { }
