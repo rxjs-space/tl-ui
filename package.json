@@ -46,7 +46,7 @@
     "@types/jasmine": "2.5.38",
     "@types/node": "^6.0.42",
     "angular-cli": "1.0.0-beta.24",
-    "bootstrap": "^4.0.0-alpha.5",
+    "bootstrap": "^4.0.0-alpha.6",
     "codelyzer": "~2.0.0-beta.1",
     "core-js": "^2.4.1",
     "jasmine-core": "2.5.2",
@@ -66,6 +66,6 @@
     "zone.js": "^0.7.2"
   },
   "peerDependencies": {
-    "bootstrap": "^4.0.0-alpha.5"
+    "bootstrap": "^4.0.0-alpha.6"
   }
 }

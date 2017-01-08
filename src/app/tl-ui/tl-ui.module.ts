@@ -7,6 +7,8 @@ import { TlNotificationModule } from './tl-notification';
 import { TlDropdownModule } from './tl-dropdown';
 import { TlNoTagModule } from './tl-no-tag';
 import { TlClipboardModule } from './tl-clipboard';
+import { TlNavbarModule } from './tl-navbar';
+import { TlDropdownNavModule } from './tl-dropdown-nav';
 
 export const tlUiModulesArr = [
   TlModalModule,
@@ -14,7 +16,9 @@ export const tlUiModulesArr = [
   TlNotificationModule,
   TlDropdownModule,
   TlNoTagModule,
-  TlClipboardModule
+  TlClipboardModule,
+  TlNavbarModule,
+  TlDropdownNavModule
 ];
 
 export const tlUiModulesWithProvidersArr = [
@@ -23,7 +27,9 @@ export const tlUiModulesWithProvidersArr = [
   TlNotificationModule.withProviders(),
   TlDropdownModule.withProviders(),
   TlNoTagModule,
-  TlClipboardModule
+  TlClipboardModule,
+  TlNavbarModule,
+  TlDropdownNavModule
 ];
 
 @NgModule({

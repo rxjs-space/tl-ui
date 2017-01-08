@@ -1,7 +1,7 @@
 <tl-notification [showAnimation]="true"></tl-notification>
+<tl-navbar></tl-navbar>
 
-<!--<nav class="navbar navbar-light bg-faded">-->
-<nav class="navbar navbar-dark bg-inverse">
+<!--<nav class="navbar navbar-inverse bg-inverse">
   <a class="navbar-brand" routerLink="/">Tl-Ui</a>
   <ul class="nav navbar-nav">
     <li class="nav-item">
@@ -15,16 +15,14 @@
     <tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
     <li *ngIf="dropdownModel.navigationEndAfterItemSeletedRxx | async"
       [class]="dropdownModel.hostClasses.join(' ')">
-      <a href [class]="dropdownModel.toggler.classes.join(' ') + ' active'">
+      <a href [class]="dropdownModel.toggler.classes.join(' ') + ' active'"
+        (click)="$event.preventDefault();"
+      >
         <small>/ {{dropdownModel.navigationEndAfterItemSeletedRxx | async}}</small>
       </a>
     </li>
   </ul>
-  <!--<form class="form-inline float-xs-right">
-    <input class="form-control" type="text" placeholder="Search">
-    <button class="btn btn-outline-success" type="submit">Search</button>
-  </form>-->
-</nav>
+</nav>-->
 
 <br>
 <div class="container">
@@ -50,5 +48,6 @@
 
   </div>
 </div>
+
 
 

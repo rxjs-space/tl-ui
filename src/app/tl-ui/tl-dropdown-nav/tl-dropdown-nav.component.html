@@ -1,0 +1,19 @@
+<div class="dropdown" [class.show]="show">
+
+  <a class="nav-link dropdown-toggle" id="dropdownMenuButton" 
+    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+    [routerLink]="model.rl" [routerLinkActive]="model.rla"
+  >{{model.name}}</a>
+
+  <a class="nav-link dropdown-toggle dropdown-toggle-cover" href
+    (click)="clickOnToggler($event)"
+  >{{model.name}}</a>
+
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a *ngFor="let route of model.children"
+      class="dropdown-item"
+      [routerLink]="route.rl" [routerLinkActive]="route.rla"
+      (click)="clickOnItem(route)"
+    >{{route.name}}</a>
+  </div>
+</div>

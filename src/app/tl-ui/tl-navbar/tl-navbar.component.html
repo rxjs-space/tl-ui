@@ -1,0 +1,87 @@
+
+  <nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse hidden-xs-down">
+    <div class="container">
+    <button class="navbar-toggler navbar-toggler-right" 
+      [class.collapsed]="!show"
+      type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+      aria-controls="navbarSupportedContent" aria-label="Toggle navigation"
+      [attr.aria-expanded]="show || false"
+      (click)="clickOnToggle($event)"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <a class="navbar-brand" routerLink="/">{{model.brand}}</a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" 
+      [class.show]="show"
+    >
+      <ul class="navbar-nav mr-auto">
+        <li *ngFor="let route of model.routes"
+          class="nav-item"
+        >
+          <a class="nav-link" [routerLink]="route.rl"
+            *ngIf="!route.children"
+            [routerLinkActive]="route.rla"
+            [routerLinkActiveOptions]="route.rlao || {}"
+            >{{route.name}} <span class="sr-only">(current)</span>
+          </a>
+          <tl-dropdown-nav
+            *ngIf="route.children" [model]="route"
+          >
+          </tl-dropdown-nav>
+        </li>
+      </ul>
+
+
+
+
+      <!--<ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#">Disabled</a>
+        </li>
+      </ul>-->
+
+      <!--<form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="text" placeholder="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>-->
+    </div>
+    </div>
+  </nav>
+
+  <!--<nav class="navbar navbar-toggleable-sm navbar-inverse bg-inverse hidden-sm-up">
+    <button class="navbar-toggler navbar-toggler-right" 
+      [class.collapsed]="!show"
+      type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+      aria-controls="navbarSupportedContent" aria-label="Toggle navigation"
+      [attr.aria-expanded]="show || false"
+      (click)="clickOnToggle()"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <a class="navbar-brand" routerLink="/">{{model.brand}}</a>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" 
+      [class.show]="show"
+    >
+      <ul class="navbar-nav mr-auto">
+        <li *ngFor="let route of model.routes"
+          class="nav-item">
+          <a class="nav-link" [routerLink]="route.rl"
+            [routerLinkActive]="route.rla"
+            [routerLinkActiveOptions]="route.rlao || {}"
+            >{{route.name}} <span class="sr-only">(current)</span></a>
+        </li>
+      </ul>
+
+
+    </div>
+  </nav>-->
