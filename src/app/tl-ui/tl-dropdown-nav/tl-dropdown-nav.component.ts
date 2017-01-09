@@ -34,7 +34,7 @@ export class TlDropdownNavComponent implements OnInit {
 
     this.subscriptions.push(this.mq.minWidthRxxFac().subscribe(num => { // listen on width change
       if (num <= this.navbarTogglableAt) { // navbar is togglable in such circumstance
-        if (this.active) { // if active, show dropdown
+        if (this.active && !this.collapseOnSelect) { // if active and navbar not shown in full, show dropdown
           this.showDropdown();
         }
         this.collapseOnSelect = false; // dropdown will not collapse on selection
@@ -50,7 +50,9 @@ export class TlDropdownNavComponent implements OnInit {
         let childrenRoutes = this.model.children.map(c => c.rl);
         if ( childrenRoutes.indexOf(e.url) > -1 ) { // if current route is in model.children.rl
           this.active = true;
-          this.showDropdown();
+          if ( !this.collapseOnSelect) { // if the navbar is not shown in full
+            this.showDropdown();
+          }
         } else {
           this.active = false;
           this.collapseDropdown();

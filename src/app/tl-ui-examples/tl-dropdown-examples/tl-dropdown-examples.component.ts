@@ -9,9 +9,6 @@ import { examplePaths } from '../tl-ui-examples-routing.module';
   animations: [TlSlideInOutAnimation]
 })
 export class TlDropdownExamplesComponent implements OnInit {
-  htmlStr = `<tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
-<tl-dropdown-active-aside [dropdownModel]="dropdownModel"></tl-dropdown-active-aside>`;
-
 
   dropdownModel: TlDropdownModel = {
     toggler: {name: 'Group', classes: ['btn', 'btn-outline-primary']},

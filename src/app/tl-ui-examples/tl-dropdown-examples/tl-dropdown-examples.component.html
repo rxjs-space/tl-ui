@@ -1,14 +1,9 @@
 <div [@TlSlideInOutState] class="card">
   <h4 class="card-header">tl-dropdown examples</h4>
   <div class="card-block">
-    <h6>'forNav' dropdown</h6>
-    <p>In order to see 'forNav' dropdown example, please shrink the window width to under 575px and checkout the dropdown in the top nav bar.</p>
-    <hr>
-    <h6>'NonForNav' dropdown</h6>
+
     <tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
     <p>Selection: {{dropdownModel.itemSelectedRxx | async | json}}</p>
-    <hr>
-    <p>Template code:</p>
-    <pre><code>{{htmlStr}}</code></pre>
+
   </div>
 </div>
