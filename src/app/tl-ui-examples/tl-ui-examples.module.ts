@@ -14,6 +14,7 @@ import { InitialCapPipe } from './+shared/pipes/initial-cap.pipe';
 import { TlDropdownExamplesComponent } from './tl-dropdown-examples/tl-dropdown-examples.component';
 import { TlNoTagExamplesComponent } from './tl-no-tag-examples/tl-no-tag-examples.component';
 import { TlClipboardExamplesComponent } from './tl-clipboard-examples/tl-clipboard-examples.component';
+import { TlModalA6ExamplesComponent } from './tl-modal-a6-examples/tl-modal-a6-examples.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,8 @@ import { TlClipboardExamplesComponent } from './tl-clipboard-examples/tl-clipboa
     InitialCapPipe,
     TlDropdownExamplesComponent,
     TlNoTagExamplesComponent,
-    TlClipboardExamplesComponent, ],
+    TlClipboardExamplesComponent,
+    TlModalA6ExamplesComponent, ],
   exports: [TlUiExamplesComponent]
 })
 export class TlUiExamplesModule { }

@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { Tl0Component } from './tl-0/tl-0.component';
 import { TlModalExamplesComponent } from './tl-modal-examples/tl-modal-examples.component';
+import { TlModalA6ExamplesComponent } from './tl-modal-a6-examples/tl-modal-a6-examples.component';
 import { TlAccordionExamplesComponent } from './tl-accordion-examples/tl-accordion-examples.component';
 import { TlNotificationExamplesComponent } from './tl-notification-examples/tl-notification-examples.component';
 import { TlDropdownExamplesComponent } from './tl-dropdown-examples/tl-dropdown-examples.component';
@@ -15,7 +16,8 @@ export const examplePaths = [
   { path: 'notification', component: TlNotificationExamplesComponent },
   { path: 'dropdown', component: TlDropdownExamplesComponent },
   { path: 'no-tag', component: TlNoTagExamplesComponent },
-  { path: 'clipboard', component: TlClipboardExamplesComponent }
+  { path: 'clipboard', component: TlClipboardExamplesComponent },
+  { path: 'modal-a6', component: TlModalA6ExamplesComponent },
 ];
 
 const routes: Routes = [
