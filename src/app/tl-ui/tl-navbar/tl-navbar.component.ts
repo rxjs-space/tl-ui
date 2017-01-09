@@ -1,4 +1,7 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, Input, OnInit, HostListener } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import { TlMediaQueryWidthBreakPoints, TlMediaQueryWidthBreakPointsNames } from '../tl-media-query';
 
 @Component({
   selector: 'tl-navbar',
@@ -6,6 +9,10 @@ import { Component, OnInit, HostListener } from '@angular/core';
   styleUrls: ['./tl-navbar.component.scss']
 })
 export class TlNavbarComponent implements OnInit {
+  @Input() navbarTogglableAt = TlMediaQueryWidthBreakPoints.sm;
+  breakPointName: string;
+  breakPointLevelDownName: string;
+  mqMinRx: Observable<number>;
   show: Boolean = false;
   model = {
     brand: 'TL-UI',
@@ -16,10 +23,12 @@ export class TlNavbarComponent implements OnInit {
         { name: 'Clipboard', rl: '/components/clipboard', rla: 'active'}
       ] }
     ]
-  }
+  };
   constructor() { }
 
   ngOnInit() {
+    this.breakPointName = TlMediaQueryWidthBreakPointsNames[this.navbarTogglableAt];
+    this.breakPointLevelDownName = TlMediaQueryWidthBreakPointsNames[this.navbarTogglableAt - 1];
   }
 
   clickOnToggle(event) {
@@ -33,4 +42,8 @@ export class TlNavbarComponent implements OnInit {
     }
   }
 
+
+
 }
+
+

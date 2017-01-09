@@ -9,6 +9,7 @@ import { TlNoTagModule } from './tl-no-tag';
 import { TlClipboardModule } from './tl-clipboard';
 import { TlNavbarModule } from './tl-navbar';
 import { TlDropdownNavModule } from './tl-dropdown-nav';
+import { TlMediaQueryModule } from './tl-media-query';
 
 export const tlUiModulesArr = [
   TlModalModule,
@@ -18,7 +19,8 @@ export const tlUiModulesArr = [
   TlNoTagModule,
   TlClipboardModule,
   TlNavbarModule,
-  TlDropdownNavModule
+  TlDropdownNavModule,
+  TlMediaQueryModule
 ];
 
 export const tlUiModulesWithProvidersArr = [
@@ -29,7 +31,8 @@ export const tlUiModulesWithProvidersArr = [
   TlNoTagModule,
   TlClipboardModule,
   TlNavbarModule,
-  TlDropdownNavModule
+  TlDropdownNavModule,
+  TlMediaQueryModule
 ];
 
 @NgModule({
