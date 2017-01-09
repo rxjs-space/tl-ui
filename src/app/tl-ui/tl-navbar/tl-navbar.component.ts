@@ -10,20 +10,10 @@ import { TlMediaQueryWidthBreakPoints, TlMediaQueryWidthBreakPointsNames } from 
 })
 export class TlNavbarComponent implements OnInit {
   @Input() navbarTogglableAt = TlMediaQueryWidthBreakPoints.sm;
-  breakPointName: string;
+  breakPointName: string; // need this and next for setting element class like 'navbar-toggleable-sm'
   breakPointLevelDownName: string;
-  mqMinRx: Observable<number>;
   show: Boolean = false;
-  model = {
-    brand: 'TL-UI',
-    routes: [
-      { name: 'Home', rl: '/', rla: 'active', rlao: {exact: true} },
-      { name: 'Components', rl: '/components', rla: 'active', children: [
-        { name: 'Accordion', rl: '/components/accordion', rla: 'active'},
-        { name: 'Clipboard', rl: '/components/clipboard', rla: 'active'}
-      ] }
-    ]
-  };
+  @Input() model: any;
   constructor() { }
 
   ngOnInit() {
@@ -41,7 +31,6 @@ export class TlNavbarComponent implements OnInit {
       this.show = false;
     }
   }
-
 
 
 }

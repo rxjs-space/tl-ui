@@ -1,46 +1,23 @@
 <tl-notification [showAnimation]="true"></tl-notification>
-<tl-navbar [navbarTogglableAt]="1"></tl-navbar>
-
-<!--<nav class="navbar navbar-inverse bg-inverse">
-  <a class="navbar-brand" routerLink="/">Tl-Ui</a>
-  <ul class="nav navbar-nav">
-    <li class="nav-item">
-      <a class="nav-link" 
-        routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}"
-      >Home</a>
-    </li>
-    <li class="nav-item hidden-xs-down">
-      <a class="nav-link" routerLink="/components" routerLinkActive="active">Components</a>
-    </li>
-    <tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
-    <li *ngIf="dropdownModel.navigationEndAfterItemSeletedRxx | async"
-      [class]="dropdownModel.hostClasses.join(' ')">
-      <a href [class]="dropdownModel.toggler.classes.join(' ') + ' active'"
-        (click)="$event.preventDefault();"
-      >
-        <small>/ {{dropdownModel.navigationEndAfterItemSeletedRxx | async}}</small>
-      </a>
-    </li>
-  </ul>
-</nav>-->
+<tl-navbar [navbarTogglableAt]="1" [model]="navbarModel"></tl-navbar>
 
 <br>
 <div class="container">
   <div class="row">
 
-    <div class="card col-xs-6 push-xs-3 col-sm-3 push-sm-9 bd-sidebar hidden-xs-down">
+    <div class="card col-md-3 push-md-9 bd-sidebar hidden-sm-down">
       
       <div class="bd-toc-item active">
         <div class="card-header" style="color:indigo"><strong>Components</strong></div>
-        <nav class="nav nav-pills nav-stacked bd-sidenav">
+        <!--<nav class="nav nav-pills nav-stacked bd-sidenav">
           <a *ngFor="let item of dropdownModel.items"
             class="nav-link" [routerLink]="'/components/'+item.path" routerLinkActive="active"
           >{{item.path | initialCap}}</a>
-        </nav>
+        </nav>-->
       </div>
     </div>
 
-    <div class="col-xs-12 col-sm-9 pull-sm-3 bd-content">
+    <div class="col-xs-12 col-md-9 pull-md-3 bd-content">
       <router-outlet></router-outlet>
     </div>
 

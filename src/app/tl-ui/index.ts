@@ -7,4 +7,7 @@ export * from './tl-accordion';
 export * from './tl-notification';
 export * from './tl-dropdown';
 export * from './tl-clipboard';
+export * from './tl-navbar';
+export * from './tl-dropdown-nav';
+export * from './tl-media-query';
 

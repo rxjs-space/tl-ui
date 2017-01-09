@@ -3,7 +3,7 @@ import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Subscription } from 'rxjs/Subscription';
 import { examplePaths } from './tl-ui-examples-routing.module';
-import { TlDropdownModel } from '../tl-ui';
+import { TlNavbarModel } from '../tl-ui';
 import { InitialCapPipe } from './+shared/pipes/initial-cap.pipe';
 
 const initialCap = new InitialCapPipe();
@@ -15,21 +15,33 @@ const initialCap = new InitialCapPipe();
 })
 export class TlUiExamplesComponent implements OnInit, OnDestroy {
   subscriptions: Subscription[] = [];
-  dropdownModel: TlDropdownModel = {
-    forNav: true,
-    hostClasses: ['nav-item', 'hidden-sm-up'],
-    activeAsideClasses: ['nav-link'],
-    toggler: {name: 'Components', path: 'components', classes: ['nav-link']},
-    items: examplePaths
-      .sort((a, b) => {
-        if (a.path > b.path) {return 1; }
-        if (a.path < b.path) {return -1; }
-        return 0;
-      })
-      .map(e => ({name: initialCap.transform(e.path), path: e.path})),
-    itemSelectedRxx: new BehaviorSubject(null),
-    navigationEndAfterItemSeletedRxx: new BehaviorSubject(null)
+
+  navbarModel: TlNavbarModel = {
+    brand: 'TL-UI',
+    routes: [
+      { name: 'Home', rl: '/', rla: 'active', rlao: {exact: true} },
+      { name: 'Components', rl: '/components', rla: 'active',
+        children:
+          examplePaths
+            .sort((a, b) => {
+              if (a.path > b.path) {return 1; }
+              if (a.path < b.path) {return -1; }
+              return 0;
+            })
+            .map(e => ({
+              name: initialCap.transform(e.path),
+              rl: '/components/' + e.path,
+              rla: 'active'
+            }))
+        // [
+        //   { name: 'Accordion', rl: '/components/accordion', rla: 'active'},
+        //   { name: 'Clipboard', rl: '/components/clipboard', rla: 'active'}
+        // ]
+      }
+    ]
   };
+
+
 
   constructor() {}
 

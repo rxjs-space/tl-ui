@@ -14,7 +14,7 @@ export const examplePaths = [
   { path: 'accordion', component: TlAccordionExamplesComponent },
   { path: 'notification', component: TlNotificationExamplesComponent },
   { path: 'dropdown', component: TlDropdownExamplesComponent },
-  { path: 'notag', component: TlNoTagExamplesComponent },
+  { path: 'no-tag', component: TlNoTagExamplesComponent },
   { path: 'clipboard', component: TlClipboardExamplesComponent }
 ];
 
