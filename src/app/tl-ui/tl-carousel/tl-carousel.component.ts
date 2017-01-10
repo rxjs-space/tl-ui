@@ -19,7 +19,7 @@ import { TlCarouselSlideComponent } from './tl-carousel-slide.component';
 })
 export class TlCarouselComponent implements OnInit {
   @ContentChildren(TlCarouselSlideComponent) slides: QueryList<TlCarouselSlideComponent>;
-  @Input() minHeight = 100;
+  @Input() height = 100;
   @Input() slideInterval: number = 2000;
   @ViewChild('carouselInner') carouselInner: DebugElement;
   subscriptions: Subscription[] = [];
