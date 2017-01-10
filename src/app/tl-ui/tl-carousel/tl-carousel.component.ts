@@ -2,9 +2,9 @@ import { Component, Input, OnInit, ContentChildren, QueryList } from '@angular/c
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/timer';
-import 'rxjs/add/observable/merge';
-import 'rxjs/add/operator/map';
+import 'rxjs/add/observable/never';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switchMap';
 import { carouselAnimations } from './tl-carousel.component.animation';
@@ -20,15 +20,10 @@ export class TlCarouselComponent implements OnInit {
   @ContentChildren(TlCarouselSlideComponent) slides: QueryList<TlCarouselSlideComponent>;
   @Input() slideInterval: number = 2000;
   subscriptions: Subscription[] = [];
-  clickOnNextRxx: BehaviorSubject<any> = new BehaviorSubject(null);
-  looperRx = this.clickOnNextRxx
-    .switchMap(() => Observable.timer(0, this.slideInterval))
-    .scan((acc, curr) => {
-      if (++acc > this.slides.length - 1) {
-        acc = 0;
-      }
-      return acc;
-    });
+  userInteractionRxx: BehaviorSubject<any> = new BehaviorSubject('start');
+  nextSlideRx = this.userInteractionRxx
+    .switchMap(this.userInteractionHandler.bind(this))
+    .scan(this.slideIdAcc.bind(this));
 
   constructor() { }
 
@@ -36,11 +31,44 @@ export class TlCarouselComponent implements OnInit {
     this.slides.forEach(slide => slide.activeSlideRxx.next(this.slides.toArray()[id]));
   }
 
+  userInteractionHandler(e): Observable<any> {
+    switch (true) {
+      case e === 'start':
+        return Observable.timer(0, this.slideInterval);
+      case e === 'mouseleave':
+        return Observable.interval(this.slideInterval);
+      case e === 'clickOnNext':
+        return Observable.of('next');
+      case e === 'clickOnPrevious':
+        return Observable.of('previous');
+      default:
+        return Observable.never();
+    }
+  }
+
+  slideIdAcc(acc, curr) {
+    if (curr === 'previous') {
+      --acc;
+    } else {
+      ++acc;
+    }
+    if (acc > this.slides.length - 1) {
+      acc = 0;
+    }
+    if (acc < 0) {
+      acc = this.slides.length - 1;
+    }
+    return acc;
+  }
+
   ngOnInit() {}
 
 
   ngAfterContentInit() {
-    this.subscriptions.push(this.looperRx.subscribe(v => this.activateSlide(v)));
+    this.subscriptions.push(this.nextSlideRx.subscribe(v => {
+      // console.log(v);
+      this.activateSlide(v);
+    }));
     // this.activateSlide(0);
   }
 
