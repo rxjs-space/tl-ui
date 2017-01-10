@@ -1,14 +1,13 @@
 <div class="carousel slide" 
-  (mouseenter)="userInteractionRxx.next('mouseenter')"
-  (mouseleave)="userInteractionRxx.next('mouseleave')"
+  (mouseenter)="actionRxx.next('mouseenter')"
+  (mouseleave)="actionRxx.next('mouseleave')"
 >
-  <div class="carousel-inner" role="listbox">
+  <div class="carousel-inner" role="listbox" #carouselInner>
     <ng-content></ng-content>
   </div>
 
-<button (click)="userInteractionRxx.next('clickOnNext')">Next</button>
-<button (click)="userInteractionRxx.next('clickOnPrevious')">Previous</button>
-
+<button (click)="actionRxx.next('clickOnPrevious')">Previous</button>
+<button (click)="actionRxx.next('clickOnNext')">Next</button>
 </div>
 
 

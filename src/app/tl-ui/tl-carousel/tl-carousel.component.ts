@@ -1,4 +1,5 @@
-import { Component, Input, OnInit, ContentChildren, QueryList } from '@angular/core';
+import { Component, DebugElement, Input, OnInit, 
+  ContentChildren, ViewChild, QueryList, Renderer } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -18,23 +19,26 @@ import { TlCarouselSlideComponent } from './tl-carousel-slide.component';
 })
 export class TlCarouselComponent implements OnInit {
   @ContentChildren(TlCarouselSlideComponent) slides: QueryList<TlCarouselSlideComponent>;
+  @Input() minHeight = 100;
   @Input() slideInterval: number = 2000;
+  @ViewChild('carouselInner') carouselInner: DebugElement;
   subscriptions: Subscription[] = [];
-  userInteractionRxx: BehaviorSubject<any> = new BehaviorSubject('start');
-  nextSlideRx = this.userInteractionRxx
-    .switchMap(this.userInteractionHandler.bind(this))
+  actionRxx: BehaviorSubject<any> = new BehaviorSubject('start');
+  nextSlideRx = this.actionRxx
+    .switchMap(this.actionHandler.bind(this))
     .scan(this.slideIdAcc.bind(this));
 
-  constructor() { }
+  constructor(private renderer: Renderer) { }
 
   activateSlide(id) {
-    this.slides.forEach(slide => slide.activeSlideRxx.next(this.slides.toArray()[id]));
+    this.slides.forEach(slide => slide.activeSlide = this.slides.toArray()[id]);
   }
 
-  userInteractionHandler(e): Observable<any> {
+  actionHandler(e): Observable<any> {
     switch (true) {
       case e === 'start':
-        return Observable.timer(0, this.slideInterval);
+        // emit first value at time 1000, so to wait for img to load
+        return Observable.timer(1000, this.slideInterval);
       case e === 'mouseleave':
         return Observable.interval(this.slideInterval);
       case e === 'clickOnNext':
@@ -61,7 +65,10 @@ export class TlCarouselComponent implements OnInit {
     return acc;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.renderer.setElementStyle(
+      this.carouselInner.nativeElement, 'min-height', this.minHeight + 'px');
+  }
 
 
   ngAfterContentInit() {
