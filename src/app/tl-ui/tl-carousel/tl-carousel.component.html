@@ -2,7 +2,9 @@
   (mouseenter)="actionRxx.next('mouseenter')"
   (mouseleave)="actionRxx.next('mouseleave')"
 >
-  <div class="carousel-inner" role="listbox" #carouselInner>
+  <div class="carousel-inner" role="listbox" #carouselInner
+    [style.min-height]="minHeight + 'px'"
+  >
     <ng-content></ng-content>
   </div>
 

@@ -1,5 +1,5 @@
-import { Component, DebugElement, Input, OnInit, 
-  ContentChildren, ViewChild, QueryList, Renderer } from '@angular/core';
+import { Component, DebugElement, Input, OnInit,
+  ContentChildren, ViewChild, QueryList, } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -28,7 +28,7 @@ export class TlCarouselComponent implements OnInit {
     .switchMap(this.actionHandler.bind(this))
     .scan(this.slideIdAcc.bind(this));
 
-  constructor(private renderer: Renderer) { }
+  constructor() { }
 
   activateSlide(id) {
     this.slides.forEach(slide => slide.activeSlide = this.slides.toArray()[id]);
@@ -65,10 +65,7 @@ export class TlCarouselComponent implements OnInit {
     return acc;
   }
 
-  ngOnInit() {
-    this.renderer.setElementStyle(
-      this.carouselInner.nativeElement, 'min-height', this.minHeight + 'px');
-  }
+  ngOnInit() {}
 
 
   ngAfterContentInit() {
