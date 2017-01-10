@@ -37,8 +37,7 @@ export class TlCarouselComponent implements OnInit {
   actionHandler(e): Observable<any> {
     switch (true) {
       case e === 'start':
-        // emit first value at time 1000, so to wait for img to load
-        return Observable.timer(1000, this.slideInterval);
+        return Observable.timer(0, this.slideInterval);
       case e === 'mouseleave':
         return Observable.interval(this.slideInterval);
       case e === 'clickOnNext':
