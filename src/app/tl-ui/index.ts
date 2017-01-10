@@ -11,4 +11,5 @@ export * from './tl-navbar';
 export * from './tl-dropdown-nav';
 export * from './tl-media-query';
 export * from './tl-modal-a6';
+export * from './tl-carousel';
 

@@ -15,6 +15,7 @@ import { TlDropdownExamplesComponent } from './tl-dropdown-examples/tl-dropdown-
 import { TlNoTagExamplesComponent } from './tl-no-tag-examples/tl-no-tag-examples.component';
 import { TlClipboardExamplesComponent } from './tl-clipboard-examples/tl-clipboard-examples.component';
 import { TlModalA6ExamplesComponent } from './tl-modal-a6-examples/tl-modal-a6-examples.component';
+import { TlCarouselExamplesComponent } from './tl-carousel-examples/tl-carousel-examples.component';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { TlModalA6ExamplesComponent } from './tl-modal-a6-examples/tl-modal-a6-e
     TlDropdownExamplesComponent,
     TlNoTagExamplesComponent,
     TlClipboardExamplesComponent,
-    TlModalA6ExamplesComponent, ],
+    TlModalA6ExamplesComponent,
+    TlCarouselExamplesComponent, ],
   exports: [TlUiExamplesComponent]
 })
 export class TlUiExamplesModule { }
