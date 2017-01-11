@@ -1,7 +1,4 @@
-<div class="carousel slide" 
-  (mouseenter)="actionOnDomEvent({event: $event});"
-  (mouseleave)="actionOnDomEvent({event: $event});"
->
+<div class="carousel slide">
   <ng-container>
     <ol class="carousel-indicators">
       <li *ngFor="let slide of slides; let i = index"
@@ -12,20 +9,22 @@
   <div class="carousel-inner" role="listbox" #carouselInner
     [style.height]="height + 'px'"
     [style.background-color]="'rgba(0,0,0,0.3)'"
+    (mouseenter)="actionOnDomEvent({event: $event});"
+    (mouseleave)="actionOnDomEvent({event: $event});"
   >
     <ng-content></ng-content>
   </div>
 
   <ng-container>
     <a class="carousel-control-prev" href role="button"
-      (click)="actionOnDomEvent({event: $event, customEvent: {target: 'buttonPrevious'}});"
+      (click)="gestures.startBy($event, 'buttonPrevious');"
       (touchstart)="gestures.startBy($event, 'buttonPrevious');"
     >
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="sr-only">Previous</span>
     </a>
     <a class="carousel-control-next" href role="button"
-      (click)="actionOnDomEvent({event: $event, customEvent: {target: 'buttonNext'}});"
+      (click)="gestures.startBy($event, 'buttonNext');"
       (touchstart)="gestures.startBy($event, 'buttonNext');"
     >
       <span class="carousel-control-next-icon" aria-hidden="true"></span>

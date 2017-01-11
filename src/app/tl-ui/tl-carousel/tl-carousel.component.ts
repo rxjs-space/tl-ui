@@ -56,16 +56,12 @@ export class TlCarouselComponent implements OnInit {
   }
 
   actionHandler(event): Observable<any> {
-    console.log(event.type, event.target);
+    // console.log(event.type, event.target);
     switch (true) {
       case event.type === 'start':
         return Observable.timer(0, this.slideInterval);
       case event.type === 'mouseleave':
         return Observable.interval(this.slideInterval);
-      case event.type === 'click' && event.target === 'buttonNext':
-        return Observable.of('next');
-      case event.type === 'click' && event.target === 'buttonPrevious':
-        return Observable.of('previous');
       case event.type === 'tap' && event.target === 'buttonNext':
         return Observable.merge(Observable.of('next'), Observable.interval(this.slideInterval));
       case event.type === 'tap' && event.target === 'buttonPrevious':
@@ -74,6 +70,12 @@ export class TlCarouselComponent implements OnInit {
       default:
         return Observable.never();
     }
+  }
+
+  logEvent(event) {
+    console.log(event);
+    console.log(event.constructor);
+    console.log(event instanceof MouseEvent)
   }
 
   slideIdAcc(acc, curr) {

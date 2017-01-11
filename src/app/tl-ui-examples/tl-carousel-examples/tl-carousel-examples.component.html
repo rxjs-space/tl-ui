@@ -1,7 +1,7 @@
 <div [@TlSlideInOutState] class="card">
   <h4 class="card-header">tl-carousel examples</h4>
   <div class="card-block">
-  <tl-carousel [height]="200">
+  <tl-carousel [height]="200" #c>
     <tl-carousel-slide>
       <img class="d-block img-fluid" src="https://placeimg.com/400/200/nature/grayscale?r=1" alt="Random first slide">
       <p style="position: absolute; z-index: -1">picture 1</p>
@@ -15,5 +15,6 @@
       <p style="position: absolute; z-index: -1">picture 3</p>
     </tl-carousel-slide>
   </tl-carousel>
+  <p>{{(c.actionRxx | async).type | json}}</p>
   </div>
 </div>

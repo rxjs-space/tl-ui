@@ -12,42 +12,62 @@ export class TlGesturesService {
     return this._gestureEventRxx;
   }
 
-  processorFac(startEvent: Event, targetAlias?: string) {
+  listenerFac(startEvent: Event, endEventType: string, targetAlias?: string) {
     const endListener = (endEvent: Event) => {
-      // console.log(endEvent);
-      const startingTouch = (<any>startEvent).changedTouches[0];
-      const endingTouch = (<any>endEvent).changedTouches[0];
-      const timeDiff = endEvent.timeStamp - startEvent.timeStamp;
+      // calculate distDiff
+      let startCoordinateHolder, endCoordinateHolder;
+      switch (true) {
+        case startEvent instanceof TouchEvent:
+          startCoordinateHolder = (<TouchEvent>startEvent).changedTouches[0];
+          endCoordinateHolder = (<TouchEvent>endEvent).changedTouches[0];
+          break;
+        case startEvent instanceof MouseEvent:
+          startCoordinateHolder = startEvent;
+          endCoordinateHolder = endEvent;
+      }
       const distDiff = Math.sqrt(
-        Math.pow(endingTouch.pageX - startingTouch.pageX, 2) + Math.pow(endingTouch.pageY - startingTouch.pageY, 2)
+        Math.pow(startCoordinateHolder.pageX - endCoordinateHolder.pageX, 2) +
+          Math.pow(startCoordinateHolder.pageY - endCoordinateHolder.pageY, 2)
       );
+      // calculate timeDiff
+      const timeDiff = endEvent.timeStamp - startEvent.timeStamp;
+
       // console.log(timeDiff, distDiff);
       switch (true) {
         case timeDiff < 400 && distDiff < 15:
           // console.log('could be tap');
           this._gestureEventRxx.next({
-            event: endEvent, customEvent: {type: gestures.tap, target: targetAlias || event.target}
+            event: endEvent, customEvent: {type: gestures.tap, target: targetAlias || startEvent.target}
           });
           break;
       }
 
-      event.target.removeEventListener(touchEvents.end, endListener);
+      startEvent.target.removeEventListener(endEventType, endListener);
     };
     return endListener;
   }
 
-  startBy(event: Event, targetAlias?: string) {
+
+  startBy(startEvent: Event, targetAlias?: string) {
     // console.log(event);
+    // startEvent.preventDefault();
+    let endEventType;
     switch (true) {
-      case event.type === touchEvents.start:
-        // const endListener = this.processorFac(event, endListener)
-        event.target.addEventListener(touchEvents.end, this.processorFac(event, targetAlias));
+      case startEvent.type === 'click': // mouse click is equivalent to tap
+        this._gestureEventRxx.next({
+          event: startEvent, customEvent: {type: gestures.tap, target: targetAlias || startEvent.target}
+        })
+        return;
+      case startEvent.type === touchEvents.start:
+        endEventType = touchEvents.end;
         break;
-      case event.type === mouseEvents.start:
+      case startEvent.type === mouseEvents.start:
+        endEventType = mouseEvents.end;
         break;
       default:
 
     }
+    startEvent.target.addEventListener(endEventType, this.listenerFac(startEvent, endEventType, targetAlias));
     // this._gestureEventRxx.next({event});
   }
 
