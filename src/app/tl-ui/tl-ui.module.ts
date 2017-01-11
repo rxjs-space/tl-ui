@@ -12,6 +12,7 @@ import { TlDropdownNavModule } from './tl-dropdown-nav';
 import { TlMediaQueryModule } from './tl-media-query';
 import { TlModalA6Module } from './tl-modal-a6';
 import { TlCarouselModule } from './tl-carousel';
+import { TlGesturesModule } from './tl-gestures';
 
 export const tlUiModulesArr = [
   TlModalModule,
@@ -24,7 +25,8 @@ export const tlUiModulesArr = [
   TlDropdownNavModule,
   TlMediaQueryModule,
   TlModalA6Module,
-  TlCarouselModule
+  TlCarouselModule,
+  TlGesturesModule
 ];
 
 export const tlUiModulesWithProvidersArr = [
@@ -38,7 +40,8 @@ export const tlUiModulesWithProvidersArr = [
   TlDropdownNavModule,
   TlMediaQueryModule,
   TlModalA6Module,
-  TlCarouselModule
+  TlCarouselModule,
+  TlGesturesModule
 ];
 
 @NgModule({

@@ -1,11 +1,11 @@
 <div class="carousel slide" 
-  (mouseenter)="actionRxx.next('mouseenter')"
-  (mouseleave)="actionRxx.next('mouseleave')"
+  (mouseenter)="actionOnDomEvent({event: $event});"
+  (mouseleave)="actionOnDomEvent({event: $event});"
 >
   <ng-container>
     <ol class="carousel-indicators">
       <li *ngFor="let slide of slides; let i = index"
-        [class.active]="(nextSlideRx | async) === i"></li>
+        [class.active]="(nextSlideIdRxx | async) === i"></li>
     </ol>
   </ng-container>
 
@@ -18,13 +18,15 @@
 
   <ng-container>
     <a class="carousel-control-prev" href role="button"
-      (click)="$event.preventDefault();actionRxx.next('clickOnPrevious')"
+      (click)="actionOnDomEvent({event: $event, customEvent: {target: 'buttonPrevious'}});"
+      (touchstart)="gestures.startBy($event, 'buttonPrevious');"
     >
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>
       <span class="sr-only">Previous</span>
     </a>
     <a class="carousel-control-next" href role="button"
-      (click)="$event.preventDefault();actionRxx.next('clickOnNext')"
+      (click)="actionOnDomEvent({event: $event, customEvent: {target: 'buttonNext'}});"
+      (touchstart)="gestures.startBy($event, 'buttonNext');"
     >
       <span class="carousel-control-next-icon" aria-hidden="true"></span>
       <span class="sr-only">Next</span>
