@@ -19,6 +19,9 @@
     [style.background-color]="'rgba(0,0,0,0.3)'"
     (mouseenter)="actionOnDomEvent({event: $event});"
     (mouseleave)="actionOnDomEvent({event: $event});"
+    tlGestures
+    (tlSwipeLeft)="logEvent($event);"
+    (tlTap)="logEvent($event);"
   >
     <ng-content></ng-content>
   </div>

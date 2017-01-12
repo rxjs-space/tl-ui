@@ -1,4 +1,4 @@
-import { Component, DebugElement, Input, OnInit, HostListener,
+import { Component, Directive, DebugElement, Input, OnInit, HostListener,
   ContentChildren, ViewChild, QueryList, } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -94,7 +94,6 @@ export class TlCarouselComponent implements OnInit {
   logEvent(event) {
     console.log(event);
     console.log(event.constructor);
-    console.log(event instanceof MouseEvent)
   }
 
   slideIdAcc(acc, curr) {

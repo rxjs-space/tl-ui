@@ -52,23 +52,25 @@ export class TlGesturesService {
     // console.log(event);
     // startEvent.preventDefault();
     let endEventType;
-    switch (true) {
-      case startEvent.type === 'click': // mouse click is equivalent to tap
+    switch (startEvent.type) {
+      case 'click': // mouse click is considered equivalent as tap
         this._gestureEventRxx.next({
           event: startEvent, customEvent: {type: gestures.tap, target: targetAlias || startEvent.target}
-        })
+        });
         return;
-      case startEvent.type === touchEvents.start:
+      case touchEvents.start:
         endEventType = touchEvents.end;
         break;
-      case startEvent.type === mouseEvents.start:
+      case mouseEvents.start:
         endEventType = mouseEvents.end;
         break;
       default:
 
     }
-    startEvent.target.addEventListener(endEventType, this.listenerFac(startEvent, endEventType, targetAlias));
-    // this._gestureEventRxx.next({event});
+    startEvent.target.addEventListener(
+      endEventType,
+      this.listenerFac(startEvent, endEventType, targetAlias)
+    );
   }
 
 
