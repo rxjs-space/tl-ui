@@ -11,7 +11,7 @@ import { carouselSlideAnimations } from './tl-carousel-slide.component.animation
   animations: carouselSlideAnimations
 })
 export class TlCarouselSlideComponent implements OnInit {
-  activeSlideRxx: BehaviorSubject<TlCarouselSlideComponent> = new BehaviorSubject(null);
+  whereAmIRxx: BehaviorSubject<string> = new BehaviorSubject(null);
   constructor() { }
 
   ngOnInit() {}

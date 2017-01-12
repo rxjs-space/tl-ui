@@ -35,7 +35,7 @@ export class TlCarouselComponent implements OnInit {
   actionRxx: BehaviorSubject<{type?: string, target?: string | EventTarget} | Event> = new BehaviorSubject(null);
   nextSlideIdRx = this.actionRxx
     .switchMap(this.actionHandler.bind(this))
-    .scan(this.slideIdAcc.bind(this));
+    .scan(this.slideIdAcc.bind(this), 'start');
   nextSlideIdRxx = new BehaviorSubject(0);
 
   constructor(private gestures: TlGesturesService) { }
@@ -57,17 +57,27 @@ export class TlCarouselComponent implements OnInit {
   }
 
   activateSlide(id) {
-    this.slides.forEach(slide => {
-
-      slide.activeSlideRxx.next(this.slides.toArray()[id]);
+    this.slides.forEach((slide, index) => {
+      let state;
+      switch (true) {
+        case id === index:
+          state = 'current'; break;
+        case id === index - 1 || (id === this.slides.length - 1 && index === 0):
+          state = 'next'; break;
+        case id === index + 1 || (id === 0 && index === this.slides.length - 1):
+          state = 'previous'; break;
+        default:
+          state = 'idle';
+      }
+      // console.log(id, index, state);
+      slide.whereAmIRxx.next(state);
+      // slide.activeSlideRxx.next(this.slides.toArray()[id]);
     });
   }
 
   actionHandler(event): Observable<any> {
     // console.log(event.type, event.target);
     switch (true) {
-      case event.type === 'start':
-        return Observable.timer(0, this._slideInterval);
       case event.type === 'mouseleave':
         return Observable.interval(this._slideInterval);
       case event.type === 'click':
@@ -90,7 +100,7 @@ export class TlCarouselComponent implements OnInit {
     switch (true) {
       case  typeof curr === 'string' && Boolean((<string>curr).match(/button\w+/)):
         let buttonName = curr.replace('button', '');
-        if (buttonName === 'previous') {
+        if (buttonName === 'Previous') {
           --acc;
         } else {
           ++acc;
@@ -100,8 +110,10 @@ export class TlCarouselComponent implements OnInit {
         acc = Number((<string>curr).replace('slide', ''));
         break;
       case curr === 'resetInterval':
-        // if resetInterval, do not change acc
+        if (acc = 'start') { acc = 0; }
+        // else, do nothing
         break;
+
       default:
         ++acc;
     }
@@ -117,23 +129,24 @@ export class TlCarouselComponent implements OnInit {
 
 
   ngOnInit() {
-    this.actionRxx.next({type: 'start'});
+
+
+  }
+
+
+  ngAfterContentInit() {
+
     // BehaviorSubject subscribe to Observable
     const nextSlideIdSub_ = this.nextSlideIdRx.subscribe(this.nextSlideIdRxx);
     this.subscriptions.push(nextSlideIdSub_);
     // actionOnDomEvent subscribe to gestrueEvent
     const gesturesSub_ = this.gestures.gestureEventRxx.subscribe(this.actionOnDomEvent.bind(this));
     this.subscriptions.push(gesturesSub_);
-
-  }
-
-
-  ngAfterContentInit() {
+    // activateSlide subscribe to nextSlideIdRxx
     const activateSlideSub_ = this.nextSlideIdRxx.subscribe(v => {
       // console.log(v);
       this.activateSlide(v);
     });
-
     this.subscriptions.push(activateSlideSub_);
   }
 

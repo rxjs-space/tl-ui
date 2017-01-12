@@ -20,19 +20,14 @@ export const carouselSlideAnimations: AnimationEntryMetadata[] = [
     state('current', style({transform: 'translateX(0)'})),
     state('previous', style({transform: 'translateX(-100%)'})),
     state('next', style({transform: 'translateX(100%)'})),
-    // transition('current<=>previous', animate('0.3s'))
-    transition('current => previous', [
-      animate('0.4s', keyframes([
-        style({transform: 'translateX(0)', offset: 0}),
-        style({transform: 'translateX(-100%)', offset: 1}), // 0.5s * 0.8 = 0.4s
-      ]))
-    ]),
-    transition('previous => current', [
-      animate('0.4s', keyframes([
-        style({transform: 'translateX(100%)', offset: 0}),
-        style({transform: 'translateX(0)', offset: 1}),
-      ]))
-    ]),
+    state('idle', style({display: 'none '})),
+    transition('previous => current', animate('0.3s')),
+    transition('current => previous', animate('0.3s')),
+    transition('next => current', animate('0.3s')),
+    transition('current => next', animate('0.3s')),
+    transition('previous => next', animate(0)),
+    transition('next => previous', animate(0)),
+
   ]),
 
   trigger('aState', [

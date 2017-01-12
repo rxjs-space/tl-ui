@@ -1,5 +1,5 @@
 <div class="carousel-item" 
-  [@carouselSlideState]="(activeSlideRxx | async) === this ? 'current' : 'previous'"
+  [@carouselSlideState]="whereAmIRxx | async"
 >
   <ng-content></ng-content>
 </div>
