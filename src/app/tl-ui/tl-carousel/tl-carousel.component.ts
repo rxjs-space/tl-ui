@@ -1,4 +1,4 @@
-import { Component, Directive, DebugElement, Input, OnInit, HostListener,
+import { Component, DebugElement, Input, OnInit, HostListener,
   ContentChildren, ViewChild, QueryList, } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
@@ -10,7 +10,7 @@ import 'rxjs/add/observable/never';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switchMap';
 import { TlCarouselSlideComponent } from './tl-carousel-slide.component';
-import { TlGesturesService, TlGestureEvent, TlGestureEventTypes } from '../tl-gestures';
+import { TlGestureEvent, TlGestureEventTypes } from '../tl-gestures';
 
 interface EventCombo {
   event: Event | TlGestureEvent | {type: string};
@@ -43,10 +43,11 @@ export class TlCarouselComponent implements OnInit {
 
   nextSlideIdRx = this.eventRxx
     .switchMap(this.eventHandler.bind(this))
-    .scan(this.slideIdAcc.bind(this), 'start');
+    .scan(this.slideIdAcc.bind(this), 'start'); // this 'start' will be the first acc param for this.slideIdAcc
+
   nextSlideIdRxx = new BehaviorSubject(0);
 
-  constructor(private gestures: TlGesturesService) { }
+  constructor() { }
 
   activateSlide(id) {
     this.slides.forEach((slide, index) => {

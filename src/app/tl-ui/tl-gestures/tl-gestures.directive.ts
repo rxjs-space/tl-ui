@@ -10,7 +10,7 @@ export class TlGesturesDirective implements OnInit {
   @Output() tlTap = new EventEmitter();
   constructor(private gestures: TlGesturesService) { }
   @HostListener('touchstart', ['$event']) touchStart(startEvent) {
-    console.log('startedBy', startEvent.type);
+    // console.log('startedBy', startEvent.type);
     this.gestures.startBy(startEvent);
   }
   ngOnInit() {
