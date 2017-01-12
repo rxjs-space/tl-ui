@@ -17,7 +17,8 @@
       </tl-carousel-slide>
     </tl-carousel>
     <br>
-    <p>Event: {{(c.eventRxx | async).event.type | json}}</p>
+    <p>EventType: {{(c.eventRxx | async).event.type | json}}</p>
+    <p>TargetAlias: {{(c.eventRxx | async).targetAlias | json}}</p>
 
     <label class="mr-sm-2" for="slideIntervalSelect">Slide Interval</label>
     <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="slideIntervalSelect" #slideIntervalSelect>

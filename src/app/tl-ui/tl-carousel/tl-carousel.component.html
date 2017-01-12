@@ -20,7 +20,7 @@
     tlGestures
     (tlSwipeLeft)="eventRxx.next({event: $event, targetAlias: 'buttonNext'});"
     (tlSwipeRight)="eventRxx.next({event: $event, targetAlias: 'buttonPrevious'});"
-    (tlTap)="eventRxx.next({event: $event});"
+    (tlTap)="eventRxx.next({event: $event, targetAlias: 'buttonPause'});"
   >
     <ng-content></ng-content>
   </div>

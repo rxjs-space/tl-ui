@@ -28,12 +28,14 @@ export class TlCarouselComponent implements OnInit {
   @ContentChildren(TlCarouselSlideComponent) slides: QueryList<TlCarouselSlideComponent>;
   @Input() height = 100;
   private _slideInterval: number = 3000;
+
   @Input() set slideInterval(interval) {
     if ( isNaN(interval) || interval < 3000) {
       interval = 3000;
     }
     this._slideInterval = interval;
-    this.eventRxx.next({event: {type: 'resetInterval'}, targetAlias: 'resetInterval'});
+    // restart the rolling once the interval is reset;
+    this.restart();
     // console.log(this._slideInterval);
   }
   @ViewChild('carouselInner') carouselInner: DebugElement;
@@ -41,9 +43,12 @@ export class TlCarouselComponent implements OnInit {
   subscriptions: Subscription[] = [];
 
 
+  /* important part */
   nextSlideIdRx = this.eventRxx
     .switchMap(this.eventHandler.bind(this))
     .scan(this.slideIdAcc.bind(this), 'start'); // this 'start' will be the first acc param for this.slideIdAcc
+  /* important part */
+
 
   nextSlideIdRxx = new BehaviorSubject(0);
 
@@ -77,10 +82,16 @@ export class TlCarouselComponent implements OnInit {
       case event.type === TlGestureEventTypes.swipeleft:
       case event.type === TlGestureEventTypes.swiperight:
       case event.type === 'click' && !!targetAlias:
-      case event.type === 'resetInterval':
+      case event.type === 'resart':
         return Observable.merge(Observable.of(targetAlias), Observable.interval(this._slideInterval));
       default: // for example, 'tap' or 'mouseenter' will stop slides from rolling
         return Observable.never();
+    }
+  }
+
+  @HostListener('document:touchstart') onDocumentTouchStart() {
+    if (this.eventRxx.getValue().targetAlias = 'buttonPause') {
+      this.restart();
     }
   }
 
@@ -89,6 +100,9 @@ export class TlCarouselComponent implements OnInit {
     console.log(event.constructor);
   }
 
+  restart() {
+    this.eventRxx.next({event: {type: 'resart'}, targetAlias: 'resart'});
+  }
   slideIdAcc(acc, curr) {
     switch (true) {
       case  typeof curr === 'string' && Boolean((<string>curr).match(/button\w+/)):
@@ -102,7 +116,7 @@ export class TlCarouselComponent implements OnInit {
       case typeof curr === 'string' && Boolean((<string>curr).match(/slide\d+/)):
         acc = Number((<string>curr).replace('slide', ''));
         break;
-      case curr === 'resetInterval':
+      case curr === 'resart':
         if (acc === 'start') { acc = 0; }
         // else, do nothing
         break;
