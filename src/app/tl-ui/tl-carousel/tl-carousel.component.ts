@@ -90,7 +90,7 @@ export class TlCarouselComponent implements OnInit {
   }
 
   @HostListener('document:touchstart') onDocumentTouchStart() {
-    if (this.eventRxx.getValue().targetAlias = 'buttonPause') {
+    if (this.eventRxx.getValue().targetAlias === 'buttonPause') {
       this.restart();
     }
   }
