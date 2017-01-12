@@ -1,4 +1,6 @@
 <div class="carousel slide">
+
+  <!--indicators-->
   <ng-container>
     <ol class="carousel-indicators">
       <li *ngFor="let slide of slides; let i = index"
@@ -10,6 +12,8 @@
     </ol>
   </ng-container>
 
+  <!--inner-->
+  <ng-container>
   <div class="carousel-inner" role="listbox" #carouselInner
     [style.height]="height + 'px'"
     [style.background-color]="'rgba(0,0,0,0.3)'"
@@ -18,7 +22,9 @@
   >
     <ng-content></ng-content>
   </div>
+  </ng-container>
 
+  <!--controls-->
   <ng-container>
     <a class="carousel-control-prev" href role="button"
         (click)="actionOnDomEvent({event: $event, customEvent: {

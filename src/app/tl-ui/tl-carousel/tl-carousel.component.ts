@@ -9,7 +9,6 @@ import 'rxjs/add/observable/timer';
 import 'rxjs/add/observable/never';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switchMap';
-import { carouselAnimations } from './tl-carousel.component.animation';
 import { TlCarouselSlideComponent } from './tl-carousel-slide.component';
 import { TlGesturesService, TlGesturesEventCombo } from '../tl-gestures';
 
@@ -17,13 +16,19 @@ import { TlGesturesService, TlGesturesEventCombo } from '../tl-gestures';
   selector: 'tl-carousel',
   templateUrl: './tl-carousel.component.html',
   styleUrls: ['./tl-carousel.component.scss'],
-  animations: carouselAnimations,
   changeDetection: 0
 })
 export class TlCarouselComponent implements OnInit {
   @ContentChildren(TlCarouselSlideComponent) slides: QueryList<TlCarouselSlideComponent>;
   @Input() height = 100;
-  @Input() slideInterval: number = 2000;
+  private _slideInterval: number = 3000;
+  @Input() set slideInterval(interval) {
+    if ( isNaN(interval) ) {return; }
+    if ( interval < 3000 ) {interval = 3000; }
+    this._slideInterval = interval;
+    this.actionRxx.next({type: 'resetInterval'});
+    console.log(this._slideInterval);
+  }
   @ViewChild('carouselInner') carouselInner: DebugElement;
 
   subscriptions: Subscription[] = [];
@@ -52,18 +57,23 @@ export class TlCarouselComponent implements OnInit {
   }
 
   activateSlide(id) {
-    this.slides.forEach(slide => slide.activeSlide = this.slides.toArray()[id]);
+    this.slides.forEach(slide => {
+
+      slide.activeSlideRxx.next(this.slides.toArray()[id]);
+    });
   }
 
   actionHandler(event): Observable<any> {
     // console.log(event.type, event.target);
     switch (true) {
       case event.type === 'start':
-        return Observable.timer(0, this.slideInterval);
+        return Observable.timer(0, this._slideInterval);
       case event.type === 'mouseleave':
-        return Observable.interval(this.slideInterval);
+        return Observable.interval(this._slideInterval);
       case event.type === 'click':
-        return Observable.merge(Observable.of(event.target), Observable.interval(this.slideInterval));
+        return Observable.merge(Observable.of(event.target), Observable.interval(this._slideInterval));
+      case event.type === 'resetInterval':
+        return Observable.merge(Observable.of('resetInterval'), Observable.interval(this._slideInterval));
 
       default:
         return Observable.never();
@@ -88,6 +98,9 @@ export class TlCarouselComponent implements OnInit {
         break;
       case typeof curr === 'string' && Boolean((<string>curr).match(/slide\d+/)):
         acc = Number((<string>curr).replace('slide', ''));
+        break;
+      case curr === 'resetInterval':
+        // if resetInterval, do not change acc
         break;
       default:
         ++acc;

@@ -1,6 +1,7 @@
 <div class="carousel-item" 
-  [class.active]="activeSlide === this"
-  [style.justify-content]="'space-around'"
+  [@carouselSlideState]="(activeSlideRxx | async) === this ? 'current' : 'previous'"
 >
   <ng-content></ng-content>
 </div>
+
+  <!--[class.active]="(activeSlideRxx | async) === this"-->

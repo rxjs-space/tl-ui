@@ -14,22 +14,22 @@ translate(0), offset: 1
 */
 
 
-export const carouselAnimations: AnimationEntryMetadata[] = [
+export const carouselSlideAnimations: AnimationEntryMetadata[] = [
 
-  trigger('carouselItemState', [
-    state('in', style({display: 'flex'})),
-    // state('out', style({display: 'none'})),
-    transition('in => out', [
-      style({display: 'flex !important'}),
-      animate('5s', keyframes([
+  trigger('carouselSlideState', [
+    state('current', style({transform: 'translateX(0)'})),
+    state('previous', style({transform: 'translateX(-100%)'})),
+    state('next', style({transform: 'translateX(100%)'})),
+    // transition('current<=>previous', animate('0.3s'))
+    transition('current => previous', [
+      animate('0.4s', keyframes([
         style({transform: 'translateX(0)', offset: 0}),
-        style({transform: 'translateX(-100%)', offset: 0.8}), // 0.5s * 0.8 = 0.4s
-        style({transform: 'translateX(-100%)', display: 'none', offset: 1}),
+        style({transform: 'translateX(-100%)', offset: 1}), // 0.5s * 0.8 = 0.4s
       ]))
     ]),
-    transition('out => in', [
+    transition('previous => current', [
       animate('0.4s', keyframes([
-        style({transform: 'translateX(100%)', display: 'flex', offset: 0}),
+        style({transform: 'translateX(100%)', offset: 0}),
         style({transform: 'translateX(0)', offset: 1}),
       ]))
     ]),

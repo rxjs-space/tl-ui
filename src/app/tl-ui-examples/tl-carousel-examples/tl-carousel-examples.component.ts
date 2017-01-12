@@ -8,7 +8,6 @@ import { TlSlideInOutAnimation } from '../../tl-ui';
   animations: [TlSlideInOutAnimation]
 })
 export class TlCarouselExamplesComponent implements OnInit {
-
   constructor() { }
 
   ngOnInit() {
