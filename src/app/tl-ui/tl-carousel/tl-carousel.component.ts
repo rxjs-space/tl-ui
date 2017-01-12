@@ -34,7 +34,7 @@ export class TlCarouselComponent implements OnInit {
     }
     this._slideInterval = interval;
     this.eventRxx.next({event: {type: 'resetInterval'}, targetAlias: 'resetInterval'});
-    console.log(this._slideInterval);
+    // console.log(this._slideInterval);
   }
   @ViewChild('carouselInner') carouselInner: DebugElement;
 
