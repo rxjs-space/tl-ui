@@ -18,8 +18,8 @@ export const carouselSlideAnimations: AnimationEntryMetadata[] = [
 
   trigger('carouselSlideState', [
     state('current', style({transform: 'translateX(0)'})),
-    state('previous', style({transform: 'translateX(-100%)'})),
-    state('next', style({transform: 'translateX(100%)'})),
+    state('previous', style({transform: 'translateX(-100%)', display: 'none'})),
+    state('next', style({transform: 'translateX(100%)', display: 'none'})),
     state('idle', style({display: 'none '})),
     transition('previous => current', animate('0.3s')),
     transition('current => previous', animate('0.3s')),
