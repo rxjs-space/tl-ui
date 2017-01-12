@@ -18,6 +18,7 @@ export class TlGesturesService {
   listenerFac(startEvent: Event, endEventType: string, targetAlias?: string) {
     const endListener = (endEvent: Event) => {
       endEvent.preventDefault();
+      endEvent.stopPropagation();
       // calculate distDiff
       let startCoordinateHolder, endCoordinateHolder;
       switch (true) {
@@ -73,6 +74,7 @@ export class TlGesturesService {
   startBy(startEvent: Event, targetAlias?: string) {
     // console.log(event);
     startEvent.preventDefault();
+    startEvent.stopPropagation();
     let endEventType;
     switch (startEvent.type) {
       case 'click': // mouse click is considered equivalent as tap
