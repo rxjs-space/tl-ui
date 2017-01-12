@@ -10,12 +10,43 @@ export interface TlGesturesEventCombo {
   };
 }
 
-export const gestures = {
+type TAP = 'tap';
+type SWIPE_LEFT = 'swipeleft';
+type SWIPE_RIGHT = 'swiperight';
+type DRAG = 'drag';
+type PINCH_IN = 'pinchin';
+type PINCH_OUT = 'pinchout';
+
+type GestureEventType = TAP | SWIPE_LEFT | SWIPE_RIGHT | DRAG | PINCH_IN | PINCH_OUT;
+
+interface GestureEventTypesHolder {
+  tap: TAP;
+  swipeleft: SWIPE_LEFT;
+  swiperight: SWIPE_RIGHT;
+  drag: DRAG;
+  pinchin: PINCH_IN;
+  pinchout: PINCH_OUT;
+};
+
+export const TlGestureEventTypes: GestureEventTypesHolder = {
   tap: 'tap',
   swipeleft: 'swipeleft',
   swiperight: 'swiperight',
-  drag: 'drag'
+  drag: 'drag',
+  pinchin: 'pinchin',
+  pinchout: 'pinchout'
 };
+
+export interface TlGestureEvent {
+  event: Event; // this is actually the endEvent
+  startEvent: Event;
+  timeDiff: number;
+  distDiff: number;
+  xDiff: number;
+  yDiff: number;
+  gestureType: GestureEventType;
+}
+
 
 export const mouseEvents = {
   start: 'mousedown', end: 'mouseup',

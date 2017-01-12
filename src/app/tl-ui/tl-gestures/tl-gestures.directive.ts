@@ -1,11 +1,12 @@
 import { EventEmitter, Directive, HostListener, Output, OnInit } from '@angular/core';
 import { TlGesturesService } from './tl-gestures.service';
-import { gestures } from './tl-gestures';
+import { TlGestureEventTypes } from './tl-gestures';
 @Directive({
   selector: '[tlGestures]'
 })
 export class TlGesturesDirective implements OnInit {
   @Output() tlSwipeLeft = new EventEmitter();
+  @Output() tlSwipeRight = new EventEmitter();
   @Output() tlTap = new EventEmitter();
   constructor(private gestures: TlGesturesService) { }
   @HostListener('touchstart', ['$event']) touchStart(startEvent) {
@@ -15,10 +16,13 @@ export class TlGesturesDirective implements OnInit {
   ngOnInit() {
     this.gestures.gestureEventRxx.subscribe(gestureEvent => {
       switch (gestureEvent.customEvent.type) {
-        case gestures.swipeleft:
+        case TlGestureEventTypes.swiperight:
+          this.tlSwipeRight.emit(gestureEvent);
+          break;
+        case TlGestureEventTypes.swipeleft:
           this.tlSwipeLeft.emit(gestureEvent);
           break;
-        case gestures.tap:
+        case TlGestureEventTypes.tap:
           this.tlTap.emit(gestureEvent);
           break;
 

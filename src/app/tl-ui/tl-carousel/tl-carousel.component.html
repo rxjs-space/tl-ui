@@ -20,7 +20,8 @@
     (mouseenter)="actionOnDomEvent({event: $event});"
     (mouseleave)="actionOnDomEvent({event: $event});"
     tlGestures
-    (tlSwipeLeft)="logEvent($event);"
+    (tlSwipeLeft)="actionOnDomEvent($event);"
+    (tlSwipeRight)="actionOnDomEvent($event);"
     (tlTap)="logEvent($event);"
   >
     <ng-content></ng-content>

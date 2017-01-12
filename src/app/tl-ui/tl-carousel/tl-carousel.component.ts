@@ -10,7 +10,7 @@ import 'rxjs/add/observable/never';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switchMap';
 import { TlCarouselSlideComponent } from './tl-carousel-slide.component';
-import { TlGesturesService, TlGesturesEventCombo } from '../tl-gestures';
+import { TlGesturesService, TlGesturesEventCombo, TlGestureEventTypes } from '../tl-gestures';
 
 @Component({
   selector: 'tl-carousel',
@@ -43,17 +43,13 @@ export class TlCarouselComponent implements OnInit {
 
   actionOnDomEvent(eventCombo: TlGesturesEventCombo) {
     let {event, customEvent} = eventCombo;
-    event.preventDefault();
+    if (event.preventDefault) {event.preventDefault(); }
     // if customeEvent available, emit it; otherwise, emit event
     if (customEvent) {
       if (!customEvent.type) {customEvent.type = event.type; }
       this.actionRxx.next(customEvent);
     } else {
-      if (this.actionRxx.getValue().type === 'tap' && (event.type === 'mouseenter')) {
-        return;
-      } else {
-        this.actionRxx.next(event);
-      }
+      this.actionRxx.next(event);
     }
   }
 
@@ -79,6 +75,10 @@ export class TlCarouselComponent implements OnInit {
   actionHandler(event): Observable<any> {
     // console.log(event.type, event.target);
     switch (true) {
+      case event.type === TlGestureEventTypes.swipeleft:
+        return Observable.merge(Observable.of('buttonNext'), Observable.interval(this._slideInterval));
+      case event.type === TlGestureEventTypes.swiperight:
+        return Observable.merge(Observable.of('buttonPrevious'), Observable.interval(this._slideInterval));
       case event.type === 'mouseleave':
         return Observable.interval(this._slideInterval);
       case event.type === 'click':
@@ -86,7 +86,7 @@ export class TlCarouselComponent implements OnInit {
       case event.type === 'resetInterval':
         return Observable.merge(Observable.of('resetInterval'), Observable.interval(this._slideInterval));
 
-      default:
+      default: // for example, 'tap' or 'mouseenter' will stop slides from rolling
         return Observable.never();
     }
   }
@@ -140,8 +140,8 @@ export class TlCarouselComponent implements OnInit {
     const nextSlideIdSub_ = this.nextSlideIdRx.subscribe(this.nextSlideIdRxx);
     this.subscriptions.push(nextSlideIdSub_);
     // actionOnDomEvent subscribe to gestrueEvent
-    const gesturesSub_ = this.gestures.gestureEventRxx.subscribe(this.actionOnDomEvent.bind(this));
-    this.subscriptions.push(gesturesSub_);
+    // const gesturesSub_ = this.gestures.gestureEventRxx.subscribe(this.actionOnDomEvent.bind(this));
+    // this.subscriptions.push(gesturesSub_);
     // activateSlide subscribe to nextSlideIdRxx
     const activateSlideSub_ = this.nextSlideIdRxx.subscribe(v => {
       // console.log(v);

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
 
-import { mouseEvents, touchEvents, gestures, TlGesturesEventCombo } from './tl-gestures';
+import { mouseEvents, touchEvents, TlGestureEventTypes, TlGesturesEventCombo } from './tl-gestures';
 
 @Injectable()
 export class TlGesturesService {
@@ -14,6 +14,7 @@ export class TlGesturesService {
 
   listenerFac(startEvent: Event, endEventType: string, targetAlias?: string) {
     const endListener = (endEvent: Event) => {
+      endEvent.preventDefault();
       // calculate distDiff
       let startCoordinateHolder, endCoordinateHolder;
       switch (true) {
@@ -25,20 +26,29 @@ export class TlGesturesService {
           startCoordinateHolder = startEvent;
           endCoordinateHolder = endEvent;
       }
+      const distDiffX = endCoordinateHolder.pageX - startCoordinateHolder.pageX;
+      const distDiffY = endCoordinateHolder.pageY - startCoordinateHolder.pageY;
       const distDiff = Math.sqrt(
-        Math.pow(startCoordinateHolder.pageX - endCoordinateHolder.pageX, 2) +
-          Math.pow(startCoordinateHolder.pageY - endCoordinateHolder.pageY, 2)
+        Math.pow(distDiffX, 2) +
+          Math.pow(distDiffY, 2)
       );
+
+
       // calculate timeDiff
       const timeDiff = endEvent.timeStamp - startEvent.timeStamp;
 
+      const target = targetAlias || startEvent.target;
       // console.log(timeDiff, distDiff);
       switch (true) {
         case timeDiff < 400 && distDiff < 15:
           // console.log('could be tap');
-          this._gestureEventRxx.next({
-            event: endEvent, customEvent: {type: gestures.tap, target: targetAlias || startEvent.target}
-          });
+          this.emitGestureEvent(endEvent, TlGestureEventTypes.tap, target);
+          break;
+        case timeDiff < 400 && distDiffX < -100:
+          this.emitGestureEvent(endEvent, TlGestureEventTypes.swipeleft, target);
+          break;
+        case timeDiff < 400 && distDiffX > 100:
+          this.emitGestureEvent(endEvent, TlGestureEventTypes.swiperight, target);
           break;
       }
 
@@ -47,15 +57,20 @@ export class TlGesturesService {
     return endListener;
   }
 
+  emitGestureEvent(endEvent, type, target) {
+    this._gestureEventRxx.next({
+      event: endEvent, customEvent: {type, target}
+    });
+  }
 
   startBy(startEvent: Event, targetAlias?: string) {
     // console.log(event);
-    // startEvent.preventDefault();
+    startEvent.preventDefault();
     let endEventType;
     switch (startEvent.type) {
       case 'click': // mouse click is considered equivalent as tap
         this._gestureEventRxx.next({
-          event: startEvent, customEvent: {type: gestures.tap, target: targetAlias || startEvent.target}
+          event: startEvent, customEvent: {type: TlGestureEventTypes.tap, target: targetAlias || startEvent.target}
         });
         return;
       case touchEvents.start:
