@@ -76,7 +76,7 @@ export class TlCarouselComponent implements OnInit {
         return Observable.interval(this._slideInterval);
       case event.type === TlGestureEventTypes.swipeleft:
       case event.type === TlGestureEventTypes.swiperight:
-      case event.type === 'click':
+      case event.type === 'click' && !!targetAlias:
       case event.type === 'resetInterval':
         return Observable.merge(Observable.of(targetAlias), Observable.interval(this._slideInterval));
       default: // for example, 'tap' or 'mouseenter' will stop slides from rolling
