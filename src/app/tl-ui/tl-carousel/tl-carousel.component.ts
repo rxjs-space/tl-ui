@@ -23,8 +23,9 @@ export class TlCarouselComponent implements OnInit {
   @Input() height = 100;
   private _slideInterval: number = 3000;
   @Input() set slideInterval(interval) {
-    if ( isNaN(interval) ) {return; }
-    if ( interval < 3000 ) {interval = 3000; }
+    if ( isNaN(interval) || interval < 3000) {
+      interval = 3000;
+    }
     this._slideInterval = interval;
     this.actionRxx.next({type: 'resetInterval'});
     console.log(this._slideInterval);
@@ -110,7 +111,7 @@ export class TlCarouselComponent implements OnInit {
         acc = Number((<string>curr).replace('slide', ''));
         break;
       case curr === 'resetInterval':
-        if (acc = 'start') { acc = 0; }
+        if (acc === 'start') { acc = 0; }
         // else, do nothing
         break;
 

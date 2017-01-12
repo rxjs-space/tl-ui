@@ -1,24 +1,29 @@
 <div [@TlSlideInOutState] class="card">
   <h4 class="card-header">tl-carousel examples</h4>
   <div class="card-block">
-  <tl-carousel [height]="200" [slideInterval]="intervalInput.value * 1000" #c>
-    <tl-carousel-slide>
-      <img class="d-block img-fluid" src="https://placeimg.com/400/200/nature/grayscale?r=1" alt="Random first slide">
-      <p style="position: absolute; z-index: -1">picture 1</p>
-    </tl-carousel-slide>
-    <tl-carousel-slide>
-      <img src="https://placeimg.com/400/200/nature/grayscale?r=2" alt="Random second slide">
-      <p style="position: absolute; z-index: -1">picture 2</p>
-    </tl-carousel-slide>
-    <tl-carousel-slide>
-      <img src="https://placeimg.com/400/200/nature/grayscale?r=3" alt="Random third slide">
-      <p style="position: absolute; z-index: -1">picture 3</p>
-    </tl-carousel-slide>
-  </tl-carousel>
-  <p>Event: {{(c.actionRxx | async).type | json}}</p>
-  <label>Slide Interval in Second
-    <input type="number" #intervalInput min="3" value="3">
-  </label>
+
+    <tl-carousel [height]="200" [slideInterval]="slideIntervalSelect.value * 1000" #c>
+      <tl-carousel-slide>
+        <img class="d-block img-fluid" src="https://placeimg.com/400/200/nature/grayscale?r=1" alt="Random first slide">
+        <p style="position: absolute; z-index: -1">picture 1</p>
+      </tl-carousel-slide>
+      <tl-carousel-slide>
+        <img src="https://placeimg.com/400/200/nature/grayscale?r=2" alt="Random second slide">
+        <p style="position: absolute; z-index: -1">picture 2</p>
+      </tl-carousel-slide>
+      <tl-carousel-slide>
+        <img src="https://placeimg.com/400/200/nature/grayscale?r=3" alt="Random third slide">
+        <p style="position: absolute; z-index: -1">picture 3</p>
+      </tl-carousel-slide>
+    </tl-carousel>
+    <p>Event: {{(c.actionRxx | async).type | json}}</p>
+
+    <label class="mr-sm-2" for="slideIntervalSelect">Slide Interval</label>
+    <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="slideIntervalSelect" #slideIntervalSelect>
+      <option value="3">3s</option>
+      <option value="5">5s</option>
+      <option value="9">9s</option>
+    </select>
   
   </div>
 </div>
