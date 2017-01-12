@@ -17,7 +17,7 @@ type DRAG = 'drag';
 type PINCH_IN = 'pinchin';
 type PINCH_OUT = 'pinchout';
 
-type GestureEventType = TAP | SWIPE_LEFT | SWIPE_RIGHT | DRAG | PINCH_IN | PINCH_OUT;
+export type TlGestureEventType = TAP | SWIPE_LEFT | SWIPE_RIGHT | DRAG | PINCH_IN | PINCH_OUT;
 
 interface GestureEventTypesHolder {
   tap: TAP;
@@ -37,14 +37,17 @@ export const TlGestureEventTypes: GestureEventTypesHolder = {
   pinchout: 'pinchout'
 };
 
-export interface TlGestureEvent {
-  event: Event; // this is actually the endEvent
-  startEvent: Event;
-  timeDiff: number;
-  distDiff: number;
-  xDiff: number;
-  yDiff: number;
-  gestureType: GestureEventType;
+export class TlGestureEvent {
+  constructor(
+    public startEvent: Event,
+    public endEvent: Event,
+    public timeDiff: number,
+    public distDiff: number,
+    public xDiff: number,
+    public yDiff: number,
+    public type: TlGestureEventType,
+    public extras?: {}
+  ) {}
 }
 
 

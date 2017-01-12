@@ -10,8 +10,12 @@ import 'rxjs/add/observable/never';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switchMap';
 import { TlCarouselSlideComponent } from './tl-carousel-slide.component';
-import { TlGesturesService, TlGesturesEventCombo, TlGestureEventTypes } from '../tl-gestures';
+import { TlGesturesService, TlGestureEvent, TlGestureEventTypes } from '../tl-gestures';
 
+interface EventCombo {
+  event: Event | TlGestureEvent | {type: string};
+  targetAlias?: string;
+}
 @Component({
   selector: 'tl-carousel',
   templateUrl: './tl-carousel.component.html',
@@ -19,6 +23,8 @@ import { TlGesturesService, TlGesturesEventCombo, TlGestureEventTypes } from '..
   changeDetection: 0
 })
 export class TlCarouselComponent implements OnInit {
+  eventRxx: BehaviorSubject<EventCombo> = new BehaviorSubject(null);
+
   @ContentChildren(TlCarouselSlideComponent) slides: QueryList<TlCarouselSlideComponent>;
   @Input() height = 100;
   private _slideInterval: number = 3000;
@@ -27,31 +33,20 @@ export class TlCarouselComponent implements OnInit {
       interval = 3000;
     }
     this._slideInterval = interval;
-    this.actionRxx.next({type: 'resetInterval'});
+    this.eventRxx.next({event: {type: 'resetInterval'}, targetAlias: 'resetInterval'});
     console.log(this._slideInterval);
   }
   @ViewChild('carouselInner') carouselInner: DebugElement;
 
   subscriptions: Subscription[] = [];
-  actionRxx: BehaviorSubject<{type?: string, target?: string | EventTarget} | Event> = new BehaviorSubject(null);
-  nextSlideIdRx = this.actionRxx
-    .switchMap(this.actionHandler.bind(this))
+
+
+  nextSlideIdRx = this.eventRxx
+    .switchMap(this.eventHandler.bind(this))
     .scan(this.slideIdAcc.bind(this), 'start');
   nextSlideIdRxx = new BehaviorSubject(0);
 
   constructor(private gestures: TlGesturesService) { }
-
-  actionOnDomEvent(eventCombo: TlGesturesEventCombo) {
-    let {event, customEvent} = eventCombo;
-    if (event.preventDefault) {event.preventDefault(); }
-    // if customeEvent available, emit it; otherwise, emit event
-    if (customEvent) {
-      if (!customEvent.type) {customEvent.type = event.type; }
-      this.actionRxx.next(customEvent);
-    } else {
-      this.actionRxx.next(event);
-    }
-  }
 
   activateSlide(id) {
     this.slides.forEach((slide, index) => {
@@ -68,24 +63,21 @@ export class TlCarouselComponent implements OnInit {
       }
       // console.log(id, index, state);
       slide.whereAmIRxx.next(state);
-      // slide.activeSlideRxx.next(this.slides.toArray()[id]);
     });
   }
 
-  actionHandler(event): Observable<any> {
+  eventHandler(eventCombo: EventCombo): Observable<any> {
+    let {event, targetAlias} = eventCombo;
+    if (event instanceof Event) {event.preventDefault(); }
     // console.log(event.type, event.target);
     switch (true) {
-      case event.type === TlGestureEventTypes.swipeleft:
-        return Observable.merge(Observable.of('buttonNext'), Observable.interval(this._slideInterval));
-      case event.type === TlGestureEventTypes.swiperight:
-        return Observable.merge(Observable.of('buttonPrevious'), Observable.interval(this._slideInterval));
       case event.type === 'mouseleave':
         return Observable.interval(this._slideInterval);
+      case event.type === TlGestureEventTypes.swipeleft:
+      case event.type === TlGestureEventTypes.swiperight:
       case event.type === 'click':
-        return Observable.merge(Observable.of(event.target), Observable.interval(this._slideInterval));
       case event.type === 'resetInterval':
-        return Observable.merge(Observable.of('resetInterval'), Observable.interval(this._slideInterval));
-
+        return Observable.merge(Observable.of(targetAlias), Observable.interval(this._slideInterval));
       default: // for example, 'tap' or 'mouseenter' will stop slides from rolling
         return Observable.never();
     }
@@ -128,10 +120,7 @@ export class TlCarouselComponent implements OnInit {
   }
 
 
-  ngOnInit() {
-
-
-  }
+  ngOnInit() {}
 
 
   ngAfterContentInit() {
@@ -139,12 +128,9 @@ export class TlCarouselComponent implements OnInit {
     // BehaviorSubject subscribe to Observable
     const nextSlideIdSub_ = this.nextSlideIdRx.subscribe(this.nextSlideIdRxx);
     this.subscriptions.push(nextSlideIdSub_);
-    // actionOnDomEvent subscribe to gestrueEvent
-    // const gesturesSub_ = this.gestures.gestureEventRxx.subscribe(this.actionOnDomEvent.bind(this));
-    // this.subscriptions.push(gesturesSub_);
+
     // activateSlide subscribe to nextSlideIdRxx
     const activateSlideSub_ = this.nextSlideIdRxx.subscribe(v => {
-      // console.log(v);
       this.activateSlide(v);
     });
     this.subscriptions.push(activateSlideSub_);

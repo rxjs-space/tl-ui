@@ -15,7 +15,7 @@ export class TlGesturesDirective implements OnInit {
   }
   ngOnInit() {
     this.gestures.gestureEventRxx.subscribe(gestureEvent => {
-      switch (gestureEvent.customEvent.type) {
+      switch (gestureEvent.type) {
         case TlGestureEventTypes.swiperight:
           this.tlSwipeRight.emit(gestureEvent);
           break;
