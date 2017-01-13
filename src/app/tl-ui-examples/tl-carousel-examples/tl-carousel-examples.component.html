@@ -1,6 +1,22 @@
 <div [@TlSlideInOutState] class="card">
   <h4 class="card-header">tl-carousel examples</h4>
   <div class="card-block">
+
+    <tl-carousel [height]="200" [slideInterval]="slideIntervalSelect.value * 1000" 
+      #c3 [animationScale]="c.animationScaleOptions.None"
+    >
+      <tl-carousel-slide>
+        <img class="d-block img-fluid" src="https://placeimg.com/400/200/nature/grayscale?r=1" alt="Random first slide">
+        <p style="position: absolute; z-index: -1">picture 1</p>
+      </tl-carousel-slide>
+      <tl-carousel-slide>
+        <img src="https://placeimg.com/400/200/nature/grayscale?r=2" alt="Random second slide">
+        <p style="position: absolute; z-index: -1">picture 2</p>
+      </tl-carousel-slide>
+      
+    </tl-carousel>
+
+
     <p>Carousel without Animation</p>
     <tl-carousel [height]="200" [slideInterval]="slideIntervalSelect.value * 1000" #cNoAnimation>
       <tl-carousel-slide>
@@ -14,6 +30,10 @@
       <tl-carousel-slide>
         <img src="https://placeimg.com/400/200/nature/grayscale?r=3" alt="Random third slide">
         <p style="position: absolute; z-index: -1">picture 3</p>
+      </tl-carousel-slide>
+      <tl-carousel-slide>
+        <img src="https://placeimg.com/400/200/nature/grayscale?r=4" alt="Random third slide">
+        <p style="position: absolute; z-index: -1">picture 4</p>
       </tl-carousel-slide>
     </tl-carousel>
 
@@ -33,8 +53,13 @@
       </tl-carousel-slide>
       <tl-carousel-slide>
         <img src="https://placeimg.com/400/200/nature/grayscale?r=3" alt="Random third slide">
-        <p style="position: absolute; z-index: -1">picture 3</p>
+        <p style="position: absolute; z-index: -1">picture 4</p>
       </tl-carousel-slide>
+      <tl-carousel-slide>
+        <img src="https://placeimg.com/400/200/nature/grayscale?r=4" alt="Random third slide">
+        <p style="position: absolute; z-index: -1">picture 4</p>
+      </tl-carousel-slide>
+
     </tl-carousel>
 
     <hr>
@@ -54,6 +79,10 @@
       <tl-carousel-slide>
         <img src="https://placeimg.com/400/200/nature/grayscale?r=3" alt="Random third slide">
         <p style="position: absolute; z-index: -1">picture 3</p>
+      </tl-carousel-slide>
+      <tl-carousel-slide>
+        <img src="https://placeimg.com/400/200/nature/grayscale?r=4" alt="Random third slide">
+        <p style="position: absolute; z-index: -1">picture 4</p>
       </tl-carousel-slide>
     </tl-carousel>
     <br>

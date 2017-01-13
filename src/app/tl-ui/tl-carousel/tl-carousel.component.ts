@@ -125,7 +125,7 @@ export class TlCarouselComponent implements OnInit {
         acc = Number((<string>curr).replace('slide', ''));
         break;
       case curr === 'resart':
-        if (acc === 'start') { acc = 0; }
+        if (acc === 'start') { acc = 0; } // this is defined 2nd param of the scan func
         // else, do nothing
         break;
 

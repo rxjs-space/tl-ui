@@ -20,7 +20,7 @@ export const carouselSlideAnimations: AnimationEntryMetadata[] = [
     state('current', style({transform: 'translateX(0) scale(0.9)', 'z-index': 2, opacity: '1'})),
     state('previous', style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', 'z-index': 1, opacity: 0.6})),
     state('next', style({transform: 'translateX(43%) scale(1) perspective(2000px) rotateY(-85deg)', 'z-index': 1, opacity: 0.6})),
-    state('idle', style({display: 'none '})),
+    state('idle', style({transform: 'translateX(0) scale(0.9)', display: 'none'})),
     // when click on buttonNext
     transition('next => current', [style({'z-index': 2}), animate(animateDuration + easeOut)]),
     transition('current => previous', [style({'z-index': 1}), animate(animateDuration + easeOut)]),
@@ -43,6 +43,40 @@ export const carouselSlideAnimations: AnimationEntryMetadata[] = [
         style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0.6, offset: 1}),
       ]))
     ]),
+    transition('previous => idle', [
+      animate(animateDuration + easeOut, keyframes([
+        style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0.6, offset: 0}),
+        style({transform: 'translateX(-47%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0, offset: 0.5}),
+        style({display: 'none', offset: 1}),
+      ]))
+    ]),
+    transition('next => idle', [
+      animate(animateDuration + easeOut, keyframes([
+        style({transform: 'translateX(43%) scale(1) perspective(2000px) rotateY(-85deg)', opacity: 0.6, offset: 0}),
+        style({transform: 'translateX(47%) scale(1) perspective(2000px) rotateY(-85deg)', opacity: 0, offset: 0.5}),
+        style({display: 'none', offset: 1}),
+      ]))
+    ]),
+    transition('idle => previous', [
+      animate(animateDuration + easeOut, keyframes([
+        style({transform: 'translateX(-47%) scale(1) perspective(2000px) rotateY(85deg)', display: 'flex', opacity: 0, offset: 0}),
+        style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0.6, offset: 0.5}),
+        style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0.6, offset: 1}),
+      ]))
+    ]),
+    transition('idle => next', [
+      animate(animateDuration + easeOut, keyframes([
+        style({transform: 'translateX(47%) scale(1) perspective(2000px) rotateY(-85deg)', display: 'flex', opacity: 0, offset: 0}),
+        style({transform: 'translateX(43%) scale(1) perspective(2000px) rotateY(-85deg)', opacity: 0.6, offset: 0.5}),
+        style({transform: 'translateX(43%) scale(1) perspective(2000px) rotateY(-85deg)', opacity: 0.6, offset: 1}),
+      ]))
+    ]),
+    transition('idle => current', [style({display: 'flex', 'z-index': 2}), animate(animateDuration + easeOut, keyframes([
+        style({transform: 'translateX(0) scale(1)', opacity: 0, offset: 0}),
+        style({transform: 'translateX(0) scale(0.9)', opacity: 1, offset: 1}),
+      ]))
+    ]),
+    // transition('current => idle') // it will go 'display:none' directly
 
   ]),
 
@@ -52,7 +86,6 @@ export const carouselSlideAnimations: AnimationEntryMetadata[] = [
     state('next', style({transform: 'translateX(100%)', display: 'none'})),
     state('idle', style({display: 'none '})),
     transition('next <=> current', animate(animateDuration + easeOut)),
-    transition('current <=> previous', animate(animateDuration + easeOut)),
     transition('current <=> previous', animate(animateDuration + easeOut)),
   ]),
 
