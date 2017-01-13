@@ -161,7 +161,13 @@ export class TlCarouselComponent implements OnInit {
   ngAfterContentInit() {
 
     // pass animationScale to ContentChildren
-    this.slides.forEach(slide => slide.animationScale = this.animationScale);
+    this.slides.forEach(slide => {
+      if (this.slides.length < 3) { // if slides.length < 3, do no animation
+        slide.animationScale = 0;
+      } else {
+        slide.animationScale = this.animationScale;
+      }
+    });
     
     // BehaviorSubject subscribe to Observable
     const nextSlideIdSub_ = this.nextSlideIdRx.subscribe(this.nextSlideIdRxx);

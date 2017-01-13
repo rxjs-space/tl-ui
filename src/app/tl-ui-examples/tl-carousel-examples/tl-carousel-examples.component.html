@@ -1,22 +1,8 @@
 <div [@TlSlideInOutState] class="card">
   <h4 class="card-header">tl-carousel examples</h4>
   <div class="card-block">
-
-    <tl-carousel [height]="200" [slideInterval]="slideIntervalSelect.value * 1000" 
-      #c3 [animationScale]="c.animationScaleOptions.None"
-    >
-      <tl-carousel-slide>
-        <img class="d-block img-fluid" src="https://placeimg.com/400/200/nature/grayscale?r=1" alt="Random first slide">
-        <p style="position: absolute; z-index: -1">picture 1</p>
-      </tl-carousel-slide>
-      <tl-carousel-slide>
-        <img src="https://placeimg.com/400/200/nature/grayscale?r=2" alt="Random second slide">
-        <p style="position: absolute; z-index: -1">picture 2</p>
-      </tl-carousel-slide>
-      
-    </tl-carousel>
-
-
+    <p>WIP</p>
+    <hr>
     <p>Carousel without Animation</p>
     <tl-carousel [height]="200" [slideInterval]="slideIntervalSelect.value * 1000" #cNoAnimation>
       <tl-carousel-slide>
@@ -95,6 +81,23 @@
       <option value="5">5s</option>
       <option value="9">9s</option>
     </select>
+    <hr>
+
+    <p>For carousel with less than 3 slides, no animation will be shown, no matter how animationScale is set.</p>
+    <tl-carousel [height]="200" [slideInterval]="slideIntervalSelect.value * 1000" 
+      #c2pics [animationScale]="c2pics.animationScaleOptions.Simple"
+    >
+      <tl-carousel-slide>
+        <img class="d-block img-fluid" src="https://placeimg.com/400/200/nature/grayscale?r=1" alt="Random first slide">
+        <p style="position: absolute; z-index: -1">picture 1</p>
+      </tl-carousel-slide>
+      <tl-carousel-slide>
+        <img src="https://placeimg.com/400/200/nature/grayscale?r=2" alt="Random second slide">
+        <p style="position: absolute; z-index: -1">picture 2</p>
+      </tl-carousel-slide>
+      
+    </tl-carousel>
+
     <hr>
     <p>Reference: <a href="http://learn.shayhowe.com/advanced-html-css/css-transforms/">CSS Transforms</a> </p>
   
