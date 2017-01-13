@@ -8,14 +8,9 @@ import { mouseEvents, touchEvents,
 
 @Injectable()
 export class TlGesturesService {
-  private _gestureEventRxx: Subject<TlGestureEvent> = new Subject();
-
   constructor() {}
-  get gestureEventRxx() {
-    return this._gestureEventRxx;
-  }
 
-  listenerFac(startEvent: Event, endEventType: string, targetAlias?: string) {
+  listenerFac(gestureEventRxx: Subject<TlGestureEvent>, startEvent: Event, endEventType: string, targetAlias?: string) {
     const endListener = (endEvent: Event) => {
       endEvent.preventDefault();
       endEvent.stopPropagation();
@@ -62,7 +57,7 @@ export class TlGesturesService {
         startEvent, endEvent, timeDiff, distDiff, xDiff, yDiff,
         gestureType, {target}
       );
-      this._gestureEventRxx.next(gestureEvent);
+      gestureEventRxx.next(gestureEvent);
 
       // remove endEvent eventListener
       startEvent.target.removeEventListener(endEventType, endListener);
@@ -71,7 +66,7 @@ export class TlGesturesService {
   }
 
 
-  startBy(startEvent: Event, targetAlias?: string) {
+  startBy(gestureEventRxx: Subject<TlGestureEvent>, startEvent: Event, targetAlias?: string) {
     // console.log(event);
     startEvent.preventDefault();
     startEvent.stopPropagation();
@@ -83,7 +78,7 @@ export class TlGesturesService {
           startEvent, startEvent, 0, 0, 0, 0,
           TlGestureEventTypes.tap, {target}
         );
-        this._gestureEventRxx.next(gestureEvent);
+        gestureEventRxx.next(gestureEvent);
         return;
       case touchEvents.start:
         endEventType = touchEvents.end;
@@ -96,7 +91,7 @@ export class TlGesturesService {
     }
     startEvent.target.addEventListener(
       endEventType,
-      this.listenerFac(startEvent, endEventType, targetAlias)
+      this.listenerFac(gestureEventRxx, startEvent, endEventType, targetAlias)
     );
   }
 
