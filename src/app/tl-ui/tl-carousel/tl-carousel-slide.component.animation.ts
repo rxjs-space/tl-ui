@@ -1,30 +1,35 @@
 import { trigger, state, style, transition, animate, keyframes, AnimationEntryMetadata } from '@angular/core';
 
+let animateDuration = '1s';
+let easeIn = ' ease-in'; // with a space at the beginning
+let easeOut = ' ease-out'; // with a space at the beginning
 export const carouselSlideAnimations: AnimationEntryMetadata[] = [
 
   trigger('carouselSlideState', [
-    state('current', style({transform: 'translateX(0) scale(0.8)', opacity: '1'})),
-    state('previous', style({transform: 'translateX(-41%) scale(0.9) perspective(1800px) rotateY(82deg)', opacity: '0.6'})),
-    state('next', style({transform: 'translateX(41%) scale(0.9) perspective(1800px) rotateY(-82deg)', opacity: '0.6'})),
+    state('current', style({transform: 'translateX(0) scale(0.9)', 'z-index': 2, opacity: '1'})),
+    state('previous', style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', 'z-index': 1, opacity: 0.6})),
+    state('next', style({transform: 'translateX(43%) scale(1) perspective(2000px) rotateY(-85deg)', 'z-index': 1, opacity: 0.6})),
     state('idle', style({display: 'none '})),
-    transition('previous => current', animate('0.4s')),
-    transition('current => previous', animate('0.4s')),
-    transition('next => current', animate('0.4s')),
-    transition('current => next', animate('0.4s')),
+    // when click on buttonNext
+    transition('next => current', [style({'z-index': 2}), animate(animateDuration + easeOut)]),
+    transition('current => previous', [style({'z-index': 1}), animate(animateDuration + easeOut)]),
+    // when click on buttonPrevious
+    transition('previous => current', [style({'z-index': 2}), animate(animateDuration + easeOut)]),
+    transition('current => next', [style({'z-index': 1}), animate(animateDuration + easeOut)]),
     transition('previous => next', [
-      animate('0.4s', keyframes([
-        style({transform: 'translateX(-41%) scale(0.9) perspective(1500px) rotateY(82deg)', opacity: '0.6', offset: 0}),
-        style({transform: 'translateX(-45%) scale(0.9) perspective(1500px) rotateY(82deg)', opacity: 0, offset: 0.5}),
-        style({transform: 'translateX(45%) scale(0.9) perspective(1500px) rotateY(-82deg)', opacity: 0, offset: 0.5}),
-        style({transform: 'translateX(41%) scale(0.9) perspective(1500px) rotateY(-82deg)', opacity: '0.6', offset: 1})
+      animate(animateDuration + easeOut, keyframes([
+        style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0.6, offset: 0}),
+        style({transform: 'translateX(-47%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0, offset: 0.5}),
+        style({transform: 'translateX(47%) scale(1) perspective(2000px) rotateY(-85deg)', opacity: 0, offset: 0.5}),
+        style({transform: 'translateX(43%) scale(1) perspective(2000px) rotateY(-85deg)', opacity: 0.6, offset: 1})
       ]))
     ]),
     transition('next => previous', [
-      animate('0.4s', keyframes([
-        style({transform: 'translateX(41%) scale(0.9) perspective(1500px) rotateY(-82deg)', opacity: '0.6', offset: 0}),
-        style({transform: 'translateX(45%) scale(0.9) perspective(1500px) rotateY(-82deg)', opacity: 0, offset: 0.5}),
-        style({transform: 'translateX(-45%) scale(0.9) perspective(1500px) rotateY(82deg)', opacity: 0, offset: 0.5}),
-        style({transform: 'translateX(-41%) scale(0.9) perspective(1500px) rotateY(82deg)', opacity: '0.6', offset: 1}),
+      animate(animateDuration + easeOut, keyframes([
+        style({transform: 'translateX(43%) scale(1) perspective(2000px) rotateY(-85deg)', opacity: 0.6, offset: 0}),
+        style({transform: 'translateX(47%) scale(1) perspective(2000px) rotateY(-85deg)', opacity: 0, offset: 0.5}),
+        style({transform: 'translateX(-47%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0, offset: 0.5}),
+        style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', opacity: 0.6, offset: 1}),
       ]))
     ]),
 
