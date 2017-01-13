@@ -11,9 +11,16 @@ import { carouselSlideAnimations } from './tl-carousel-slide.component.animation
   animations: carouselSlideAnimations
 })
 export class TlCarouselSlideComponent implements OnInit {
+  private _animationScale: number;
   whereAmIRxx: BehaviorSubject<string> = new BehaviorSubject(null);
   constructor() { }
 
-  ngOnInit() {}
+  set animationScale(scale: number) {
+    this._animationScale = scale;
+  }
+
+  ngOnInit() {
+
+  }
 
 }

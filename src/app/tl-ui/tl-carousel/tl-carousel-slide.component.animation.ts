@@ -1,11 +1,22 @@
 import { trigger, state, style, transition, animate, keyframes, AnimationEntryMetadata } from '@angular/core';
 
-let animateDuration = '1s';
+/*
+general style in .scss file:
+
+.carousel-item {
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+}
+
+*/
+
+let animateDuration = '0.8s';
 let easeIn = ' ease-in'; // with a space at the beginning
 let easeOut = ' ease-out'; // with a space at the beginning
 export const carouselSlideAnimations: AnimationEntryMetadata[] = [
 
-  trigger('carouselSlideState', [
+  trigger('carouselSlideStateThreeD', [
     state('current', style({transform: 'translateX(0) scale(0.9)', 'z-index': 2, opacity: '1'})),
     state('previous', style({transform: 'translateX(-43%) scale(1) perspective(2000px) rotateY(85deg)', 'z-index': 1, opacity: 0.6})),
     state('next', style({transform: 'translateX(43%) scale(1) perspective(2000px) rotateY(-85deg)', 'z-index': 1, opacity: 0.6})),
@@ -33,6 +44,23 @@ export const carouselSlideAnimations: AnimationEntryMetadata[] = [
       ]))
     ]),
 
+  ]),
+
+  trigger('carouselSlideStateSimple', [
+    state('current', style({transform: 'translateX(0)'})),
+    state('previous', style({transform: 'translateX(-100%)', display: 'none'})),
+    state('next', style({transform: 'translateX(100%)', display: 'none'})),
+    state('idle', style({display: 'none '})),
+    transition('next <=> current', animate(animateDuration + easeOut)),
+    transition('current <=> previous', animate(animateDuration + easeOut)),
+    transition('current <=> previous', animate(animateDuration + easeOut)),
+  ]),
+
+  trigger('carouselSlideStateNone', [
+    state('current', style({transform: 'translateX(0)'})),
+    state('previous', style({display: 'none'})),
+    state('next', style({display: 'none'})),
+    state('idle', style({display: 'none '})),
   ]),
 
   trigger('aState', [

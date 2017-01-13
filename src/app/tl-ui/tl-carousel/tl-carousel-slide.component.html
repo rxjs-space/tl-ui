@@ -1,7 +1,25 @@
-<div class="carousel-item" 
-  [@carouselSlideState]="whereAmIRxx | async"
->
+<template #content>
   <ng-content></ng-content>
+</template>
+
+<div class="carousel-item" *ngIf="_animationScale === 0"
+  [@carouselSlideStateNone]="whereAmIRxx | async"
+>
+  <template [ngTemplateOutlet]="content"></template>
 </div>
 
-  <!--[class.active]="(activeSlideRxx | async) === this"-->
+
+<div class="carousel-item" *ngIf="_animationScale === 1"
+  [@carouselSlideStateSimple]="whereAmIRxx | async"
+>
+  <template [ngTemplateOutlet]="content"></template>
+</div>
+
+
+<div class="carousel-item" *ngIf="_animationScale === 2"
+  [@carouselSlideStateThreeD]="whereAmIRxx | async"
+>
+  <template [ngTemplateOutlet]="content"></template>
+</div>
+
+

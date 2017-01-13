@@ -11,6 +11,7 @@ import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switchMap';
 import { TlCarouselSlideComponent } from './tl-carousel-slide.component';
 import { TlGestureEvent, TlGestureEventTypes } from '../tl-gestures';
+import { TlCarouselAnimationScaleOptions } from './tl-carousel';
 
 interface EventCombo {
   event: Event | TlGestureEvent | {type: string};
@@ -23,10 +24,17 @@ interface EventCombo {
   changeDetection: 0
 })
 export class TlCarouselComponent implements OnInit {
+
+  // with animationScaleOptions, user can set the animationScale in the template, like:
+  // <tl-carousel #c [animationScale]="c.animationScaleOptions.none"></tl-carousel>
+  animationScaleOptions = TlCarouselAnimationScaleOptions;
+  @Input() animationScale = 0;
+
   eventRxx: BehaviorSubject<EventCombo> = new BehaviorSubject(null);
 
   @ContentChildren(TlCarouselSlideComponent) slides: QueryList<TlCarouselSlideComponent>;
   @Input() height = 100;
+
   private _slideInterval: number = 3000;
 
   @Input() set slideInterval(interval) {
@@ -135,11 +143,26 @@ export class TlCarouselComponent implements OnInit {
   }
 
 
-  ngOnInit() {}
+  ngOnInit() {
+    // normalize this.animationScale
+    switch (true) {
+      case isNaN(this.animationScale):
+        this.animationScale = 0; break;
+      case this.animationScale > 3:
+        this.animationScale = 3; break;
+      case this.animationScale < 0:
+        this.animationScale = 0; break;
+      default:
+        this.animationScale = Math.floor(this.animationScale);
+    }
+  }
 
 
   ngAfterContentInit() {
 
+    // pass animationScale to ContentChildren
+    this.slides.forEach(slide => slide.animationScale = this.animationScale);
+    
     // BehaviorSubject subscribe to Observable
     const nextSlideIdSub_ = this.nextSlideIdRx.subscribe(this.nextSlideIdRxx);
     this.subscriptions.push(nextSlideIdSub_);
