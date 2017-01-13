@@ -2,7 +2,7 @@
 
   <!--indicators-->
   <ng-container>
-    <ol class="carousel-indicators">
+    <ol class="carousel-indicators" [style.z-index]="9">
       <li *ngFor="let slide of slides; let i = index"
         [class.active]="(nextSlideIdRxx | async) === i"
         (click)="eventRxx.next({event: $event, targetAlias: 'slide'+i});"
@@ -12,34 +12,35 @@
 
   <!--inner-->
   <ng-container>
-  <div class="carousel-inner" role="listbox" #carouselInner
-    [style.height]="height + 'px'"
-    [style.background-color]="'rgba(0,0,0,0.3)'"
-    (mouseenter)="eventRxx.next({event: $event});"
-    (mouseleave)="eventRxx.next({event: $event});"
-    tlGestures
-    (tlSwipeLeft)="eventRxx.next({event: $event, targetAlias: 'buttonNext'});"
-    (tlSwipeRight)="eventRxx.next({event: $event, targetAlias: 'buttonPrevious'});"
-    (tlTap)="eventRxx.next({event: $event, targetAlias: 'buttonPause'});"
-  >
-    <ng-content></ng-content>
-  </div>
+    <div class="carousel-inner" role="listbox" #carouselInner
+      [style.height]="height + 'px'"
+      (mouseenter)="eventRxx.next({event: $event});"
+      (mouseleave)="eventRxx.next({event: $event});"
+      tlGestures
+      (tlSwipeLeft)="eventRxx.next({event: $event, targetAlias: 'buttonNext'});"
+      (tlSwipeRight)="eventRxx.next({event: $event, targetAlias: 'buttonPrevious'});"
+      (tlTap)="eventRxx.next({event: $event, targetAlias: 'buttonPause'});"
+    >
+      <ng-content></ng-content>
+    </div>
   </ng-container>
 
   <!--controls-->
   <ng-container>
-    <a class="carousel-control-prev" href role="button"
-        (click)="eventRxx.next({event: $event, targetAlias: 'buttonPrevious'});"
-    >
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href role="button"
-        (click)="eventRxx.next({event: $event, targetAlias: 'buttonNext'});"
-    >
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
-    </a>
+    <div [style.z-index]="9">
+      <a class="carousel-control-prev" href role="button"
+          (click)="eventRxx.next({event: $event, targetAlias: 'buttonPrevious'});"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+      </a>
+      <a class="carousel-control-next" href role="button"
+          (click)="eventRxx.next({event: $event, targetAlias: 'buttonNext'});"
+      >
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+      </a>
+    </div>
   </ng-container>
 
 
