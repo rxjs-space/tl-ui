@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+// import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { TlUiExamplesRoutingModule } from './tl-ui-examples-routing.module';
 import { TlUiExamplesComponent } from './tl-ui-examples.component';
@@ -22,7 +22,7 @@ import { TlCarouselExamplesComponent } from './tl-carousel-examples/tl-carousel-
     CommonModule,
     TlUiExamplesRoutingModule,
     TlUiModule.withProviders(),
-    NgbModule.forRoot()
+    // NgbModule.forRoot()
   ],
   declarations: [
     TlUiExamplesComponent,
