@@ -10,16 +10,16 @@ export interface TlGesturesEventCombo {
   };
 }
 
-type TAP = 'tap';
-type SWIPE_LEFT = 'swipeleft';
-type SWIPE_RIGHT = 'swiperight';
-type DRAG = 'drag';
-type PINCH_IN = 'pinchin';
-type PINCH_OUT = 'pinchout';
+export type TAP = 'tap';
+export type SWIPE_LEFT = 'swipeleft';
+export type SWIPE_RIGHT = 'swiperight';
+export type DRAG = 'drag';
+export type PINCH_IN = 'pinchin';
+export type PINCH_OUT = 'pinchout';
 
 export type TlGestureEventType = TAP | SWIPE_LEFT | SWIPE_RIGHT | DRAG | PINCH_IN | PINCH_OUT;
 
-interface GestureEventTypesHolder {
+export interface GestureEventTypesHolder {
   tap: TAP;
   swipeleft: SWIPE_LEFT;
   swiperight: SWIPE_RIGHT;

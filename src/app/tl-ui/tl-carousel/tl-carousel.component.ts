@@ -11,12 +11,8 @@ import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/switchMap';
 import { TlCarouselSlideComponent } from './tl-carousel-slide.component';
 import { TlGestureEvent, TlGestureEventTypes } from '../tl-gestures';
-import { TlCarouselAnimationScaleOptions } from './tl-carousel';
+import { TlCarouselAnimationScaleOptions, EventCombo } from './tl-carousel';
 
-interface EventCombo {
-  event: Event | TlGestureEvent | {type: string};
-  targetAlias?: string;
-}
 @Component({
   selector: 'tl-carousel',
   templateUrl: './tl-carousel.component.html',

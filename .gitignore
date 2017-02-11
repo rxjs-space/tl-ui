@@ -37,3 +37,4 @@ Thumbs.db
 /src/app/**/dist
 
 debug.log
+npm-debug.log.*
