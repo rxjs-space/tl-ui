@@ -26,7 +26,7 @@
     "buildpa": "ng build --prod --aot",
     "buildpag": "ng build --prod --aot --bh /tl-ui/",
     "ghpa": "ng github-pages:deploy --aot",
-    "hmr": "ng serve --hmr -e=dev-hmr",
+    "dev:hmr": "ng serve --hmr -e=dev-hmr",
     "uim": "run-s \"ng g m {1}\" \"ng g c -- --flat {1}/{1}\" \"ng g s {1}/{1}-config\" \"ng g interface {1}/{1}\" --"
   },
   "private": false,

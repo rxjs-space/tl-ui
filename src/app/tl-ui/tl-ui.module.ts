@@ -13,6 +13,7 @@ import { TlMediaQueryModule } from './tl-media-query';
 import { TlModalA6Module } from './tl-modal-a6';
 import { TlCarouselModule } from './tl-carousel';
 import { TlGesturesModule } from './tl-gestures';
+import { TlTableModule } from './tl-table';
 
 export const tlUiModulesArr = [
   TlModalModule,
@@ -26,7 +27,8 @@ export const tlUiModulesArr = [
   TlMediaQueryModule,
   TlModalA6Module,
   TlCarouselModule,
-  TlGesturesModule
+  TlGesturesModule,
+  TlTableModule
 ];
 
 export const tlUiModulesWithProvidersArr = [
@@ -41,7 +43,8 @@ export const tlUiModulesWithProvidersArr = [
   TlMediaQueryModule,
   TlModalA6Module,
   TlCarouselModule,
-  TlGesturesModule
+  TlGesturesModule,
+  TlTableModule
 ];
 
 @NgModule({

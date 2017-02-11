@@ -10,6 +10,7 @@ import { TlDropdownExamplesComponent } from './tl-dropdown-examples/tl-dropdown-
 import { TlNoTagExamplesComponent } from './tl-no-tag-examples/tl-no-tag-examples.component';
 import { TlClipboardExamplesComponent } from './tl-clipboard-examples/tl-clipboard-examples.component';
 import { TlCarouselExamplesComponent } from './tl-carousel-examples/tl-carousel-examples.component';
+import { TlTableExamplesComponent } from './tl-table-examples/tl-table-examples.component';
 
 export const examplePaths = [
   { path: 'modal', component: TlModalExamplesComponent },
@@ -20,6 +21,7 @@ export const examplePaths = [
   { path: 'clipboard', component: TlClipboardExamplesComponent },
   { path: 'modal-a6', component: TlModalA6ExamplesComponent },
   { path: 'carousel', component: TlCarouselExamplesComponent },
+  { path: 'table', component: TlTableExamplesComponent },
 ];
 
 const routes: Routes = [
