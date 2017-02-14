@@ -22,7 +22,11 @@ export class TlGesturesExamplesComponent implements OnInit {
   }
 
   onTap(event) {
-    console.log('tapped');
+    console.log(event);
+  }
+
+  onPan(event) {
+    console.log(event);
   }
 
 }
