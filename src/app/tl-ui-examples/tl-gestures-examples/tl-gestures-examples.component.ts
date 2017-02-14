@@ -29,4 +29,8 @@ export class TlGesturesExamplesComponent implements OnInit {
     console.log(event);
   }
 
+  onDblTap(event) {
+    console.log(event);
+  }
+
 }

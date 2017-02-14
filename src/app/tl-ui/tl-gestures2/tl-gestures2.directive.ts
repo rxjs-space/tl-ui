@@ -13,49 +13,77 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/filter';
 import { rootElement } from './tl-gestures2';
 
-export interface EventWithTime {
+export const tlGestureEventTypes = {
+  tlTap: 'tlTap',
+  tlDblTap: 'tlDblTap'
+}
+
+export interface EventIT {
   event: Event;
   identifier: number;
   time: number;
 }
 
-export interface SMPECombo {
-  identifier: number;
-  startEvent: EventWithTime;
-  moveEvents: {
-    prev: EventWithTime;
-    curr: EventWithTime;
-  };
-  pressEvent: EventWithTime;
-  endEvent: EventWithTime;
+export interface StartNonStartCombo {
+  startEvent: EventIT;
+  nonStartEvent: EventIT;
+}
+
+// export interface SMPECombo {
+//   identifier: number;
+//   startEvent: EventWithTime;
+//   moveEvents: {
+//     prev: EventWithTime;
+//     curr: EventWithTime;
+//   };
+//   pressEvent: EventWithTime;
+//   endEvent: EventWithTime;
+// }
+
+export class SMPECombo {
+  constructor(
+    public identifier: number,
+    public startEvent: EventIT,
+    public moveEventPrev: EventIT = null,
+    public moveEventCurr: EventIT = null,
+    public pressEvent: EventIT = null,
+    public endEvent: EventIT = null
+  ) {}
+}
+
+export interface SMPEComboPrevCurr {
+  prev: SMPECombo;
+  curr: SMPECombo;
 }
 
 export type Identifier = number;
 
 export interface SMPEData {
-  smpeCombosMap: Map<Identifier, {prev: SMPECombo, curr: SMPECombo}>;
-  identifiers: {prev: Identifier; curr: Identifier};
+  smpeCombosMap: Map<Identifier, SMPEComboPrevCurr>;
+  latestIdentifier: Identifier;
 }
 
 @Directive({
   selector: '[tlGestures2]'
 })
 export class TlGestures2Directive implements OnInit {
-  private startEventRxx: Subject<EventWithTime> = new Subject();
+  private startEventRxx: Subject<EventIT> = new Subject();
   @Output() tlTap = new EventEmitter();
+  @Output() tlDblTap = new EventEmitter();
   @Output() tlPan = new EventEmitter();
   constructor() {}
 
   ngOnInit() {
-    const listenOnTap = !!this.tlTap.observers.length;
-    const listenOnPan = !!this.tlPan.observers.length;
+    const listenOn = (gestureEvent) => {
+      return !!this[gestureEvent].observers.length;
+    };
 
-    const mouseRxFac = (eventType: 'mouseup' | 'mousemove'): Observable<EventWithTime> => {
+    const mouseRxFac = (eventType: 'mouseup' | 'mousemove'): Observable<EventIT> => {
       return Observable.fromEvent(rootElement, eventType)
         .map((e: Event) => ({event: e, identifier: -1, time: Date.now()}));
     };
 
-    const touchRxFac = (eventType: 'touchend' | 'touchmove', identifier: number): Observable<EventWithTime> => {
+    const touchRxFac = (eventType: 'touchend' | 'touchmove', identifier: number): Observable<EventIT> => {
       return Observable.fromEvent(rootElement, eventType)
         .filter((event: TouchEvent) => {
           return event.changedTouches.item(0).identifier === identifier;
@@ -63,12 +91,12 @@ export class TlGestures2Directive implements OnInit {
         .map((e: Event) => ({event: e, identifier, time: Date.now()}));
     };
 
-    const pressRxFac = (identifier: number): Observable<EventWithTime> => {
+    const pressRxFac = (identifier: number): Observable<EventIT> => {
       return Observable.interval(500).take(1)
         .map(() => ({event: {type: 'press'}, identifier, time: Date.now()}))
     };
 
-    const nonStartEventRxFac = (startEvent: EventWithTime): Observable<EventWithTime> => {
+    const nonStartEventRxFac = (startEvent: EventIT): Observable<EventIT> => {
       switch (startEvent.event.type) {
         case 'mousedown':
           return mouseRxFac('mousemove')
@@ -86,108 +114,141 @@ export class TlGestures2Directive implements OnInit {
     };
 
 
-    const eventsCombo_ = this.startEventRxx
+    const startNonStartEventsComboRx: Observable<StartNonStartCombo> = this.startEventRxx
       .mergeMap(startEvent => {
         return nonStartEventRxFac(startEvent);
-      }, (startEvent, nonStartEvent) => ({startEvent, nonStartEvent}))
-      .scan((acc: SMPEData, curr) => {
-        // if moveEvent, put it into moveEvents array
-        // if pressEvent, put it into pressEvent property
-        // if endEvent, put it into endEvent property
+      }, (startEvent, nonStartEvent) => ({startEvent, nonStartEvent}));
+
+    const smpeOnMoveFac = (smpeComboPrevCurr: SMPEComboPrevCurr, curr: StartNonStartCombo) => {
+      const currMoveEvent = curr.nonStartEvent;
+      // if smpeComboPrevCurr is undefined (not found), \
+      // or, if smpeComboPrevCurr.curr has endEvent (found but ended) \
+      // construct a new smpeCombo from scratch
+      if (!smpeComboPrevCurr || smpeComboPrevCurr.curr.endEvent) {
+        return new SMPECombo(
+          curr.startEvent.identifier,
+          curr.startEvent,
+          null,
+          currMoveEvent,
+          null,
+          null
+        );
+      } else {
+        return new SMPECombo(
+          smpeComboPrevCurr.curr.identifier,
+          smpeComboPrevCurr.curr.startEvent,
+          smpeComboPrevCurr.curr.moveEventCurr, // use last moveEventCurr as the new moveEventPrev
+          currMoveEvent,
+          smpeComboPrevCurr.curr.pressEvent,
+          smpeComboPrevCurr.curr.endEvent
+        );
+      }
+    };
+
+    const smpeOnEndFac = (smpeComboPrevCurr: SMPEComboPrevCurr, curr: StartNonStartCombo) => {
+      const currEndEvent = curr.nonStartEvent;
+      if (!smpeComboPrevCurr || smpeComboPrevCurr.curr.endEvent) {
+        return new SMPECombo(
+          curr.startEvent.identifier,
+          curr.startEvent,
+          null,
+          null,
+          null,
+          currEndEvent
+        );
+      } else {
+        return new SMPECombo(
+          smpeComboPrevCurr.curr.identifier,
+          smpeComboPrevCurr.curr.startEvent,
+          smpeComboPrevCurr.curr.moveEventPrev,
+          smpeComboPrevCurr.curr.moveEventCurr,
+          smpeComboPrevCurr.curr.pressEvent,
+          currEndEvent
+        );
+      }
+    };
+
+    const smpeOnPressFac = (smpeComboPrevCurr: SMPEComboPrevCurr, curr: StartNonStartCombo) => {
+      const currPressEvent = curr.nonStartEvent;
+      if (!smpeComboPrevCurr || smpeComboPrevCurr.curr.endEvent) {
+        return new SMPECombo(
+          curr.startEvent.identifier,
+          curr.startEvent,
+          null,
+          null,
+          currPressEvent
+        );
+      } else {
+        return new SMPECombo(
+          smpeComboPrevCurr.curr.identifier,
+          smpeComboPrevCurr.curr.startEvent,
+          smpeComboPrevCurr.curr.moveEventPrev,
+          smpeComboPrevCurr.curr.moveEventCurr,
+          currPressEvent,
+          smpeComboPrevCurr.curr.endEvent
+        );
+      }
+    };
+
+    const newSmpeComboCurrFac = (smpeComboPrevCurr: SMPEComboPrevCurr, curr: StartNonStartCombo) => {
+      switch (curr.nonStartEvent.event.type) {
+        case 'mousemove':
+        case 'touchmove':
+          return smpeOnMoveFac(smpeComboPrevCurr, curr);
+        case 'mouseup':
+        case 'touchend':
+          return smpeOnEndFac(smpeComboPrevCurr, curr);
+        case 'press':
+          return smpeOnPressFac(smpeComboPrevCurr, curr);
+        // default:
+        // what about touchcancel
+      }
+    }
+
+    const smpeDataRx = startNonStartEventsComboRx
+      .scan((acc: SMPEData, curr: StartNonStartCombo) => {
         const currIdentifier = curr.startEvent.identifier;
-        const smpeCombosByIdentifier: {prev: SMPECombo; curr: SMPECombo} = acc.smpeCombosMap.get(currIdentifier);
-        let smpeCombo: SMPECombo;
-        switch (curr.nonStartEvent.event.type) {
-          case 'mousemove':
-          case 'touchmove':
-            const currMoveEvent = curr.nonStartEvent;
-            // if no smpeCombo with the same identifier in the map, \
-            // or, if the smpeCombo with the same identifier has endEvent \
-            // construct a new smpeCombo from scratch
-            if (!smpeCombosByIdentifier || smpeCombosByIdentifier.curr.endEvent) {
-              smpeCombo = {
-                identifier: curr.startEvent.identifier,
-                startEvent: curr.startEvent,
-                moveEvents: {prev: null, curr: currMoveEvent},
-                pressEvent: null,
-                endEvent: null
-              };
-            } else {
-              smpeCombo = Object.assign((<SMPECombo>{}), smpeCombosByIdentifier.curr, {
-                moveEvents: {prev: smpeCombosByIdentifier.curr.moveEvents.curr, curr: currMoveEvent}
-              });
-            }
-          break;
-
-          case 'mouseup':
-          case 'touchend':
-            const currEndEvent = curr.nonStartEvent;
-            if (!smpeCombosByIdentifier || smpeCombosByIdentifier.curr.endEvent) {
-              smpeCombo = {
-                identifier: curr.startEvent.identifier,
-                startEvent: curr.startEvent,
-                moveEvents: null,
-                pressEvent: null,
-                endEvent: currEndEvent
-              };
-            } else {
-              smpeCombo = Object.assign((<SMPECombo>{}), smpeCombosByIdentifier.curr, {
-                endEvent: currEndEvent
-              });
-            }
-          break;
-
-          case 'press':
-            const currPressEvent = curr.nonStartEvent;
-            if (!smpeCombosByIdentifier || smpeCombosByIdentifier.curr.endEvent) {
-              smpeCombo = {
-                identifier: curr.startEvent.identifier,
-                startEvent: curr.startEvent,
-                moveEvents: null,
-                pressEvent: currPressEvent,
-                endEvent: null
-              };
-            } else {
-              smpeCombo = Object.assign((<SMPECombo>{}), smpeCombosByIdentifier.curr, {
-                pressEvent: currPressEvent
-              });
-            }
-          break;
-        }
-
-        const temp = {
+        const oldSmpeComboPrevCurr: SMPEComboPrevCurr = acc.smpeCombosMap.get(currIdentifier);
+        const newSmpeComboPrevCurr = {
           prev: acc.smpeCombosMap.get(currIdentifier) && acc.smpeCombosMap.get(currIdentifier).curr,
-          curr: smpeCombo
+          curr:  newSmpeComboCurrFac(oldSmpeComboPrevCurr, curr)
         };
-        acc.smpeCombosMap.set(currIdentifier, temp);
-        acc.identifiers.prev = acc.identifiers.curr;
-        acc.identifiers.curr = currIdentifier;
+        acc.smpeCombosMap.set(currIdentifier, newSmpeComboPrevCurr);
+        acc.latestIdentifier = currIdentifier;
         return acc;
-      }, {smpeCombosMap: (<Map<Identifier, {prev: SMPECombo; curr: SMPECombo}>>(new Map())), identifiers: {prev: null, curr: null}})
-      .do(smpeData => {
-        const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.identifiers.curr).curr;
-        if (currSmpeCombo.endEvent) {
-          const endEvent = currSmpeCombo.endEvent.event;
-          const startEvent = currSmpeCombo.startEvent.event;
-          let event, distDiffX, distDiffY, timeDiff;
-          timeDiff = currSmpeCombo.endEvent.time - currSmpeCombo.startEvent.time;
-          switch (endEvent.type) {
-            case 'mouseup':
-              distDiffX = (endEvent as MouseEvent).clientX - (startEvent as MouseEvent).clientX;
-              distDiffY = (endEvent as MouseEvent).clientY - (startEvent as MouseEvent).clientY;
-              break;
-            case 'touchend':
-              distDiffX = (endEvent as TouchEvent).changedTouches.item(0).clientX - (startEvent as TouchEvent).changedTouches.item(0).clientX;
-              distDiffY = (endEvent as TouchEvent).changedTouches.item(0).clientY - (startEvent as TouchEvent).changedTouches.item(0).clientY;
-          }
-          if (timeDiff < 100 && (distDiffX * distDiffX + distDiffY * distDiffY < 101)) {
-            this.tlTap.emit({
-              type: 'tap', distDiffX, distDiffY, timeDiff
-            });
-          }
+      }, {smpeCombosMap: (<Map<Identifier, SMPEComboPrevCurr>>(new Map())), latestIdentifier: null})
 
+    const emitTlTap = (smpeData: SMPEData) => {
+      const type = tlGestureEventTypes.tlTap;
+      if (listenOn(type)) {
+        const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+        if (currSmpeCombo.endEvent) {
+          const endEvent = currSmpeCombo.endEvent;
+          const startEvent = currSmpeCombo.startEvent;
+          if (endEvent.event.target === startEvent.event.target) {
+            this[type].emit({type: type, time: endEvent.time});
+          }
         }
-      })
+      }
+    };
+
+    // const tlDblTapFac = (smpeData: SMPEData) => {
+    //   if (listenOnFac('tlDblTap')) {
+    //     const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+    //     if (currSmpeCombo.endEvent) {
+    //       const endEvent = currSmpeCombo.endEvent;
+    //       const startEvent = currSmpeCombo.startEvent;
+    //       if (endEvent.event.target === startEvent.event.target) {
+    //         this.tlTap.emit({type: 'tap', time: endEvent.time});
+    //       }
+    //     }
+    //   }
+    // };
+
+    const tlGesturesEventRx = smpeDataRx
+      .do(emitTlTap);
+
+    const tlGesturesEvent_ = tlGesturesEventRx
       .subscribe(outcome => console.log(outcome));
   }
 
@@ -195,12 +256,12 @@ export class TlGestures2Directive implements OnInit {
   @HostListener('mousedown', ['$event'])
   startProcessing(event: Event) {
     event.preventDefault();
-    // take all the touchstart and only the mousedown where the left button was down
+    // take 'all the touchstart' and 'only the mousedown where the left button was down'
     // for touchstart: event.button is undefined, which is evaluated as false
-    // for mousedown: event.button is 0, which is evaluated as false
+    // for mousedown on left button: event.button is 0, which is evaluated as false
     if (!(event as MouseEvent).button) {
+      // use -1 as the identifier for mouse
       const identifier = event.type.search(/mouse/) > -1 ? -1 : (event as TouchEvent).changedTouches.item(0).identifier;
-      // -1 stands for mouse
       this.startEventRxx.next({
         event,
         identifier,
