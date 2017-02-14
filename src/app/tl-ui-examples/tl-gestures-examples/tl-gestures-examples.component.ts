@@ -21,4 +21,8 @@ export class TlGesturesExamplesComponent implements OnInit {
     console.log(event);
   }
 
+  onTap(event) {
+    console.log('tapped');
+  }
+
 }

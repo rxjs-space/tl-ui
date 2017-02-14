@@ -3,9 +3,6 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/observable/interval';
-import 'rxjs/add/observable/never';
-import 'rxjs/add/observable/of';
-import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/merge';
 import 'rxjs/add/operator/map';
@@ -24,27 +21,18 @@ export interface EventWithTime {
 })
 export class TlGestures2Directive implements OnInit {
   private startEventRxx: Subject<EventWithTime> = new Subject();
+  @Output() tlTap = new EventEmitter();
   constructor() {}
 
   ngOnInit() {
-    const mouseRxFac = (eventType: 'mouseup' | 'mousemove') => {
+    const listenOnTap = !!this.tlTap.observers.length;
+    console.log(listenOnTap);
+    const mouseRxFac = (eventType: 'mouseup' | 'mousemove'): Observable<EventWithTime> => {
       return Observable.fromEvent(rootElement, eventType)
         .map((e: Event) => ({event: e, time: Date.now()}));
-    }
-
-    // const mouseupRx: Observable<EventWithTime> = Observable.fromEvent(rootElement, 'mouseup')
-    //   .map((e: Event) => ({event: e, time: Date.now()}));
-    // const mousemoveRx: Observable<EventWithTime> = Observable.fromEvent(rootElement, 'mousemove')
-    //   .map((e: Event) => ({event: e, time: Date.now()}));
-
-    const touchEventFilterFac = (identifier: number) => {
-      return (event: EventWithTime) => {
-        // console.log('after end', identifier);
-        return (event.event as TouchEvent).changedTouches.item(0).identifier === identifier;
-      }
     };
 
-    const touchRxFac = (eventType: 'touchend' | 'touchmove', identifier: number) => {
+    const touchRxFac = (eventType: 'touchend' | 'touchmove', identifier: number): Observable<EventWithTime> => {
       return Observable.fromEvent(rootElement, eventType)
         .filter((event: TouchEvent) => {
           return event.changedTouches.item(0).identifier === identifier;
@@ -52,57 +40,27 @@ export class TlGestures2Directive implements OnInit {
         .map((e: Event) => ({event: e, time: Date.now()}));
     };
 
-    // const touchendRxFac = (identifier: number) => {
-    //   return Observable.fromEvent(rootElement, 'touchend')
-    //     .filter((event: TouchEvent) => {
-    //       return event.changedTouches.item(0).identifier === identifier;
-    //     })
-    //     .map((e: Event) => ({event: e, time: Date.now()}));
-    // };
-
-    // const touchmoveRxFac = (identifier: number) => {
-    //   return Observable.fromEvent(rootElement, 'touchmove')
-    //     .filter((event: TouchEvent) => {
-    //       return event.changedTouches.item(0).identifier === identifier;
-    //     })
-    //     .map((e: Event) => ({event: e, time: Date.now()}));
-    // };
-
-
-    const touchendRx: Observable<EventWithTime> = Observable.fromEvent(rootElement, 'touchend')
-      .map((e: Event) => ({event: e, time: Date.now()}));
-    const touchmoveRx: Observable<EventWithTime> = Observable.fromEvent(rootElement, 'touchmove')
-      .map((e: Event) => ({event: e, time: Date.now()}));
-
     const pressRx: Observable<EventWithTime> = Observable.interval(500).take(1)
       .map(() => ({event: {type: 'press'}, time: Date.now()}));
 
-
-
-
-    const endEventRxFac = (startEvent: EventWithTime) => {
+    const endEventRxFac = (startEvent: EventWithTime): Observable<EventWithTime> => {
       switch (startEvent.event.type) {
         case 'mousedown':
-          // only take the mouseEvent when the left button was clicked
-          if ((startEvent.event as MouseEvent).button === 0) {
-            return mouseRxFac('mousemove')
-              .merge(pressRx)
-              .takeUntil(mouseRxFac('mouseup'))
-              .merge(mouseRxFac('mouseup').take(1));
-          } else {
-            return Observable.never();
-          }
+          return mouseRxFac('mousemove')
+            .merge(pressRx)
+            .takeUntil(mouseRxFac('mouseup').take(1))
+            .merge(mouseRxFac('mouseup').take(1));
         case 'touchstart':
           const identifier = (startEvent.event as TouchEvent).changedTouches.item(0).identifier;
           // console.log('after start', identifier);
           return touchRxFac('touchmove', identifier)
             .merge(pressRx)
-            .takeUntil(touchRxFac('touchend', identifier))
+            .takeUntil(touchRxFac('touchend', identifier).take(1))
             .merge(touchRxFac('touchend', identifier).take(1));
       }
-    }
+    };
 
-    const eventComboProjection = (startEvent: EventWithTime, endEvent: EventWithTime) => {
+    const eventsComboProjection = (startEvent: EventWithTime, endEvent: EventWithTime) => {
       endEvent.event && endEvent.event.preventDefault && endEvent.event.preventDefault();
       const pointerType = startEvent.event.type.replace(/(down)|(start)/, '');
       const timeDiff = endEvent.time - startEvent.time;
@@ -125,21 +83,26 @@ export class TlGestures2Directive implements OnInit {
       };
     }
 
-    const eventCombo_ = this.startEventRxx
+    const eventsCombo_ = this.startEventRxx
       .mergeMap(startEvent => {
-        startEvent.event.preventDefault();
         return endEventRxFac(startEvent);
-      }, eventComboProjection)
-      .subscribe(events => console.log(events));
+      }, (startEvent, endEvent) => ({startEvent, endEvent}))
+      .subscribe(eventsCombo => console.log(eventsCombo));
   }
 
   @HostListener('touchstart', ['$event'])
   @HostListener('mousedown', ['$event'])
-  startProcessing(startEvent: Event) {
-    this.startEventRxx.next({
-      event: startEvent,
-      time: Date.now()
-    });
+  startProcessing(event: Event) {
+    event.preventDefault();
+    // take all the touchstart and only the mousedown where the left button was down
+    // for touchstart: event.button is undefined, which is evaluated as false
+    // for mousedown: event.button is 0, which is evaluated as false
+    if (!(event as MouseEvent).button) {
+      this.startEventRxx.next({
+        event,
+        time: Date.now()
+      });
+    }
   }
 
   // @HostListener('touchmove', ['$event'])
