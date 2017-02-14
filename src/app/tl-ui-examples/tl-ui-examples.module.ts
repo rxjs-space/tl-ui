@@ -17,6 +17,7 @@ import { TlClipboardExamplesComponent } from './tl-clipboard-examples/tl-clipboa
 import { TlModalA6ExamplesComponent } from './tl-modal-a6-examples/tl-modal-a6-examples.component';
 import { TlCarouselExamplesComponent } from './tl-carousel-examples/tl-carousel-examples.component';
 import { TlTableExamplesComponent } from './tl-table-examples/tl-table-examples.component';
+import { TlGesturesExamplesComponent } from './tl-gestures-examples/tl-gestures-examples.component';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { TlTableExamplesComponent } from './tl-table-examples/tl-table-examples.
     TlClipboardExamplesComponent,
     TlModalA6ExamplesComponent,
     TlCarouselExamplesComponent,
-    TlTableExamplesComponent, ],
+    TlTableExamplesComponent,
+    TlGesturesExamplesComponent, ],
   exports: [TlUiExamplesComponent]
 })
 export class TlUiExamplesModule { }

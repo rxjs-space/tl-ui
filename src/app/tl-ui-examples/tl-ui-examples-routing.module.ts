@@ -11,6 +11,8 @@ import { TlNoTagExamplesComponent } from './tl-no-tag-examples/tl-no-tag-example
 import { TlClipboardExamplesComponent } from './tl-clipboard-examples/tl-clipboard-examples.component';
 import { TlCarouselExamplesComponent } from './tl-carousel-examples/tl-carousel-examples.component';
 import { TlTableExamplesComponent } from './tl-table-examples/tl-table-examples.component';
+import { TlGesturesExamplesComponent } from './tl-gestures-examples/tl-gestures-examples.component';
+
 
 export const examplePaths = [
   { path: 'modal', component: TlModalExamplesComponent },
@@ -22,6 +24,7 @@ export const examplePaths = [
   { path: 'modal-a6', component: TlModalA6ExamplesComponent },
   { path: 'carousel', component: TlCarouselExamplesComponent },
   { path: 'table', component: TlTableExamplesComponent },
+  { path: 'gestures', component: TlGesturesExamplesComponent },
 ];
 
 const routes: Routes = [

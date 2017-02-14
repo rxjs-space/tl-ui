@@ -14,6 +14,7 @@ import { TlModalA6Module } from './tl-modal-a6';
 import { TlCarouselModule } from './tl-carousel';
 import { TlGesturesModule } from './tl-gestures';
 import { TlTableModule } from './tl-table';
+import { TlGestures2Module } from './tl-gestures2';
 
 export const tlUiModulesArr = [
   TlModalModule,
@@ -28,7 +29,8 @@ export const tlUiModulesArr = [
   TlModalA6Module,
   TlCarouselModule,
   TlGesturesModule,
-  TlTableModule
+  TlTableModule,
+  TlGestures2Module
 ];
 
 export const tlUiModulesWithProvidersArr = [
@@ -44,7 +46,8 @@ export const tlUiModulesWithProvidersArr = [
   TlModalA6Module,
   TlCarouselModule,
   TlGesturesModule,
-  TlTableModule
+  TlTableModule,
+  TlGestures2Module
 ];
 
 @NgModule({

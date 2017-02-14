@@ -1,0 +1,17 @@
+<div [@TlSlideInOutState] class="card">
+  <h4 class="card-header">tl-gestures examples</h4>
+  <div class="card-block">
+    <div tlGestures2 style="width: 100px; height: 100px; background-color: indigo">
+    </div>
+    <div style="width: 100px; height: 100px; background-color: coral"
+      (touchstart)="onTouchstart($event);"
+    >
+    </div>
+    <div style="width: 100px; height: 100px; background-color:turquoise"
+      (touchend)="onTouchend($event);"
+    >
+
+    </div>
+
+  </div>
+</div>
