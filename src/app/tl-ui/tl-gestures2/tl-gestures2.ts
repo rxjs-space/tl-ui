@@ -1,24 +1,4 @@
 
-
-
-/**
- * (copied from 'rxjs\src\util\root.ts')
- * window: browser in DOM main thread
- * self: browser in WebWorker
- * global: Node.js/other
- */
-export const rootElement: any = (
-     typeof window === 'object' && window.window === window && window
-  || typeof self === 'object' && self.self === self && self
-  || typeof global === 'object' && global.global === global && global
-);
-
-if (!rootElement) {
-  throw new Error('RxJS could not find any global context (window, self, global)');
-}
-
-
-
 export const tlGestureEventTypes = {
   tlTap: 'tlTap',
   tlDblTap: 'tlDblTap',
@@ -29,9 +9,11 @@ export const tlGestureEventTypes = {
   tlSwipe: 'tlSwipe'
 }
 
+export type Identifier = number | number[];
+
 export interface EventIT {
   event: Event;
-  identifier: number;
+  identifier: Identifier;
   time: number;
 }
 
@@ -42,7 +24,7 @@ export interface StartNonStartCombo {
 
 export class SMPECombo {
   constructor(
-    public identifier: number,
+    public identifier: Identifier,
     public startEvent: EventIT,
     public moveEventPrev: EventIT,
     public moveEventCurr: EventIT,
@@ -51,7 +33,8 @@ export class SMPECombo {
     public endEvent: EventIT,
     public latestEventType: string,
     public duration: number,
-    public movement: {x: number, y: number}
+    public movement: {x: number, y: number},
+    public distance: {x: number, y: number}
   ) {}
 }
 
@@ -60,18 +43,16 @@ export interface SMPEComboPrevCurr {
   curr: SMPECombo;
 }
 
-export type Identifier = number;
 
 export interface SMPEData {
   smpeCombosMap: Map<Identifier, SMPEComboPrevCurr>;
   latestIdentifier: Identifier;
-  firstActiveIdentifier: Identifier;
-  secondActiveIdentifier: Identifier;
-  lastShortTap: TlGestureEvent;
+  activeTouchIdentifiers: Identifier[];
+  lastShortTaps: {prev: TlGestureEvent; curr: TlGestureEvent};
 }
 
 export interface TlGestureEvent {
-  identifier: number;
+  identifier: Identifier;
   target: EventTarget;
   time: number;
   type: string;

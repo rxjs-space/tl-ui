@@ -1,194 +1,195 @@
-import { rootElement, tlGestureEventTypes, EventIT, Identifier,
+import { TlGestures2Directive } from './tl-gestures2.directive';
+import { tlGestureEventTypes, EventIT, Identifier,
   StartNonStartCombo, SMPECombo, SMPEComboPrevCurr, SMPEData, TlGestureEvent
 } from './tl-gestures2';
 
+export const listenOn = (tlGestures2Directive: TlGestures2Directive, gestureEvent) => {
+  return !!tlGestures2Directive[gestureEvent].observers.length;
+};
 
-
-
-
-export const emitTlDblTap = (smpeData: SMPEData) => {
-  // if SMPEComboPrevCurr.curr.endEvent.event.target === SMPEComboPrevCurr.curr.startEvent.event.target \
-  // and SMPEComboPrevCurr.curr.endEvent.time - SMPEComboPrevCurr.curr.startEvent.time <= _options.shortTapStartEndInterval \
-  // and SMPEComboPrevCurr.prev exists \
-  // and SMPEComboPrevCurr.curr.startEvent.time - SMPEComboPrevCurr.prev.endEvent.time <= _options.dblTapsInterval \
-  // and SMPEComboPrevCurr.prev.endEvent.event.target === SMPEComboPrevCurr.prev.startEvent.event.target \
-  // and SMPEComboPrevCurr.prev.endEvent.time - SMPEComboPrevCurr.prev.startEvent.time <= _options.shortTapStartEndInterval \
-  // emit tlDblTap
-  const type = tlGestureEventTypes.tlDblTap;
-  if (listenOn(type) && !!smpeData.lastShortTap) {
-    const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-    if (currSmpeCombo.endEvent) {
-      const currEndEvent = currSmpeCombo.endEvent;
-      const currStartEvent = currSmpeCombo.startEvent;
-      const currIsShortTap = currEndEvent.event.target === currStartEvent.event.target &&
-        currEndEvent.time - currStartEvent.time <= this._options.shortTapStartEndInterval;
-      const prevSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).prev;
-      console.log(prevSmpeCombo);
-      if (currIsShortTap && prevSmpeCombo && prevSmpeCombo.endEvent) {
-        const prevStartEvent = prevSmpeCombo.startEvent;
-        const prevEndEvent = prevSmpeCombo.endEvent;
-        const timeBetweenCurrPrev = currStartEvent.time - prevEndEvent.time;
-        if (timeBetweenCurrPrev <= this._options.dblTapsInterval) {
-          const prevIsShortTap =  prevEndEvent.event.target === prevStartEvent.event.target &&
-            prevEndEvent.time - prevStartEvent.time <= this._options.shortTapStartEndInterval;
-          if (prevIsShortTap) {
-            const pointer = currSmpeCombo.identifier === -1 ? 'mouse' : 'touch';
-            this[type].emit({
-              identifier: currSmpeCombo.identifier, 
-              target: currSmpeCombo.startEvent.event.target,
-              time: currEndEvent.time,
-              type
-            });
-          }
+export const emitTlTap = (tlGestures2Directive: TlGestures2Directive) => {
+  return (smpeData: SMPEData) => {
+    // if SMPEComboPrevCurr.curr.endEvent.event.target === SMPEComboPrevCurr.curr.startEvent.event.target \
+    // emit tlTap
+    const type = tlGestureEventTypes.tlTap;
+    if (listenOn(tlGestures2Directive, type)) {
+      const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+      if (currSmpeCombo.endEvent) {
+        const {endEvent, startEvent} = currSmpeCombo;
+        if (endEvent.event.target === startEvent.event.target) {
+          tlGestures2Directive[type].emit({
+            identifier: currSmpeCombo.identifier, 
+            target: endEvent.event.target,
+            time: endEvent.time,
+            type
+          });
         }
       }
     }
-  }
+  };
 };
 
 
-
-export const emitTlPress = (smpeData: SMPEData) => {
-  const type = tlGestureEventTypes.tlPress;
-  if (listenOn(type)) {
-    // if currSmpeCombo.pressEvent exists \
-    // and prevSmpeCombo doesn't exist or prevSmpeCombo.endEvent exists or prevSmpeCombo.pressEvent doesn't exist \
-    // emit tlPress
-    const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-    const prevSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).prev;
-    if ( currSmpeCombo.pressEvent && 
-      (!prevSmpeCombo || prevSmpeCombo.endEvent || !prevSmpeCombo.pressEvent)
-    ) {
-      this.tlPress.emit({
-        identifier: currSmpeCombo.identifier, 
-        target: currSmpeCombo.startEvent.event.target,
-        time: currSmpeCombo.pressEvent.time,
-        type, 
-      });
-    }
-  }
-};
-
-
-
-export const emitTlPan = (smpeData: SMPEData) => {
-  const type = tlGestureEventTypes.tlPan;
-  if (listenOn(type)) {
-    // if currSmpeCombo.pressEvent exists \
-    // and prevSmpeCombo doesn't exist or prevSmpeCombo.pressEvent doesn't exist or prevSmpeCombo.endEvent exists \
-    // emit tlPress
-    const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-    const {startEvent, moveEventCurr, moveEventPrev, endEvent} = currSmpeCombo;
-    if (moveEventCurr && !endEvent) {
-      const pointer = currSmpeCombo.identifier === -1 ? 'mouse' : 'touch';
-      let currPageX: number, prevPageX: number, currPageY: number, prevPageY: number;
-      switch (pointer) {
-        case 'mouse':
-          if (moveEventPrev) {
-            currPageX = (moveEventCurr.event as MouseEvent).pageX;
-            prevPageX = (moveEventPrev.event as MouseEvent).pageX;
-            currPageY = (moveEventCurr.event as MouseEvent).pageY;
-            prevPageY = (moveEventPrev.event as MouseEvent).pageY;
-          } else {
-            currPageX = (moveEventCurr.event as MouseEvent).pageX;
-            prevPageX = (startEvent.event as MouseEvent).pageX;
-            currPageY = (moveEventCurr.event as MouseEvent).pageY;
-            prevPageY = (startEvent.event as MouseEvent).pageY;
-          }
-          break;
-        case 'touch':
-          if (moveEventPrev) {
-            currPageX = (moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX;
-            prevPageX = (moveEventPrev.event as TouchEvent).changedTouches.item(0).pageX;
-            currPageY = (moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY;
-            prevPageY = (moveEventPrev.event as TouchEvent).changedTouches.item(0).pageY;
-          } else {
-            currPageX = (moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX;
-            prevPageX = (startEvent.event as TouchEvent).changedTouches.item(0).pageX;
-            currPageY = (moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY;
-            prevPageY = (startEvent.event as TouchEvent).changedTouches.item(0).pageY;
-          }
-          break;
-      }
-      const movementX = currPageX - prevPageX;
-      const movementY = currPageY - prevPageY;
-      const time = moveEventCurr.time;
-      this.tlPan.emit({
-        identifier: currSmpeCombo.identifier,
-        target: currSmpeCombo.startEvent.event.target,
-        time,
-        type,
-        movement: {x: movementX, y: movementY}
-      });
-    }
-  }
-};
-
-
-
-export const emitTlSwipe = (smpeData: SMPEData) => {
-  const type = tlGestureEventTypes.tlSwipe;
-  if (listenOn(type)) {
-    const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-    const {startEvent, endEvent} = currSmpeCombo;
-    const pointer = currSmpeCombo.identifier === -1 ? 'mouse' : 'touch';
-    // if currSmpeCombo.endEvent exists and \
-    // currSmpeCombo.endEvent.event.pagePoint is at least 20px away from currSmpeCombo.startEvent.event.pagePoint
-    // emit tlSwipe
-    let endPageX, endPageY, startPageX, startPageY;
-    if (endEvent) {
-      switch (pointer) {
-        case 'mouse':
-          endPageX = (endEvent.event as MouseEvent).pageX;
-          endPageY = (endEvent.event as MouseEvent).pageY;
-          startPageX = (startEvent.event as MouseEvent).pageX;
-          startPageY = (startEvent.event as MouseEvent).pageY;
-          break;
-        case 'touch':
-          endPageX = (endEvent.event as TouchEvent).changedTouches.item(0).pageX;
-          endPageY = (endEvent.event as TouchEvent).changedTouches.item(0).pageY;
-          startPageX = (startEvent.event as TouchEvent).changedTouches.item(0).pageX;
-          startPageY = (startEvent.event as TouchEvent).changedTouches.item(0).pageY;
-          break;
-      }
-      const distDiffX = endPageX - startPageX;
-      const distDiffY = endPageY - startPageY;
-      const distDiff = Math.sqrt(distDiffX * distDiffX + distDiffY * distDiffY);
-      const duration = endEvent.time - startEvent.time;
-      const time = endEvent.time;
-      if (distDiff >= this._options.swipeThreshold) {
-        this.tlSwipe.emit({
-          identifier: currSmpeCombo.identifier,
-          target: currSmpeCombo.startEvent.event.target,
-          time,
-          type,
-          distance: {x: distDiffX, y: distDiffY},
-          duration
+export const emitTlDblTap = (tlGestures2Directive: TlGestures2Directive) => {
+  return (smpeData: SMPEData) => {
+    // if lastShortTaps has the same target and identifer and timeBetween is <= threshhold
+    // emit tlDblTap
+    const type = tlGestureEventTypes.tlDblTap;
+    const latestIdentifier = smpeData.latestIdentifier;
+    const lastSmpeCombo = smpeData.smpeCombosMap.get(latestIdentifier).curr;
+    if (listenOn(tlGestures2Directive, type) && smpeData.lastShortTaps && smpeData.lastShortTaps.prev && lastSmpeCombo.endEvent) {
+      const {prev, curr} = smpeData.lastShortTaps;
+      const sameTarget = prev.target === curr.target;
+      const sameIdentifier = prev.identifier === curr.identifier;
+      const timeBetween = curr.time - prev.time;
+      // console.log(timeBetween);
+      if (sameTarget && sameIdentifier && timeBetween <= tlGestures2Directive.options.dblTapsInterval) {
+        tlGestures2Directive[type].emit({
+          identifier: curr.identifier, 
+          target: curr.target,
+          time: curr.time,
+          type
         });
       }
     }
-  }
+  };
+};
+
+export const emitTlPress = (tlGestures2Directive: TlGestures2Directive) => {
+  return (smpeData: SMPEData) => {
+    const type = tlGestureEventTypes.tlPress;
+    if (listenOn(tlGestures2Directive, type)) {
+      // if currSmpeCombo.latestEventType === 'press', emit tlPress
+      const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+      if (currSmpeCombo.latestEventType === 'press') {
+        tlGestures2Directive.tlPress.emit({
+          identifier: currSmpeCombo.identifier, 
+          target: currSmpeCombo.startEvent.event.target,
+          time: currSmpeCombo.pressEvent.time,
+          type, 
+        });
+      }
+    }
+  };
+};
+
+
+export const emitTlPan = (tlGestures2Directive: TlGestures2Directive) => {
+  return (smpeData: SMPEData) => {
+  const type = tlGestureEventTypes.tlPan;
+    if (listenOn(tlGestures2Directive, type)) {
+      // if currSmpeCombo.lastestEventType === 'mousemove' || 'touchmove'
+      // emit tlPan
+      const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+      if (currSmpeCombo.latestEventType.search(/move/) > -1) {
+        // console.log(currSmpeCombo.movement);
+        tlGestures2Directive.tlPan.emit({
+          identifier: currSmpeCombo.identifier, 
+          target: currSmpeCombo.startEvent.event.target,
+          time: currSmpeCombo.moveEventCurr.time,
+          type, 
+          movement: currSmpeCombo.movement
+        });
+      }
+    }
+  };
+};
+
+
+export const emitTlSwipe = (tlGestures2Directive: TlGestures2Directive) => {
+  return (smpeData: SMPEData) => {
+    const type = tlGestureEventTypes.tlSwipe;
+    if (listenOn(tlGestures2Directive, type)) {
+      // if currSmpeCombo.endEvent exists and distance >= threshold, emit swipe
+      const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+      if (currSmpeCombo.endEvent) {
+        const distance = Math.sqrt(Math.pow(currSmpeCombo.distance.x, 2) + Math.pow(currSmpeCombo.distance.y, 2))
+        if (distance >= tlGestures2Directive.options.swipeDistanceThreshold) {
+          tlGestures2Directive.tlSwipe.emit({
+            identifier: currSmpeCombo.identifier,
+            target: currSmpeCombo.startEvent.event.target,
+            time: currSmpeCombo.endEvent.time,
+            type,
+            distance: currSmpeCombo.distance,
+            duration: currSmpeCombo.duration
+          });
+        }
+      }
+    }
+  };
+};
+
+
+
+export const emitTlPinch = (tlGestures2Directive: TlGestures2Directive) => {
+  return (smpeData: SMPEData) => {
+    const type = tlGestureEventTypes.tlPinch;
+    if (listenOn(tlGestures2Directive, type)) {
+      // check the smpeData.activeTouchIdentifiers list \
+      // if list.length > 1, and either of the first 2 touches moved \
+      // emit tlPinch with relative movement for the first 2 touches
+      const touchList = smpeData.activeTouchIdentifiers;
+
+      if (touchList.length > 1) {
+        console.log(touchList[0]);
+        const firstTouch = smpeData.smpeCombosMap.get(touchList[0]).curr;
+        const secondTouch = smpeData.smpeCombosMap.get(touchList[1]).curr;
+        const firstMoved = firstTouch.latestEventType === 'touchmove';
+        const secondtMoved = secondTouch.latestEventType === 'touchmove';
+
+        if (firstMoved || secondtMoved) {
+          const firstTouchX = firstTouch.moveEventCurr ?
+            (firstTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX :
+            (firstTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+          const secondeTouchX = secondTouch.moveEventCurr ?
+            (secondTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX :
+            (secondTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+          const firstTouchY = firstTouch.moveEventCurr ?
+            (firstTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY :
+            (firstTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+          const secondeTouchY = secondTouch.moveEventCurr ? 
+            (secondTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY:
+            (secondTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+
+          const firstOnTheRight = firstTouchX > secondeTouchX;
+          const firstAtBottom = firstTouchY > secondeTouchY;
+
+          let movement = {x: 0, y: 0}
+          if (firstOnTheRight) {
+            movement.x = firstTouch.movement.x - secondTouch.movement.x;
+          } else {
+            movement.x = secondTouch.movement.x - firstTouch.movement.x;
+          }
+          if (firstAtBottom) {
+            movement.y = firstTouch.movement.y - secondTouch.movement.y;
+          } else {
+            movement.y = secondTouch.movement.y - firstTouch.movement.y;
+          }
+          const latestTouch = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+          tlGestures2Directive.tlPinch.emit({
+            identifier: [(touchList[0] as number), (touchList[1] as number)],
+            target: latestTouch.startEvent.event.target,
+            time: latestTouch.moveEventCurr.time,
+            type,
+            movement
+          })
+        }
+
+      }
+    }
+  };
 };
 
 
 
 
-export const emitTlPinch = (smpeData: SMPEData) => {
-  const type = tlGestureEventTypes.tlPinch;
-  if (listenOn(type)) {
-    // 
-    const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-    const prevSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).prev;
 
-  }
-};
+// export const emitTlRotate = (smpeData: SMPEData) => {
+//   const type = tlGestureEventTypes.tlRotate;
+//   if (listenOn(type)) {
+//     // 
+//     const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+//     const prevSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).prev;
 
-export const emitTlRotate = (smpeData: SMPEData) => {
-  const type = tlGestureEventTypes.tlRotate;
-  if (listenOn(type)) {
-    // 
-    const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-    const prevSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).prev;
-
-  }
-};
+//   }
+// };

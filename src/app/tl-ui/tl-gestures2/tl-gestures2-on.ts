@@ -1,4 +1,4 @@
-import { rootElement, tlGestureEventTypes, EventIT, Identifier,
+import { tlGestureEventTypes, EventIT, Identifier,
   StartNonStartCombo, SMPECombo, SMPEComboPrevCurr, SMPEData, TlGestureEvent
 } from './tl-gestures2';
 
@@ -14,7 +14,8 @@ export const smpeOnStartFac = (oldSmpeComboPrevCurr: SMPEComboPrevCurr, curr: St
     null,
     curr.startEvent.event.type,
     null,
-    null
+    {x: 0, y: 0},
+    {x: 0, y: 0}
   );
 };
 
@@ -52,9 +53,28 @@ export const calMovement = (oldSmpeComboPrevCurr: SMPEComboPrevCurr, curr: Start
   return {x: currPageX - prevPageX, y: currPageY - prevPageY}
 }
 
+export const calDistance = (oldSmpeComboPrevCurr: SMPEComboPrevCurr, curr: StartNonStartCombo) => {
+  let currPageX: number, prevPageX: number, currPageY: number, prevPageY: number;
+  switch (oldSmpeComboPrevCurr.curr.startEvent.identifier) {
+    case -1: // mouse event
+      currPageX = (curr.nonStartEvent.event as MouseEvent).pageX;
+      currPageY = (curr.nonStartEvent.event as MouseEvent).pageY;
+      prevPageX = (oldSmpeComboPrevCurr.curr.startEvent.event as MouseEvent).pageX;
+      prevPageY = (oldSmpeComboPrevCurr.curr.startEvent.event as MouseEvent).pageY;
+      break;
+    default: // touch event
+      currPageX = (curr.nonStartEvent.event as TouchEvent).changedTouches.item(0).pageX;
+      currPageY = (curr.nonStartEvent.event as TouchEvent).changedTouches.item(0).pageY;
+      prevPageX = (oldSmpeComboPrevCurr.curr.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+      prevPageY = (oldSmpeComboPrevCurr.curr.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+  }
+  return {x: currPageX - prevPageX, y: currPageY - prevPageY}
+}
+
 export const smpeOnMoveFac = (oldSmpeComboPrevCurr: SMPEComboPrevCurr, curr: StartNonStartCombo) => {
   const currMoveEvent = curr.nonStartEvent;
   const movement = calMovement(oldSmpeComboPrevCurr, curr);
+  const distance = calDistance(oldSmpeComboPrevCurr, curr);
   return new SMPECombo(
     oldSmpeComboPrevCurr.curr.identifier,
     oldSmpeComboPrevCurr.curr.startEvent,
@@ -65,13 +85,13 @@ export const smpeOnMoveFac = (oldSmpeComboPrevCurr: SMPEComboPrevCurr, curr: Sta
     oldSmpeComboPrevCurr.curr.endEvent,
     currMoveEvent.event.type,
     currMoveEvent.time - oldSmpeComboPrevCurr.curr.startEvent.time,
-    movement
+    calMovement(oldSmpeComboPrevCurr, curr),
+    calDistance(oldSmpeComboPrevCurr, curr)
   );
 };
 
 export const smpeOnEndFac = (oldSmpeComboPrevCurr: SMPEComboPrevCurr, curr: StartNonStartCombo) => {
   const currEndEvent = curr.nonStartEvent;
-  const movement = calMovement(oldSmpeComboPrevCurr, curr);
   return new SMPECombo(
     oldSmpeComboPrevCurr.curr.identifier,
     oldSmpeComboPrevCurr.curr.startEvent,
@@ -82,7 +102,8 @@ export const smpeOnEndFac = (oldSmpeComboPrevCurr: SMPEComboPrevCurr, curr: Star
     currEndEvent,
     currEndEvent.event.type,
     currEndEvent.time - oldSmpeComboPrevCurr.curr.startEvent.time,
-    movement
+    calMovement(oldSmpeComboPrevCurr, curr),
+    calDistance(oldSmpeComboPrevCurr, curr)
   );
 };
 
@@ -110,6 +131,7 @@ export const smpeOnPossiblePressFac = (oldSmpeComboPrevCurr: SMPEComboPrevCurr, 
     oldSmpeComboPrevCurr.curr.endEvent,
     currType,
     currPossiblePressEvent.time - oldSmpeComboPrevCurr.curr.startEvent.time,
-    oldSmpeComboPrevCurr.curr.movement
+    oldSmpeComboPrevCurr.curr.movement,
+    oldSmpeComboPrevCurr.curr.distance
   );
 };
