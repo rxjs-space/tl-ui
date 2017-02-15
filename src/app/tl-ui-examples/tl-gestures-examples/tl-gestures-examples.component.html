@@ -3,10 +3,14 @@
   <div class="card-block">
     <div
       tlGestures2
-      (tlTap)="onTap($event)"
-      (tlPan)="onPan($event)"
-      (tlDblTap)="onDblTap($event)"
-      style="width: 100px; height: 100px; background-color: indigo">
+      (tlTap)="onTlEvent($event)"
+      (tlPan)="onTlEvent($event)"
+      (tlDblTap)="onTlEvent($event)"
+      (tlPress)="onTlEvent($event)"
+      (tlSwipe)="onTlEvent($event)"
+      (tlPinch)="onTlEvent($event)"
+      (tlRotate)="onTlRotate($event)"
+      style="width: 200px; height: 200px; background-color: indigo">
     </div>
     <div style="width: 100px; height: 100px; background-color: coral"
       (touchstart)="onTouchstart($event);"
@@ -20,3 +24,11 @@
 
   </div>
 </div>
+
+<!--
+
+
+
+
+
+-->
