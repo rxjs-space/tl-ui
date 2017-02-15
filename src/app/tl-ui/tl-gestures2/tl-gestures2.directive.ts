@@ -71,6 +71,11 @@ export class TlGestures2Directive implements OnInit {
   @Output() tlTap = new EventEmitter();
   @Output() tlDblTap = new EventEmitter();
   @Output() tlPan = new EventEmitter();
+  private _options = {
+    pressInterval: 500,
+    shortTapStartEndInterval: 100,
+    dblTapsInterval: 100
+  }
   constructor() {}
 
   ngOnInit() {
@@ -92,7 +97,7 @@ export class TlGestures2Directive implements OnInit {
     };
 
     const pressRxFac = (identifier: number): Observable<EventIT> => {
-      return Observable.interval(500).take(1)
+      return Observable.interval(this._options.pressInterval).take(1)
         .map(() => ({event: {type: 'press'}, identifier, time: Date.now()}))
     };
 
@@ -219,6 +224,8 @@ export class TlGestures2Directive implements OnInit {
       }, {smpeCombosMap: (<Map<Identifier, SMPEComboPrevCurr>>(new Map())), latestIdentifier: null})
 
     const emitTlTap = (smpeData: SMPEData) => {
+      // if SMPEComboPrevCurr.curr.endEvent.event.target === SMPEComboPrevCurr.curr.startEvent.event.target \
+      // emit tlTap
       const type = tlGestureEventTypes.tlTap;
       if (listenOn(type)) {
         const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
@@ -226,27 +233,55 @@ export class TlGestures2Directive implements OnInit {
           const endEvent = currSmpeCombo.endEvent;
           const startEvent = currSmpeCombo.startEvent;
           if (endEvent.event.target === startEvent.event.target) {
-            this[type].emit({type: type, time: endEvent.time});
+            const pointer = currSmpeCombo.identifier === -1 ? 'mouse' : 'touch';
+            this[type].emit({type: type, pointer, time: endEvent.time});
           }
         }
       }
     };
 
-    // const tlDblTapFac = (smpeData: SMPEData) => {
-    //   if (listenOnFac('tlDblTap')) {
-    //     const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-    //     if (currSmpeCombo.endEvent) {
-    //       const endEvent = currSmpeCombo.endEvent;
-    //       const startEvent = currSmpeCombo.startEvent;
-    //       if (endEvent.event.target === startEvent.event.target) {
-    //         this.tlTap.emit({type: 'tap', time: endEvent.time});
-    //       }
-    //     }
-    //   }
-    // };
+    const emitTlDblTap = (smpeData: SMPEData) => {
+      // if SMPEComboPrevCurr.curr.endEvent.event.target === SMPEComboPrevCurr.curr.startEvent.event.target \
+      // and SMPEComboPrevCurr.curr.endEvent.time - SMPEComboPrevCurr.curr.startEvent.time <= _options.shortTapStartEndInterval \
+      // and SMPEComboPrevCurr.prev exists \
+      // and SMPEComboPrevCurr.curr.startEvent.time - SMPEComboPrevCurr.prev.endEvent.time <= _options.dblTapsInterval \
+      // and SMPEComboPrevCurr.prev.endEvent.event.target === SMPEComboPrevCurr.prev.startEvent.event.target \
+      // and SMPEComboPrevCurr.prev.endEvent.time - SMPEComboPrevCurr.prev.startEvent.time <= _options.shortTapStartEndInterval \
+      // emit tlDblTap
+      const type = tlGestureEventTypes.tlDblTap;
+      if (listenOn(type)) {
+        const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+        if (currSmpeCombo.endEvent) {
+          const currEndEvent = currSmpeCombo.endEvent;
+          const currStartEvent = currSmpeCombo.startEvent;
+          const currIsShortTap = currEndEvent.event.target === currStartEvent.event.target &&
+            currEndEvent.time - currStartEvent.time <= this._options.shortTapStartEndInterval;
+          const prevSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).prev;
+          if (currIsShortTap && prevSmpeCombo) {
+            const prevStartEvent = prevSmpeCombo.startEvent;
+            const prevEndEvent = prevSmpeCombo.endEvent;
+            const timeBetweenCurrPrev = currStartEvent.time - prevEndEvent.time;
+            if (timeBetweenCurrPrev <= this._options.dblTapsInterval) {
+              const prevIsShortTap =  prevEndEvent.event.target === prevStartEvent.event.target &&
+                prevEndEvent.time - prevStartEvent.time <= this._options.shortTapStartEndInterval;
+              if (prevIsShortTap) {
+                const pointer = currSmpeCombo.identifier === -1 ? 'mouse' : 'touch';
+                this[type].emit({type: type, pointer, time: currEndEvent.time});
+              }
+            }
+          }
+        }
+      }
+    };
 
     const tlGesturesEventRx = smpeDataRx
-      .do(emitTlTap);
+      .do(emitTlTap)
+      .do(emitTlDblTap)
+      // .do(emitTlPress)
+      // .do(emitTlPan)
+      // .do(emitTlSwipe)
+      // .do(emitTlPinch)
+      // .do(emitTlRotate)
 
     const tlGesturesEvent_ = tlGesturesEventRx
       .subscribe(outcome => console.log(outcome));
