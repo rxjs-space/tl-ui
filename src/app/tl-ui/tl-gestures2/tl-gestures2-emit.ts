@@ -131,48 +131,55 @@ export const emitTlPinch = (tlGestures2Directive: TlGestures2Directive) => {
       const touchList = smpeData.activeTouchIdentifiers;
 
       if (touchList.length > 1) {
-        console.log(touchList[0]);
+        // console.log(touchList[0]);
         const firstTouch = smpeData.smpeCombosMap.get(touchList[0]).curr;
         const secondTouch = smpeData.smpeCombosMap.get(touchList[1]).curr;
         const firstMoved = firstTouch.latestEventType === 'touchmove';
         const secondtMoved = secondTouch.latestEventType === 'touchmove';
 
         if (firstMoved || secondtMoved) {
-          const firstTouchX = firstTouch.moveEventCurr ?
-            (firstTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX :
-            (firstTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
-          const secondeTouchX = secondTouch.moveEventCurr ?
-            (secondTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX :
-            (secondTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
-          const firstTouchY = firstTouch.moveEventCurr ?
-            (firstTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY :
-            (firstTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
-          const secondeTouchY = secondTouch.moveEventCurr ? 
-            (secondTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY:
-            (secondTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
-
-          const firstOnTheRight = firstTouchX > secondeTouchX;
-          const firstAtBottom = firstTouchY > secondeTouchY;
-
-          let movement = {x: 0, y: 0}
-          if (firstOnTheRight) {
-            movement.x = firstTouch.movement.x - secondTouch.movement.x;
-          } else {
-            movement.x = secondTouch.movement.x - firstTouch.movement.x;
+          switch (true) {
+            case firstTouch.movement.x * secondTouch.movement.x > 0:
+            break;
           }
-          if (firstAtBottom) {
-            movement.y = firstTouch.movement.y - secondTouch.movement.y;
-          } else {
-            movement.y = secondTouch.movement.y - firstTouch.movement.y;
-          }
-          const latestTouch = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-          tlGestures2Directive.tlPinch.emit({
-            identifier: [(touchList[0] as number), (touchList[1] as number)],
-            target: latestTouch.startEvent.event.target,
-            time: latestTouch.moveEventCurr.time,
-            type,
-            movement
-          })
+          // const firstTouchX = firstTouch.moveEventCurr ?
+          //   (firstTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX :
+          //   (firstTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+          // const secondeTouchX = secondTouch.moveEventCurr ?
+          //   (secondTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX :
+          //   (secondTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+          // const firstTouchY = firstTouch.moveEventCurr ?
+          //   (firstTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY :
+          //   (firstTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+          // const secondeTouchY = secondTouch.moveEventCurr ? 
+          //   (secondTouch.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY:
+          //   (secondTouch.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+
+          // const firstOnTheRight = firstTouchX > secondeTouchX;
+          // const firstAtBottom = firstTouchY > secondeTouchY;
+
+          // let movement = {x: 0, y: 0}
+          // if (firstOnTheRight) {
+          //   movement.x = firstTouch.movement.x - secondTouch.movement.x;
+          // } else {
+          //   movement.x = secondTouch.movement.x - firstTouch.movement.x;
+          // }
+          // if (firstAtBottom) {
+          //   movement.y = firstTouch.movement.y - secondTouch.movement.y;
+          // } else {
+          //   movement.y = secondTouch.movement.y - firstTouch.movement.y;
+          // }
+          // const latestTouch = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+          // if (movement.x * movement.y !== 0) { // emit when movement > 0;
+          //   tlGestures2Directive.tlPinch.emit({
+          //     identifier: [(touchList[0] as number), (touchList[1] as number)],
+          //     target: latestTouch.startEvent.event.target,
+          //     time: latestTouch.moveEventCurr ? latestTouch.moveEventCurr.time : latestTouch.startEvent.time,
+          //     type,
+          //     movement
+          //   });
+          // }
+
         }
 
       }

@@ -38,7 +38,54 @@ export const newActiveTouchIdentifiers = (smpeData: SMPEData) => {
     }
   }
   return listCopy;
-}
+};
+
+export const calFirstTwoActiveTouchesDistance = (smpeData: SMPEData, firstTowTouchesIdentifiers: Identifier[]) => {
+  return 0;
+};
+
+export const newFirstTwoActiveTouchesDistance = (smpeData: SMPEData) => {
+  const oldIdentifiers = smpeData.firstTwoActiveTouchesDistance.identifiers;
+  const oldDistancePrev = smpeData.firstTwoActiveTouchesDistance.distancePrev;
+  const oldDistanceCurr = smpeData.firstTwoActiveTouchesDistance.distanceCurr;
+  const list = smpeData.activeTouchIdentifiers;
+  let newIdentifiers, newDistanceCurr, newDistancePrev, newDistanceDiff;
+  if (list.length > 1) {
+    switch (true) {
+      case !oldIdentifiers:
+        newIdentifiers = [list[0], list[1]];
+        newDistanceCurr = calFirstTwoActiveTouchesDistance(smpeData, newIdentifiers);
+        newDistancePrev = null;
+        newDistanceDiff = null;
+        break;
+      case !!oldIdentifiers:
+        switch (true) {
+          case oldIdentifiers[0] !== list[0] || oldIdentifiers[1] !== list[1]:
+            newIdentifiers = [list[0], list[1]];
+            newDistanceCurr = calFirstTwoActiveTouchesDistance(smpeData, newIdentifiers);
+            newDistancePrev = null;
+            newDistanceDiff = null;
+            break;
+          case oldIdentifiers[0] === list[0] || oldIdentifiers[1] === list[1]:
+            newIdentifiers = [...oldIdentifiers];
+            newDistanceCurr = calFirstTwoActiveTouchesDistance(smpeData, newIdentifiers);
+            newDistancePrev = oldDistanceCurr;
+            newDistanceDiff = newDistanceCurr - newDistancePrev;
+            break;
+        }
+        break;
+    }
+
+
+  }
+  console.log(newIdentifiers, newDistanceDiff);
+  return {
+    identifiers: newIdentifiers, 
+    distancePrev: newDistancePrev, 
+    distanceCurr: newDistanceCurr,
+    distanceDiff: newDistanceDiff
+  };
+};
 
 export const composeShortTraps = (tlGestures2Directive: TlGestures2Directive, smpeData: SMPEData) => {
   const lastSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;

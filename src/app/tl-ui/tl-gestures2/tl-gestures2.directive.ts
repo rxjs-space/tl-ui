@@ -7,7 +7,8 @@ import 'rxjs/add/operator/do';
 import { tlGestureEventTypes, EventIT, Identifier,
   StartNonStartCombo, SMPECombo, SMPEComboPrevCurr, SMPEData, TlGestureEvent
 } from './tl-gestures2';
-import { newSmpeComboCurr, newActiveTouchIdentifiers, composeShortTraps } from './tl-gestures2-prepare-smpe-data';
+import { newSmpeComboCurr, newActiveTouchIdentifiers, 
+    newFirstTwoActiveTouchesDistance, composeShortTraps } from './tl-gestures2-prepare-smpe-data';
 import { emitTlTap, emitTlDblTap, emitTlPress, emitTlPan, emitTlSwipe, emitTlPinch } from './tl-gestures2-emit';
 import { nonStartEventRxFac } from './tl-gestures2-non-start-events';
 
@@ -50,13 +51,16 @@ export class TlGestures2Directive implements OnInit {
         };
         acc.smpeCombosMap.set(currIdentifier, newSmpeComboPrevCurr);
         acc.latestIdentifier = currIdentifier;
-        acc.activeTouchIdentifiers =  newActiveTouchIdentifiers(acc);
+        acc.activeTouchIdentifiers = newActiveTouchIdentifiers(acc);
+        acc.firstTwoActiveTouchesDistance = newFirstTwoActiveTouchesDistance(acc);
         acc.lastShortTaps = composeShortTraps(this, acc);
         return acc;
       }, {
         smpeCombosMap: (<Map<Identifier, SMPEComboPrevCurr>>(new Map())),
+        sCM: (<Map<Identifier, SMPECombo>>(new Map())),
         latestIdentifier: null,
         activeTouchIdentifiers: [],
+        firstTwoActiveTouchesDistance: {identifiers: null, distancePrev: null, distanceCurr: null, distanceDiff: null},
         lastShortTaps: null
       });
 

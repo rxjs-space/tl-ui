@@ -9,11 +9,11 @@ export const tlGestureEventTypes = {
   tlSwipe: 'tlSwipe'
 }
 
-export type Identifier = number | number[];
+export type Identifier = number;
 
 export interface EventIT {
-  event: Event;
-  identifier: Identifier;
+  event: Event | {type: string; target: EventTarget};
+  identifier: Identifier | Identifier[];
   time: number;
 }
 
@@ -24,7 +24,7 @@ export interface StartNonStartCombo {
 
 export class SMPECombo {
   constructor(
-    public identifier: Identifier,
+    public identifier: Identifier | Identifier[],
     public startEvent: EventIT,
     public moveEventPrev: EventIT,
     public moveEventCurr: EventIT,
@@ -45,14 +45,16 @@ export interface SMPEComboPrevCurr {
 
 
 export interface SMPEData {
-  smpeCombosMap: Map<Identifier, SMPEComboPrevCurr>;
-  latestIdentifier: Identifier;
-  activeTouchIdentifiers: Identifier[];
+  smpeCombosMap: Map<Identifier | Identifier[], SMPEComboPrevCurr>;
+  sCM: Map<Identifier | Identifier[], SMPECombo>;
+  latestIdentifier: Identifier | Identifier[];
+  activeTouchIdentifiers: (Identifier | Identifier[])[];
+  firstTwoActiveTouchesDistance: {identifiers: Identifier[]; distancePrev: number; distanceCurr: number; distanceDiff: number;}
   lastShortTaps: {prev: TlGestureEvent; curr: TlGestureEvent};
 }
 
 export interface TlGestureEvent {
-  identifier: Identifier;
+  identifier: Identifier | Identifier[];
   target: EventTarget;
   time: number;
   type: string;

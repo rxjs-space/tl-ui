@@ -15,6 +15,7 @@ import { TlCarouselModule } from './tl-carousel';
 import { TlGesturesModule } from './tl-gestures';
 import { TlTableModule } from './tl-table';
 import { TlGestures2Module } from './tl-gestures2';
+import { TlGestures3Module } from './tl-gestures3';
 
 export const tlUiModulesArr = [
   TlModalModule,
@@ -30,7 +31,8 @@ export const tlUiModulesArr = [
   TlCarouselModule,
   TlGesturesModule,
   TlTableModule,
-  TlGestures2Module
+  TlGestures2Module,
+  TlGestures3Module,
 ];
 
 export const tlUiModulesWithProvidersArr = [
@@ -47,7 +49,8 @@ export const tlUiModulesWithProvidersArr = [
   TlCarouselModule,
   TlGesturesModule,
   TlTableModule,
-  TlGestures2Module
+  TlGestures2Module,
+  TlGestures3Module,
 ];
 
 @NgModule({
