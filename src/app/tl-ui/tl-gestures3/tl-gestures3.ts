@@ -72,19 +72,21 @@ export interface SinglePointerData {
   movement?: {x: number, y: number; }
 }
 
+export interface TwoPointerData {
+  activeTouchIdentifiers: number[];
+  distanceBetweenPointersPrev?: number;
+  distanceBetweenPointersCurr?: number;
+  distanceBetweenPointersChange?: number;
+  anglePrev?: number;
+  anguleCurr?: number;
+  angleChange?: number;
+}
+
 export interface SMPEData {
   smpeCombosMap: Map<number, SMPE4SinglePointer>;
   latestIdentifier: number;
   singlePointerData: SinglePointerData;
-  twoPointerData: {
-    activeTouchIdentifiers: number[];
-    distanceBetweenPointersPrev?: number;
-    distanceBetweenPointersCurr?: number;
-    distanceBetweenPointersChange?: number;
-    anglePrev?: number;
-    anguleCurr?: number;
-    angleChange?: number;
-  };
+  twoPointerData: TwoPointerData;
 }
 
 export interface TlGestureEvent {
@@ -94,8 +96,5 @@ export interface TlGestureEvent {
   type: string; // should be string contained in tlGestureEventTypes only
   duration: number;
   singlePointerData?: SinglePointerData;
-  twoPointerData?: {
-    distanceBetweenPointersChange?: number;
-    angleChange?: number;
-  };
+  twoPointerData?: TwoPointerData;
 }

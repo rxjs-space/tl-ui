@@ -140,6 +140,28 @@ export class TlGestures3Directive implements OnInit {
       }
     }
 
+    type = tlGestureEventTypes.tlSwipe;
+    if (this.listenOn(type)) {
+      // if currSmpeCombo.endEvent exists and distance >= threshold, emit swipe
+      if (currSmpeCombo.endEvent) {
+        const offsetFromStartPoint = smpeData.singlePointerData.offsetFromStartPoint;
+        const offsetX = offsetFromStartPoint.x;
+        const offsetY = offsetFromStartPoint.y;
+        const distance = Math.sqrt(Math.pow(offsetX, 2) + Math.pow(offsetY, 2))
+        if (distance >= this.options.swipeDistanceThreshold) {
+          this[type].emit({
+            identifier,
+            target: currSmpeCombo.startEvent.event.target,
+            time: currSmpeCombo.endEvent.time,
+            type,
+            singlePointerData: {
+              offsetFromStartPoint
+            }
+          });
+        }
+      }
+    }
+
     type = tlGestureEventTypes.tlPanstart;
     if (this.listenOn(type) && (latestEventType === baseEventTypes.mouse.start || latestEventType === baseEventTypes.touch.start)) {
       this[type].emit({
@@ -147,7 +169,7 @@ export class TlGestures3Directive implements OnInit {
         target: startEvent.event.target,
         time: startEvent.time,
         type
-      })
+      });
     }
     // if (listenOn(tlGestures2Directive, type)) {
     //   // if currSmpeCombo.lastestEventType === 'mousemove' || 'touchmove'
