@@ -70,7 +70,7 @@ export class TlGestures3Directive implements OnInit {
 
 
   ngOnInit() {
-    console.log('inside ngOnInit');
+    // console.log('inside ngOnInit');
     // workflow: startEvent -> StartNonStartCombo -> SMPECombo -> SMPEData -> tlGestureEvent
 
     const startNonStartEventsComboRx: Observable<StartNonStartCombo> = this.startEventRxx
@@ -90,19 +90,81 @@ export class TlGestures3Directive implements OnInit {
   }
 
   emit(smpeData: SMPEData) {
-    const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier);
-    const {endEvent, startEvent} = currSmpeCombo;
+    const identifier = smpeData.latestIdentifier;
+    const currSmpeCombo = smpeData.smpeCombosMap.get(identifier);
+    const {endEvent, startEvent, moveEventCurr, pressEvent, latestEventType} = currSmpeCombo;
+    let type;
 
-    let type = tlGestureEventTypes.tlTap;
+    type = tlGestureEventTypes.tlTap;
     if (this.listenOn(type) && endEvent && endEvent.event.target === startEvent.event.target) {
       // if endEvent.event.target === startEvent.event.target, emit tlTap
       this[type].emit({
-        identifier: currSmpeCombo.identifier,
+        identifier,
         target: endEvent.event.target,
         time: endEvent.time,
         type
       });
     }
+
+    type = tlGestureEventTypes.tlDbltap;
+    if (this.listenOn(type) && 
+      endEvent &&
+      smpeData.singlePointerData.latestShortTaps && 
+      smpeData.singlePointerData.latestShortTaps.prev) {
+      // if lastShortTaps has the same target and identifer and timeBetween is <= threshhold, emit tlDblTap
+      const {prev, curr} = smpeData.singlePointerData.latestShortTaps;
+      const sameTarget = prev.target === curr.target;
+      const sameIdentifier = prev.identifier === curr.identifier;
+      const timeBetween = curr.time - prev.time;
+      // console.log(timeBetween);
+      if (sameTarget && sameIdentifier && timeBetween <= this.options.dblTapsInterval) {
+        this[type].emit({
+          identifier,
+          target: curr.target,
+          time: curr.time,
+          type
+        });
+      }
+    }
+
+    type = tlGestureEventTypes.tlPress;
+    if (this.listenOn(type)) {
+      // if currSmpeCombo.latestEventType === 'press', emit tlPress
+      if (currSmpeCombo.latestEventType === 'press') {
+        this[type].emit({
+          identifier,
+          target: startEvent.event.target,
+          time: pressEvent.time,
+          type,
+        });
+      }
+    }
+
+    type = tlGestureEventTypes.tlPanstart;
+    if (this.listenOn(type) && (latestEventType === baseEventTypes.mouse.start || latestEventType === baseEventTypes.touch.start)) {
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: startEvent.time,
+        type
+      })
+    }
+    // if (listenOn(tlGestures2Directive, type)) {
+    //   // if currSmpeCombo.lastestEventType === 'mousemove' || 'touchmove'
+    //   // emit tlPan
+    //   const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
+    //   if (currSmpeCombo.latestEventType.search(/move/) > -1) {
+    //     // console.log(currSmpeCombo.movement);
+    //     tlGestures2Directive.tlPan.emit({
+    //       identifier: currSmpeCombo.identifier, 
+    //       target: currSmpeCombo.startEvent.event.target,
+    //       time: currSmpeCombo.moveEventCurr.time,
+    //       type, 
+    //       movement: currSmpeCombo.movement
+    //     });
+    //   }
+    // }
+
   }
 
 
@@ -112,7 +174,7 @@ export class TlGestures3Directive implements OnInit {
   }
 
   calNewSMPEData(oldSMPEData: SMPEData, currSNC: StartNonStartCombo) {
-    console.log('inside calNewSMPEData');
+    // console.log('inside calNewSMPEData');
     const latestIdentifier = currSNC.startEvent.identifier;
     const oldSMPE4SinglePointer: SMPE4SinglePointer = oldSMPEData.smpeCombosMap.get(latestIdentifier);
     const newSMPE4SinglePointer: SMPE4SinglePointer = this.calNewSMPE4SinglePointer(oldSMPE4SinglePointer, currSNC);
@@ -224,14 +286,28 @@ export class TlGestures3Directive implements OnInit {
       if ( snc.nonStartEvent && 
         (snc.nonStartEvent.event.type === baseEventTypes.mouse.end || snc.nonStartEvent.event.type === baseEventTypes.touch.end) && 
         isShorttap(snc)) {
-        return {
-          prev: oldLatestShortTaps.curr,
-          curr: {
-            identifier: snc.nonStartEvent.identifier,
-            target: snc.nonStartEvent.event.target,
-            time: snc.nonStartEvent.time
-          }
-        };
+        if (oldLatestShortTaps.prev) {
+          // console.log('start new set of shorttaps');
+          return {
+            prev: null,
+            curr: {
+              identifier: snc.nonStartEvent.identifier,
+              target: snc.nonStartEvent.event.target,
+              time: snc.nonStartEvent.time
+            }
+          };
+        } else {
+          // console.log('old set of shorttaps')
+          return {
+            prev: oldLatestShortTaps.curr,
+            curr: {
+              identifier: snc.nonStartEvent.identifier,
+              target: snc.nonStartEvent.event.target,
+              time: snc.nonStartEvent.time
+            }
+          };
+        }
+
       } else {
         return Object.assign({}, oldLatestShortTaps);
       }
@@ -286,7 +362,7 @@ export class TlGestures3Directive implements OnInit {
    * calculate newSMPE4SinglePointer based on oldSMPE4SinglePointer and current StartNonStartCombo
    */
   calNewSMPE4SinglePointer(oldSMPE4SinglePointer: SMPE4SinglePointer, currSNC: StartNonStartCombo) {
-    console.log('inside calNewSMPE4SinglePointer');
+    // console.log('inside calNewSMPE4SinglePointer');
     const onStart = (snc: StartNonStartCombo) => {
       // always return new SMPECombo when curr.nonStartEvent === null
       return new SMPE4SinglePointer(
