@@ -1,5 +1,33 @@
 
-export const baseEventTypes = {
+export type mousestart = 'mousedown';
+export type mouseend = 'mouseup';
+export type mousemove = 'mousemove';
+export type mousemoveOrEnd = mousemove | mouseend;
+export type touchstart = 'touchstart';
+export type touchend = 'touchend';
+export type touchmove = 'touchmove';
+export type touchcancel = 'touchcancel';
+export type touchmoveOrEnd = touchmove | touchend;
+export type possiblePress = 'possiblePress';
+export type press = 'press';
+
+export interface BaseEventTypes {
+  mouse: {
+    start: mousestart;
+    move: mousemove;
+    end: mouseend;
+  };
+  touch: {
+    start: touchstart;
+    move: touchmove;
+    end: touchend;
+    cancel: touchcancel;
+  };
+  possiblePress: possiblePress;
+  press: press;
+}
+
+export const baseEventTypes: BaseEventTypes = {
   mouse: {
     start: 'mousedown',
     move: 'mousemove',
@@ -12,6 +40,8 @@ export const baseEventTypes = {
     end: 'touchend',
     cancel: 'touchcancel'
   },
+  possiblePress: 'possiblePress',
+  press: 'press'
   // pointer: { // add support for ie/edge
 
   // }

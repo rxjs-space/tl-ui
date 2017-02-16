@@ -5,6 +5,7 @@ import 'rxjs/add/operator/mergeMap';
 
 import { baseEventTypes, EventIT, TlGestureEvent, tlGestureEventTypes,
   StartNonStartCombo, SMPE4SinglePointer, SMPEData, SinglePointerData, 
+  mousemoveOrEnd, touchmoveOrEnd, 
 
 } from './tl-gestures3';
 
@@ -93,6 +94,7 @@ export class TlGestures3Directive implements OnInit {
     const identifier = smpeData.latestIdentifier;
     const currSmpeCombo = smpeData.smpeCombosMap.get(identifier);
     const {endEvent, startEvent, moveEventCurr, pressEvent, latestEventType} = currSmpeCombo;
+    const singlePointerData = smpeData.singlePointerData;
     let type;
 
     type = tlGestureEventTypes.tlTap;
@@ -109,10 +111,10 @@ export class TlGestures3Directive implements OnInit {
     type = tlGestureEventTypes.tlDbltap;
     if (this.listenOn(type) && 
       endEvent &&
-      smpeData.singlePointerData.latestShortTaps && 
-      smpeData.singlePointerData.latestShortTaps.prev) {
+      singlePointerData.latestShortTaps && 
+      singlePointerData.latestShortTaps.prev) {
       // if lastShortTaps has the same target and identifer and timeBetween is <= threshhold, emit tlDblTap
-      const {prev, curr} = smpeData.singlePointerData.latestShortTaps;
+      const {prev, curr} = singlePointerData.latestShortTaps;
       const sameTarget = prev.target === curr.target;
       const sameIdentifier = prev.identifier === curr.identifier;
       const timeBetween = curr.time - prev.time;
@@ -130,7 +132,7 @@ export class TlGestures3Directive implements OnInit {
     type = tlGestureEventTypes.tlPress;
     if (this.listenOn(type)) {
       // if currSmpeCombo.latestEventType === 'press', emit tlPress
-      if (currSmpeCombo.latestEventType === 'press') {
+      if (currSmpeCombo.latestEventType === baseEventTypes.press) {
         this[type].emit({
           identifier,
           target: startEvent.event.target,
@@ -171,6 +173,21 @@ export class TlGestures3Directive implements OnInit {
         type
       });
     }
+
+    type = tlGestureEventTypes.tlPanmove;
+    if (this.listenOn(type) && currSmpeCombo.latestEventType.search(/move/) > -1) {
+      // if latestEventType is move, emit panmove
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: moveEventCurr.time,
+        type,
+        singlePointerData: {
+          movement: singlePointerData.movement
+        }
+      });
+    }
+
     // if (listenOn(tlGestures2Directive, type)) {
     //   // if currSmpeCombo.lastestEventType === 'mousemove' || 'touchmove'
     //   // emit tlPan
@@ -202,6 +219,8 @@ export class TlGestures3Directive implements OnInit {
     const newSMPE4SinglePointer: SMPE4SinglePointer = this.calNewSMPE4SinglePointer(oldSMPE4SinglePointer, currSNC);
     oldSMPEData.latestIdentifier = latestIdentifier;
     oldSMPEData.smpeCombosMap.set(latestIdentifier, newSMPE4SinglePointer);
+
+    // by now, latestIdentifier and smpeCombosMap are both up-to-date, that is, currSNC info are contained in oldSMPEData.
     oldSMPEData.singlePointerData = this.calSinglePointerData(oldSMPEData, currSNC); // need refactor: currSNC info already in oldSMPEData
     oldSMPEData.twoPointerData = this.calTwoPointerData(oldSMPEData);
     return oldSMPEData; // return oldSMPEData for the moment, need to construct a newSMPEData actually
@@ -288,6 +307,9 @@ export class TlGestures3Directive implements OnInit {
       }
     };
 
+    /**
+     * to be replaced by isShortTap2
+     */
     const isShorttap = (snc: StartNonStartCombo) => {
       // if the snc ended, check if its a shorttap
       let isShortTap = false;
@@ -304,78 +326,83 @@ export class TlGestures3Directive implements OnInit {
       return isShortTap;
     };
 
-    const calNewLatestShortTaps = (oldLatestShortTaps: any, snc: StartNonStartCombo) => {
-      if ( snc.nonStartEvent && 
-        (snc.nonStartEvent.event.type === baseEventTypes.mouse.end || snc.nonStartEvent.event.type === baseEventTypes.touch.end) && 
-        isShorttap(snc)) {
-        if (oldLatestShortTaps.prev) {
-          // console.log('start new set of shorttaps');
-          return {
-            prev: null,
-            curr: {
-              identifier: snc.nonStartEvent.identifier,
-              target: snc.nonStartEvent.event.target,
-              time: snc.nonStartEvent.time
-            }
-          };
-        } else {
-          // console.log('old set of shorttaps')
-          return {
-            prev: oldLatestShortTaps.curr,
-            curr: {
-              identifier: snc.nonStartEvent.identifier,
-              target: snc.nonStartEvent.event.target,
-              time: snc.nonStartEvent.time
-            }
-          };
+    const isShortTap2 = (smpe4SinglePointer: SMPE4SinglePointer) => {
+      let isShortTap = false;
+      const {startEvent, endEvent} = smpe4SinglePointer;
+      if (endEvent) {
+        const isShortInterval = endEvent.time - startEvent.time <= this.options.shortTapStartEndInterval;
+        if (isShortInterval) {
+          isShortTap = true;
         }
-
-      } else {
-        return Object.assign({}, oldLatestShortTaps);
       }
+      return isShortTap;
+    }
+
+    const calNewLatestShortTaps = (smpeData: SMPEData, snc: StartNonStartCombo) => {
+      const oldLatestShortTaps = smpeData.singlePointerData.latestShortTaps;
+      const smpe4SinglePointer = smpeData.smpeCombosMap.get(smpeData.latestIdentifier);
+      let newLatestShortTaps;
+      if (smpe4SinglePointer.endEvent && isShortTap2(smpe4SinglePointer)) { // if current event is an endEvent and it's a shorttap
+        const newShortTap = {
+          identifier: smpe4SinglePointer.identifier,
+          target: smpe4SinglePointer.endEvent.event.target,
+          time: smpe4SinglePointer.endEvent.time
+        };
+        switch (!!oldLatestShortTaps.prev) {
+          case true: // if there are already two shortTaps recorded, reset
+            newLatestShortTaps = {
+              prev: null,
+              curr: newShortTap
+            };
+            break;
+          default: // if there's only a currShortTap recored, add in the new currShortTap
+            newLatestShortTaps = {
+              prev: oldLatestShortTaps.curr,
+              curr: newShortTap
+            };
+        }
+      } else {
+        newLatestShortTaps = Object.assign({}, oldLatestShortTaps);
+      }
+      return newLatestShortTaps;
     };
 
 
-    const calNewMovement = (oldSMPE4SinglePointer: SMPE4SinglePointer, snc: StartNonStartCombo) => {
-      if (snc.nonStartEvent) {
-        let currPageX: number, prevPageX: number, currPageY: number, prevPageY: number;
-        switch (oldSMPE4SinglePointer.startEvent.identifier) {
-          case -1: // mouse event
-            currPageX = (currSNC.nonStartEvent.event as MouseEvent).pageX;
-            currPageY = (currSNC.nonStartEvent.event as MouseEvent).pageY;
-            switch (!!oldSMPE4SinglePointer.moveEventCurr) {
-              case true: // moved before
-                prevPageX = (oldSMPE4SinglePointer.moveEventCurr.event as MouseEvent).pageX;
-                prevPageY = (oldSMPE4SinglePointer.moveEventCurr.event as MouseEvent).pageY;
-                break;
-              case false: // not moved before
-                prevPageX = (oldSMPE4SinglePointer.startEvent.event as MouseEvent).pageX;
-                prevPageY = (oldSMPE4SinglePointer.startEvent.event as MouseEvent).pageY;
-                break;
-            }
-            break;
-          default: // touch event
-            currPageX = (currSNC.nonStartEvent.event as TouchEvent).changedTouches.item(0).pageX;
-            currPageY = (currSNC.nonStartEvent.event as TouchEvent).changedTouches.item(0).pageY;
-            switch (!!oldSMPE4SinglePointer.moveEventCurr) {
-              case true: // moved before
-                prevPageX = (oldSMPE4SinglePointer.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX;
-                prevPageY = (oldSMPE4SinglePointer.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY;
-                break;
-              case false: // not moved before
-                prevPageX = (oldSMPE4SinglePointer.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
-                prevPageY = (oldSMPE4SinglePointer.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
-                break;
-            }
-        }
-        return {x: currPageX - prevPageX, y: currPageY - prevPageY}
+    const calNewMovement = (smpe4SinglePointer: SMPE4SinglePointer) => {
+      const {identifier, startEvent, moveEventCurr, moveEventPrev, endEvent} = smpe4SinglePointer;
+      let newMovement;
+      switch (true) {
+        case !!endEvent: // smpeCombo ended
+          newMovement = null;
+          break;
+        case !!moveEventCurr: // smpedCombo not ended and moved
+          let currPageX: number, prevPageX: number, currPageY: number, prevPageY: number;
+          switch (identifier) {
+            case -1: // mouse event
+              currPageX = (moveEventCurr.event as MouseEvent).pageX;
+              currPageY = (moveEventCurr.event as MouseEvent).pageY;
+              prevPageX = (((moveEventPrev && moveEventPrev.event) || startEvent.event) as MouseEvent).pageX;
+              prevPageY = (((moveEventPrev && moveEventPrev.event) || startEvent.event) as MouseEvent).pageY;
+              break;
+            default: // touch event
+              currPageX = (moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX;
+              currPageY = (moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY;
+              prevPageX = (((moveEventPrev && moveEventPrev.event) || startEvent.event) as TouchEvent).changedTouches.item(0).pageX;
+              prevPageY = (((moveEventPrev && moveEventPrev.event) || startEvent.event) as TouchEvent).changedTouches.item(0).pageY;
+          }
+          newMovement = {x: currPageX - prevPageX, y: currPageY - prevPageY};
+          break;
+        default: // smpedCombo only started
+          newMovement = null;
       }
+      // console.log(newMovement);
+      return newMovement;
     }
 
     return {
-      latestShortTaps: calNewLatestShortTaps(oldSinglePointerData.latestShortTaps, currSNC),
+      latestShortTaps: calNewLatestShortTaps(oldSMPEData, currSNC),
       offsetFromStartPoint: calOffsetFromStart(currSNC),
-      movement: calNewMovement(oldSMPEData.smpeCombosMap.get(currSNC.startEvent.identifier), currSNC)
+      movement: calNewMovement(oldSMPEData.smpeCombosMap.get(oldSMPEData.latestIdentifier))
     };
   }
 
@@ -437,7 +464,7 @@ export class TlGestures3Directive implements OnInit {
         currType = currPossiblePressEvent.event.type;
         currPressEvent = smpe.pressEvent; // remain unchanged
       } else {
-        currType = 'press';
+        currType = baseEventTypes.press;
         currPressEvent = Object.assign(currPossiblePressEvent, {type: currType});
       }
 
@@ -455,13 +482,13 @@ export class TlGestures3Directive implements OnInit {
 
     if (currSNC.nonStartEvent) {
       switch (currSNC.nonStartEvent.event.type) {
-        case 'mousemove':
-        case 'touchmove':
+        case baseEventTypes.mouse.move:
+        case baseEventTypes.touch.move:
           return onMove(currSNC, oldSMPE4SinglePointer);
-        case 'mouseup':
-        case 'touchend':
+        case baseEventTypes.mouse.end:
+        case baseEventTypes.touch.end:
           return onEnd(currSNC, oldSMPE4SinglePointer);
-        case 'possiblePress':
+        case baseEventTypes.possiblePress:
           return onPossiblePress(currSNC, oldSMPE4SinglePointer);
         // default:
         // what about touchcancel
@@ -478,18 +505,18 @@ export class TlGestures3Directive implements OnInit {
   nonStartEventRxFac = (tlGestures3Directive: TlGestures3Directive, startEvent: EventIT): Observable<EventIT> => {
     const rootElement = document;
 
-    const mouseRxFac = (eventType: 'mouseup' | 'mousemove'): Observable<EventIT> => {
+    const mouseRxFac = (eventType: mousemoveOrEnd): Observable<EventIT> => {
       return Observable.fromEvent(rootElement, eventType)
         .map((e: Event) => ({event: e, identifier: -1, time: Date.now()}));
     };
 
     const possiblePressRxFac = (identifier: number): Observable<EventIT> => {
       return Observable.interval(tlGestures3Directive.options.pressInterval).take(1)
-        .map(() => ({event: {type: 'possiblePress', target: null}, identifier, time: Date.now()}));
+        .map(() => ({event: {type: baseEventTypes.possiblePress, target: null}, identifier, time: Date.now()}));
         // event.target of possiblePress will always be null, the target of moveEvent (if any) in SMPE4SinglePointer matters
     };
 
-    const touchRxFac = (eventType: 'touchend' | 'touchmove', identifier: number): Observable<EventIT> => {
+    const touchRxFac = (eventType: touchmoveOrEnd, identifier: number): Observable<EventIT> => {
       return Observable.fromEvent(rootElement, eventType)
         .filter((event: TouchEvent) => {
           // take this nonStartEvent only when it has the same identifier as startEvent.identifier
@@ -499,21 +526,21 @@ export class TlGestures3Directive implements OnInit {
     };
 
     switch (startEvent.event.type) {
-      case 'mousedown':
+      case baseEventTypes.mouse.start:
         // 'mousedown' flow: \
         // at the beginning, emit {s: mousedown, e: null}
         // then, emit {s: mousedown, e: (mousemove * (0 or n) -> possiblePress * (0 or 1)) -> mouseup}
-        return mouseRxFac('mousemove')
+        return mouseRxFac(baseEventTypes.mouse.move)
           .merge(possiblePressRxFac(-1))
-          .takeUntil(mouseRxFac('mouseup'))
-          .merge(mouseRxFac('mouseup').take(1))
+          .takeUntil(mouseRxFac(baseEventTypes.mouse.end))
+          .merge(mouseRxFac(baseEventTypes.mouse.end).take(1))
           .startWith(null);
-      case 'touchstart':
+      case baseEventTypes.touch.start:
         const identifier = (startEvent.event as TouchEvent).changedTouches.item(0).identifier;
-        return touchRxFac('touchmove', identifier)
+        return touchRxFac(baseEventTypes.touch.move, identifier)
           .merge(possiblePressRxFac(identifier))
-          .takeUntil(touchRxFac('touchend', identifier).take(1))
-          .merge(touchRxFac('touchend', identifier).take(1))
+          .takeUntil(touchRxFac(baseEventTypes.touch.end, identifier).take(1))
+          .merge(touchRxFac(baseEventTypes.touch.end, identifier).take(1))
           .startWith(null);
     }
   }
