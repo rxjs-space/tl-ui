@@ -40,21 +40,6 @@ export interface EventIT {
   time: number;
 }
 
-export interface TlGestureEvent {
-  identifier: number | number[];
-  target: EventTarget;
-  time: number;
-  type: string; // should be string contained in tlGestureEventTypes only
-  duration: number;
-  singlePointerData?: {
-    distanceFromStartPoint?: {x: number; y: number; };
-    movement?: {x: number, y: number; }
-  };
-  twoPointerData?: {
-    distanceBetweenPointersChange?: number;
-    angleChange?: number;
-  };
-}
 
 export interface StartNonStartCombo {
   startEvent: EventIT;
@@ -78,14 +63,19 @@ export class SMPE4SinglePointer {
 }
 
 
-export interface SMPEData {
-  SMPECombosMap: Map<number, SMPE4SinglePointer>;
-  latestIdentifier: number;
-  singlePointerData: {
-    lastShortTap?: TlGestureEvent;
-    distanceFromStartPoint?: {x: number; y: number; };
-    movement?: {x: number, y: number; }
+export interface SinglePointerData {
+  latestShortTaps?: {
+    prev: {identifier: number; target: EventTarget; time: number};
+    curr: {identifier: number; target: EventTarget; time: number};
   };
+  offsetFromStartPoint?: {x: number; y: number; };
+  movement?: {x: number, y: number; }
+}
+
+export interface SMPEData {
+  smpeCombosMap: Map<number, SMPE4SinglePointer>;
+  latestIdentifier: number;
+  singlePointerData: SinglePointerData;
   twoPointerData: {
     activeTouchIdentifiers: number[];
     distanceBetweenPointersPrev?: number;
@@ -103,10 +93,7 @@ export interface TlGestureEvent {
   time: number;
   type: string; // should be string contained in tlGestureEventTypes only
   duration: number;
-  singlePointerData?: {
-    distanceFromStartPoint?: {x: number; y: number; };
-    movement?: {x: number, y: number; }
-  };
+  singlePointerData?: SinglePointerData;
   twoPointerData?: {
     distanceBetweenPointersChange?: number;
     angleChange?: number;
