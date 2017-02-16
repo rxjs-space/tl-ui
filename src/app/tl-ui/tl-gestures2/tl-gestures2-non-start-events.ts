@@ -48,7 +48,7 @@ export const touchRxFac = (eventType: 'touchend' | 'touchmove', identifier: numb
 
 export const possiblePressRxFac = (tlGestures2Directive: TlGestures2Directive, identifier: number): Observable<EventIT> => {
   return Observable.interval(tlGestures2Directive.options.pressInterval).take(1)
-    .map(() => ({event: {type: 'possiblePress'}, identifier, time: Date.now()}))
+    .map(() => ({event: {type: 'possiblePress', target: null}, identifier, time: Date.now()}))
 };
 
 export const nonStartEventRxFac = (tlGestures2Directive: TlGestures2Directive, startEvent: EventIT): Observable<EventIT> => {
