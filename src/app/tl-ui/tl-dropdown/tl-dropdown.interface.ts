@@ -8,7 +8,10 @@ export interface TlDropdownModel {
   toggler: TlDropdownThing;
   items: TlDropdownThing[];
   itemSelectedRxx: BehaviorSubject<TlDropdownThing>;
+  itemSelected?: TlDropdownThing;
   navigationEndAfterItemSeletedRxx?: BehaviorSubject<string>;
+  itemPropertyToShowOnButtonWhenSelected?: string;
+  styleDisplay?: string;
 }
 
 export interface TlDropdownConfig {

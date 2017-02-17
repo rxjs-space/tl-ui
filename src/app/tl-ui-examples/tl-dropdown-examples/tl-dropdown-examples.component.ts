@@ -13,7 +13,14 @@ export class TlDropdownExamplesComponent implements OnInit {
   dropdownModel: TlDropdownModel = {
     toggler: {name: 'Group', classes: ['btn', 'btn-outline-primary']},
     items: [{name: 'Item1'}, {name: 'Item2'}],
-    itemSelectedRxx: new BehaviorSubject(null)
+    itemSelectedRxx: new BehaviorSubject(null),
+  };
+
+  dropdownModel2: TlDropdownModel = {
+    toggler: {name: 'Group', classes: ['btn', 'btn-outline-primary']},
+    items: [{name: 'Item1'}, {name: 'Item2'}],
+    itemSelectedRxx: new BehaviorSubject(null),
+    itemPropertyToShowOnButtonWhenSelected: 'name'
   };
 
   constructor() { }

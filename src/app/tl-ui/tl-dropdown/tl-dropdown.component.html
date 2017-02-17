@@ -1,9 +1,11 @@
 <ng-container *ngIf="dropdownModel.forNav">
-  <div class="dropdown" [class.show]="open">
+  <div class="dropdown" [class.show]="open" [style.display]="dropdownModel.styleDisplay">
   <a [class]="dropdownModel.toggler.classes ? dropdownModel.toggler.classes.join(' ') : ''" 
     [class.dropdown-toggle]="true"
     [routerLink]="'/' + dropdownModel.toggler.path" routerLinkActive="active" 
-  >{{dropdownModel.toggler.name}}</a>
+  >
+    {{buttonTitleRxx | async}}
+  </a>
   <!--toggle-cover, which will cover above dropdown-toggle so to disable its click event-->
   <!--toggle-cover, with it, we can see the effect of [routerLinkActive="active"], but click on it will not take us anywhere but toggle the dropdown -->
   <a [class]="(dropdownModel.toggler.classes ? dropdownModel.toggler.classes.join(' ') : '') + ' toggle-cover'" 
@@ -11,7 +13,7 @@
     href role="button"
     (click)="clickOnToggler($event);"
     aria-haspopup="true" [attr.aria-expanded]="open || false"
-  >{{dropdownModel.toggler.name}}</a>
+  >{{buttonTitleRxx | async}}</a>
 
 
   <div [@dropdownState]="open ? 'expanded' : 'collapsed'"
@@ -28,13 +30,15 @@
 </ng-container>
 
 <ng-container *ngIf="!dropdownModel.forNav">
-  <div class="dropdown" [class.show]="open">
+  <div class="dropdown" [class.show]="open"  [style.display]="dropdownModel.styleDisplay">
   <a [class]="dropdownModel.toggler.classes ? dropdownModel.toggler.classes.join(' ') : ''" 
     [class.dropdown-toggle]="true"
     (click)="clickOnToggler($event);"
     href role="button"
     aria-haspopup="true" [attr.aria-expanded]="open || false"
-  >{{dropdownModel.toggler.name}}</a>
+  >
+    {{buttonTitleRxx | async}}
+  </a>
   <div [@dropdownState]="open ? 'expanded' : 'collapsed'"
      class="dropdown-menu" aria-labelledby="supportedContentDropdown">
     <a *ngFor="let item of dropdownModel.items"

@@ -5,9 +5,11 @@ import { Component, HostBinding, HostListener,
 import { Router, NavigationEnd } from '@angular/router';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/switchMap';
 import { TlDropdownModel, TlDropdownThing } from './tl-dropdown.interface';
 import { dropdownAnimations } from './tl-dropdown.component.animation';
@@ -23,6 +25,7 @@ export class TlDropdownComponent implements OnInit {
   private subscriptions: Subscription[] = [];
   @Input() dropdownModel: TlDropdownModel;
   @HostBinding('class.open') open: boolean = false;
+  public buttonTitleRxx: BehaviorSubject<string> = new BehaviorSubject(null);
 
   constructor(
     private renderer: Renderer,
@@ -31,6 +34,18 @@ export class TlDropdownComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    
+    if (this.dropdownModel.itemPropertyToShowOnButtonWhenSelected) {
+      // if we need to change the button title based on selection ...
+      this.dropdownModel.itemSelectedRxx
+        .filter(item => !!item)
+        .map(item => item[this.dropdownModel.itemPropertyToShowOnButtonWhenSelected])
+        .startWith(this.dropdownModel.toggler.name)
+        .subscribe(this.buttonTitleRxx);
+    } else {
+      this.buttonTitleRxx.next(this.dropdownModel.toggler.name);
+    }
+
     // add 'dropdown' class to host el
     const hostClasses = ['dropdown'].concat(this.dropdownModel.hostClasses ? this.dropdownModel.hostClasses : []);
     hostClasses.forEach(c => {

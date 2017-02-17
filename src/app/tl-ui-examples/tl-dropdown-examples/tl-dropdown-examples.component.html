@@ -2,8 +2,12 @@
   <h4 class="card-header">tl-dropdown examples</h4>
   <div class="card-block">
     <h4>need upgrade to a6</h4>
+    <p>Dropdown Button Title will remain the same.</p>
     <tl-dropdown [dropdownModel]="dropdownModel"></tl-dropdown>
     <p>Selection: {{dropdownModel.itemSelectedRxx | async | json}}</p>
-
+    <hr>
+    <p>Dropdown Button Title will change with the item selected.</p>
+    <tl-dropdown [dropdownModel]="dropdownModel2"></tl-dropdown>
+    <p>Selection: {{dropdownModel2.itemSelectedRxx | async | json}}</p>
   </div>
 </div>

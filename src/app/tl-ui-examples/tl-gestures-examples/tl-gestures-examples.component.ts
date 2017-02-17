@@ -12,11 +12,14 @@ export class TlGesturesExamplesComponent implements OnInit {
   colorDropdownModel: TlDropdownModel = {
     toggler: {name: 'color', classes: ['btn', 'btn-outline-primary']},
     items: [{name: 'turquoise'}, {name: 'indigo'}],
-    itemSelectedRxx: new BehaviorSubject(null)
+    itemSelectedRxx: new BehaviorSubject(null),
+    itemPropertyToShowOnButtonWhenSelected: 'name',
+    styleDisplay: 'inline-block'
   };
   constructor() { }
 
   ngOnInit() {
+    this.colorDropdownModel.itemSelectedRxx.next({name: 'turquoise'});
   }
 
   onTouchstart(event) {
