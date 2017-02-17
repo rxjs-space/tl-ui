@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { TlSlideInOutAnimation } from '../../tl-ui';
+import { TlDropdownModel, TlSlideInOutAnimation } from '../../tl-ui';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
   selector: 'tl-gestures-examples',
@@ -8,7 +9,11 @@ import { TlSlideInOutAnimation } from '../../tl-ui';
   animations: [TlSlideInOutAnimation]
 })
 export class TlGesturesExamplesComponent implements OnInit {
-
+  colorDropdownModel: TlDropdownModel = {
+    toggler: {name: 'color', classes: ['btn', 'btn-outline-primary']},
+    items: [{name: 'turquoise'}, {name: 'indigo'}],
+    itemSelectedRxx: new BehaviorSubject(null)
+  };
   constructor() { }
 
   ngOnInit() {
@@ -24,6 +29,8 @@ export class TlGesturesExamplesComponent implements OnInit {
   onTlEvent(event) {
     console.log(event);
   }
+
+
 
 
 }

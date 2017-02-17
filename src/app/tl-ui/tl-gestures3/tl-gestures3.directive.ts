@@ -1,12 +1,12 @@
-import { EventEmitter, Directive, HostListener, Output, OnInit } from '@angular/core';
+import { EventEmitter, Directive, HostListener, Input, Output, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromEvent';
-import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/merge';
+import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/take';
@@ -14,9 +14,14 @@ import 'rxjs/add/operator/takeUntil';
 
 import { baseEventTypes, EventIT, TlGestureEvent, tlGestureEventTypes,
   StartNonStartCombo, SMPE4SinglePointer, SMPEData, SinglePointerData, 
-  mousemoveOrEnd, touchmoveOrEnd, 
-
+  mousemoveOrEnd, touchmoveOrEnd, TlGestureOptions,
 } from './tl-gestures3';
+// if put TlGestureConfigs (an interface for input property) in 'tl-gestures3.ts', \
+// where there are other exports, tsc will warn that \
+// 'WARNING in ./src/app/tl-ui/tl-gestures3/tl-gestures3.directive.ts \
+// 698:91-107 "export 'TlGestureConfigs' was not found in './tl-gestures3'' \
+// when put TlGestureConfigs in separate file, no more warning
+import { TlGestureConfigs } from './tl-gestures3.2';
 
 @Directive({
   selector: '[tlGestures3]'
@@ -39,11 +44,13 @@ export class TlGestures3Directive implements OnInit {
   @Output() tlRotateend: EventEmitter<TlGestureEvent> = new EventEmitter();
   @Output() tlSwipe: EventEmitter<TlGestureEvent> = new EventEmitter();
 
-  private  _options = {
+  @Input() tlGestureConfig: TlGestureConfigs;
+
+  private  _options: TlGestureOptions = {
     pressInterval: 500,
     shortTapStartEndInterval: 150,
     dblTapsInterval: 400, // time between firstShortTap endTIme and secondeShortTap endTime
-    swipeDistanceThreshold: 20
+    swipeDistanceThreshold: 20,
   };
   public get options() {
     return this._options;
@@ -52,10 +59,9 @@ export class TlGestures3Directive implements OnInit {
   private initSMPEData: SMPEData = {
     smpeCombosMap: new Map(),
     latestIdentifier: null,
+    activeTouchIdentifiers: {prev: [], curr: []},
     singlePointerData: {},
-    twoPointerData: {
-      activeTouchIdentifiers: []
-    }
+    twoPointerData: {}
   }
 
   constructor() { }
@@ -95,7 +101,11 @@ export class TlGestures3Directive implements OnInit {
       .do(this.emit.bind(this));
 
     const tlGesturesEvent_ = tlGesturesEventRx
-      .subscribe(outcome => console.log(outcome), err => console.log(err), () => console.log('completed'));
+      .subscribe(outcome => {
+        if (this.tlGestureConfig.logSMPEData) {
+          console.log(outcome);
+        }
+      }, err => console.log(err), () => console.log('completed'));
 
   }
 
@@ -103,7 +113,7 @@ export class TlGestures3Directive implements OnInit {
     const identifier = smpeData.latestIdentifier;
     const currSmpeCombo = smpeData.smpeCombosMap.get(identifier);
     const {endEvent, startEvent, moveEventCurr, pressEvent, latestEventType} = currSmpeCombo;
-    const singlePointerData = smpeData.singlePointerData;
+    const {singlePointerData, twoPointerData, activeTouchIdentifiers} = smpeData;
     let type;
 
     type = tlGestureEventTypes.tlTap;
@@ -173,14 +183,35 @@ export class TlGestures3Directive implements OnInit {
       }
     }
 
+
+    const firstActiveTouchIdentifiersChanged = activeTouchIdentifiers.curr[0] !== activeTouchIdentifiers.prev[0];
+
     type = tlGestureEventTypes.tlPanstart;
-    if (this.listenOn(type) && (latestEventType === baseEventTypes.mouse.start || latestEventType === baseEventTypes.touch.start)) {
-      this[type].emit({
-        identifier,
-        target: startEvent.event.target,
-        time: startEvent.time,
-        type
-      });
+    if (this.listenOn(type) && activeTouchIdentifiers.curr.length > 0 && firstActiveTouchIdentifiersChanged) {
+      const currIdentifier = activeTouchIdentifiers.curr[0];
+      const currStartEvent = smpeData.smpeCombosMap.get(currIdentifier).startEvent;
+      switch (true) {
+        case activeTouchIdentifiers.prev.length === 0:
+          this[type].emit({
+            identifier: currIdentifier,
+            target: currStartEvent.event.target,
+            time: currStartEvent.time,
+            type
+          });
+          break;
+        case activeTouchIdentifiers.prev.length > 0:
+          const prevIdentifier = activeTouchIdentifiers.prev[0];
+          const prevEndEvent = smpeData.smpeCombosMap.get(prevIdentifier).endEvent;
+          this[type].emit({
+            identifier: currIdentifier,
+            target: currStartEvent.event.target,
+            time: prevEndEvent.time,
+            type
+          });
+          break;
+
+      }
+
     }
 
     type = tlGestureEventTypes.tlPanmove;
@@ -198,7 +229,7 @@ export class TlGestures3Directive implements OnInit {
     }
 
     type = tlGestureEventTypes.tlPanend;
-    if (this.listenOn(type) && endEvent) {
+    if (this.listenOn(type) && endEvent && firstActiveTouchIdentifiersChanged) {
       this[type].emit({
         identifier,
         target: startEvent.event.target,
@@ -207,18 +238,110 @@ export class TlGestures3Directive implements OnInit {
       });
     }
 
-  // tlPinchstart: 'tlPinstart',
-  // tlPinchchange: 'tlPinchchange',
-  // tlPinchend: 'tlPinchend',
-  // tlRotatestart: 'tlRotatestart',
-  // tlRotatechange: 'tlRotatechange',
-  // tlRotateend: 'tlRotateend',
+    const firstTwoActiveTouchIdentifiersChanged = activeTouchIdentifiers.curr[0] !== activeTouchIdentifiers.prev[0] || 
+      activeTouchIdentifiers.curr[1] !== activeTouchIdentifiers.prev[1];
+
+    type = tlGestureEventTypes.tlPinchstart;
+    // if currList.length > 1 and list changed, emit
+    if (this.listenOn(type) && activeTouchIdentifiers.curr.length > 1 && firstTwoActiveTouchIdentifiersChanged) {
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: startEvent.time,
+        type,
+        twoPointerData: {
+          distanceBetweenPointersPrev: twoPointerData.distanceBetweenPointersPrev,
+          distanceBetweenPointersCurr: twoPointerData.distanceBetweenPointersCurr,
+          distanceBetweenPointersChange: twoPointerData.distanceBetweenPointersChange
+        }
+      });
+    }
+
+
+
+    type = tlGestureEventTypes.tlPinchend;
+    if (this.listenOn(type) && (activeTouchIdentifiers.prev.length >= 2 ? firstTwoActiveTouchIdentifiersChanged : false)) {
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: endEvent ? endEvent.time : (moveEventCurr ? moveEventCurr.time : startEvent.time),
+        type,
+        twoPointerData: {
+          distanceBetweenPointersPrev: twoPointerData.distanceBetweenPointersPrev,
+          distanceBetweenPointersCurr: twoPointerData.distanceBetweenPointersCurr,
+          distanceBetweenPointersChange: twoPointerData.distanceBetweenPointersChange
+        }
+      });
+    }
+
+    type = tlGestureEventTypes.tlPinchchange;
+    if (this.listenOn(type) && twoPointerData.distanceBetweenPointersChange !== null) {
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: moveEventCurr ? moveEventCurr.time : pressEvent.time, // when press, also recal distanceBetweenPointersChange
+        type,
+        twoPointerData: {
+          distanceBetweenPointersPrev: twoPointerData.distanceBetweenPointersPrev,
+          distanceBetweenPointersCurr: twoPointerData.distanceBetweenPointersCurr,
+          distanceBetweenPointersChange: twoPointerData.distanceBetweenPointersChange
+        }
+      });
+    }
+
+
+    type = tlGestureEventTypes.tlRotatestart;
+    if (this.listenOn(type) && activeTouchIdentifiers.curr.length > 1 && firstTwoActiveTouchIdentifiersChanged) {
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: startEvent.time,
+        type,
+        twoPointerData: {
+          anglePrev: twoPointerData.anglePrev,
+          angleCurr: twoPointerData.angleCurr,
+          angleChange: twoPointerData.angleChange
+        }
+      });
+    }
+
+    type = tlGestureEventTypes.tlRotateend;
+    if (this.listenOn(type) && (activeTouchIdentifiers.prev.length >= 2 ? firstTwoActiveTouchIdentifiersChanged : false)) {
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: endEvent.time,
+        type,
+        twoPointerData: {
+          anglePrev: twoPointerData.anglePrev,
+          angleCurr: twoPointerData.angleCurr,
+          angleChange: twoPointerData.angleChange
+        }
+      });
+    }
+
+    type = tlGestureEventTypes.tlRotatechange;
+    if (this.listenOn(type) && twoPointerData.angleChange !== null) {
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: moveEventCurr ? moveEventCurr.time : pressEvent.time, // when press, also recal distanceBetweenPointersChange
+        type,
+        twoPointerData: {
+          anglePrev: twoPointerData.anglePrev,
+          angleCurr: twoPointerData.angleCurr,
+          angleChange: twoPointerData.angleChange
+        }
+      });
+    }
+
 
   }
 
 
 
   listenOn(gestureEventType: string) {
+    // console.log(gestureEventType);
     return !!this[gestureEventType].observers.length;
   }
 
@@ -229,89 +352,161 @@ export class TlGestures3Directive implements OnInit {
     const newSMPE4SinglePointer: SMPE4SinglePointer = this.calNewSMPE4SinglePointer(oldSMPE4SinglePointer, currSNC);
     oldSMPEData.latestIdentifier = latestIdentifier;
     oldSMPEData.smpeCombosMap.set(latestIdentifier, newSMPE4SinglePointer);
-
     // by now, latestIdentifier and smpeCombosMap are both up-to-date, that is, currSNC info are contained in oldSMPEData.
+
+    oldSMPEData.activeTouchIdentifiers = this.calNewActiveTouchIdentifiers(oldSMPEData);
+
     oldSMPEData.singlePointerData = this.calSinglePointerData(oldSMPEData, currSNC); // need refactor: currSNC info already in oldSMPEData
     oldSMPEData.twoPointerData = this.calTwoPointerData(oldSMPEData);
     return oldSMPEData; // return oldSMPEData for the moment, need to construct a newSMPEData actually
   }
 
-  calTwoPointerData(oldSMPEData: SMPEData) {
-    const listCopy = [...oldSMPEData.twoPointerData.activeTouchIdentifiers];
-    const calNewActiveTouchIdentifiers = (smpe: SMPEData) => {
-      const anotherListCopy = [...smpe.twoPointerData.activeTouchIdentifiers];
-      if (smpe.latestIdentifier > -1) { // if it's a touch
-        const smpeCombo = smpe.smpeCombosMap.get(smpe.latestIdentifier)
-        switch (true) {
-          case smpeCombo.moveEventCurr === null && smpeCombo.endEvent === null: // fresh start
-            anotherListCopy.push(smpe.latestIdentifier);
-            break;
-          case !!smpeCombo.endEvent: // ended
-            const index = anotherListCopy.indexOf(smpe.latestIdentifier);
-            anotherListCopy.splice(index, 1);
-        }
+  calNewActiveTouchIdentifiers(smpe: SMPEData) {
+    const newCurrList = [...smpe.activeTouchIdentifiers.curr];
+    if (smpe.latestIdentifier > -1) { // if it's a touch
+      const smpe4SinglePointer = smpe.smpeCombosMap.get(smpe.latestIdentifier)
+      switch (true) {
+        case smpe4SinglePointer.moveEventCurr === null && smpe4SinglePointer.endEvent === null: // fresh start
+          newCurrList.push(smpe.latestIdentifier);
+          break;
+        case !!smpe4SinglePointer.endEvent: // ended
+          const index = newCurrList.indexOf(smpe.latestIdentifier);
+          newCurrList.splice(index, 1);
       }
-      return anotherListCopy;
-    };
-
-    const newActiveTouchIdentifiers = calNewActiveTouchIdentifiers(oldSMPEData);
-    const listChanged = listCopy[0] !== newActiveTouchIdentifiers[0] || listCopy[1] || newActiveTouchIdentifiers[1];
-
-    const calNewDistanceCurr = (smpeMap: Map<number, SMPE4SinglePointer>, activeTouchIdentifiers: number[]) => {
-      if (activeTouchIdentifiers.length > 1) {
-        const firstSMPECombo = smpeMap.get(activeTouchIdentifiers[0]);
-        const secondSMPECombo = smpeMap.get(activeTouchIdentifiers[1]);
-        let pageX0, pageY0, pageX1, pageY1;
-        if (firstSMPECombo.moveEventCurr) {
-          pageX0 = (firstSMPECombo.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX;
-          pageY0 = (firstSMPECombo.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY;
-        } else {
-          pageX0 = (firstSMPECombo.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
-          pageY0 = (firstSMPECombo.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
-        }
-        if (secondSMPECombo.moveEventCurr) {
-          pageX0 = (secondSMPECombo.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX;
-          pageY0 = (secondSMPECombo.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY;
-        } else {
-          pageX0 = (secondSMPECombo.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
-          pageY0 = (secondSMPECombo.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
-        }
-        return Math.sqrt(Math.pow(pageX0 - pageX1, 2) + Math.pow(pageY0 - pageY1, 2));
-      }
-    };
-
-    const newDistanceCurr = calNewDistanceCurr(oldSMPEData.smpeCombosMap, newActiveTouchIdentifiers);
-    const newDistancePrev = listChanged ? null : oldSMPEData.twoPointerData.distanceBetweenPointersCurr;
-    const newDistanceChange = listChanged ? null : Math.abs(newDistanceCurr - newDistancePrev);
-
+    }
     return {
-      activeTouchIdentifiers: newActiveTouchIdentifiers,
+      prev: smpe.activeTouchIdentifiers.curr,
+      curr: newCurrList
+    };
+  }
+
+  calTwoPointerData(smpeData: SMPEData) {
+    let newTwoPointerData = {};
+    const listeningOnTwoPointers = this.listenOn(tlGestureEventTypes.tlPinchstart) ||
+      this.listenOn(tlGestureEventTypes.tlPinchchange) ||
+      this.listenOn(tlGestureEventTypes.tlPinchend) ||
+      this.listenOn(tlGestureEventTypes.tlRotatestart) ||
+      this.listenOn(tlGestureEventTypes.tlRotatechange) ||
+      this.listenOn(tlGestureEventTypes.tlRotateend);
+      
+    if (smpeData.latestIdentifier === -1 || !listeningOnTwoPointers) {
+      return newTwoPointerData;
+    }
+
+    const currList = smpeData.activeTouchIdentifiers.curr;
+    const prevList = smpeData.activeTouchIdentifiers.prev;
+
+    const firstTwoTouchesChanged = (prevList[0] !== currList[0]) || (prevList[1] !== currList[1]);
+
+    const calCoordinates = (smpeMap: Map<number, SMPE4SinglePointer>, currActiveTouchIdentifiers: number[]) => {
+      const firstSMPECombo = smpeMap.get(currActiveTouchIdentifiers[0]);
+      const secondSMPECombo = smpeMap.get(currActiveTouchIdentifiers[1]);
+      let pageX0: number, pageY0: number, pageX1: number, pageY1: number;
+      if (firstSMPECombo.moveEventCurr) {
+        pageX0 = (firstSMPECombo.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX;
+        pageY0 = (firstSMPECombo.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY;
+      } else {
+        pageX0 = (firstSMPECombo.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+        pageY0 = (firstSMPECombo.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+      }
+      if (secondSMPECombo.moveEventCurr) {
+        pageX1 = (secondSMPECombo.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageX;
+        pageY1 = (secondSMPECombo.moveEventCurr.event as TouchEvent).changedTouches.item(0).pageY;
+      } else {
+        pageX1 = (secondSMPECombo.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+        pageY1 = (secondSMPECombo.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+      }
+      return {
+        0: {x: pageX0, y: pageY0},
+        1: {x: pageX1, y: pageY1}
+      };
+    };
+
+
+    const calNewDistanceCurr = (smpeMap: Map<number, SMPE4SinglePointer>, currActiveTouchIdentifiers: number[]) => {
+      let newDistanceCurr = null;
+      if (currActiveTouchIdentifiers.length > 1) {
+        const newCoordinates = calCoordinates(smpeMap, currActiveTouchIdentifiers);
+        newDistanceCurr = Math.sqrt(Math.pow(newCoordinates['0'].x - newCoordinates['1'].x, 2) + 
+          Math.pow(newCoordinates['0'].y - newCoordinates['1'].y, 2));
+      }
+      return newDistanceCurr;
+    };
+
+    const newDistanceCurr = calNewDistanceCurr(smpeData.smpeCombosMap, currList);
+    const newDistancePrev = smpeData.twoPointerData.distanceBetweenPointersCurr;
+    const newDistanceChange = firstTwoTouchesChanged ? null : 
+      ((newDistanceCurr === null || newDistancePrev === null) ? null : Math.abs(newDistanceCurr - newDistancePrev));
+
+    const calNewAngleCurr = (smpeMap: Map<number, SMPE4SinglePointer>, currActiveTouchIdentifiers: number[]) => {
+      let newAngleCurr = null;
+      if (currActiveTouchIdentifiers.length > 1) {
+        const newCoordinates = calCoordinates(smpeMap, currActiveTouchIdentifiers);
+        newAngleCurr = Math.atan((newCoordinates[1].y - newCoordinates[0].y) / (newCoordinates[1].x - newCoordinates[0].x));
+      }
+      return newAngleCurr;
+    };
+
+
+    const newAngleCurr = calNewAngleCurr(smpeData.smpeCombosMap, currList);
+    const newAnglePrev = smpeData.twoPointerData.angleCurr;
+    const newAngleChange = firstTwoTouchesChanged ? null : 
+      ((newAngleCurr === null || newAnglePrev === null) ? null : (newAngleCurr - newAnglePrev));
+
+    newTwoPointerData = {
       distanceBetweenPointersPrev: newDistancePrev,
       distanceBetweenPointersCurr: newDistanceCurr,
       distanceBetweenPointersChange: newDistanceChange,
-      anglePrev: 0,
-      anguleCurr: 0,
-      angleChange: 0,
+      anglePrev: newAnglePrev,
+      angleCurr: newAngleCurr,
+      angleChange: newAngleChange,
     }
+
+    return newTwoPointerData;
   }
 
-  calSinglePointerData(oldSMPEData: SMPEData, currSNC: StartNonStartCombo) {
-    const oldSinglePointerData = oldSMPEData.singlePointerData;
-    const calOffsetFromStart = (snc: StartNonStartCombo) => {
-      if (snc.nonStartEvent) {
+  calSinglePointerData(smpeData: SMPEData, currSNC: StartNonStartCombo) {
+    const oldSinglePointerData = smpeData.singlePointerData;
+
+    // to delete
+    // const calOffsetFromStart = (snc: StartNonStartCombo) => {
+    //   if (snc.nonStartEvent && snc.nonStartEvent.event.type !== baseEventTypes.possiblePress) {
+    //     let currPageX: number, prevPageX: number, currPageY: number, prevPageY: number;
+    //     switch (snc.startEvent.identifier) {
+    //       case -1: // mouse event
+    //         currPageX = (snc.nonStartEvent.event as MouseEvent).pageX;
+    //         currPageY = (snc.nonStartEvent.event as MouseEvent).pageY;
+    //         prevPageX = (snc.startEvent.event as MouseEvent).pageX;
+    //         prevPageY = (snc.startEvent.event as MouseEvent).pageY;
+    //         break;
+    //       default: // touch event
+    //         currPageX = (snc.nonStartEvent.event as TouchEvent).changedTouches.item(0).pageX;
+    //         currPageY = (snc.nonStartEvent.event as TouchEvent).changedTouches.item(0).pageY;
+    //         prevPageX = (snc.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+    //         prevPageY = (snc.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+    //     }
+    //     return {x: currPageX - prevPageX, y: currPageY - prevPageY};
+    //   }
+    // };
+
+    const calOffsetFromStart2 = (smpe4SinglePointer: SMPE4SinglePointer) => {
+      let newOffsetFromStart = null;
+      const startEvent = smpe4SinglePointer.startEvent;
+      const nonStartEvent = smpe4SinglePointer.endEvent || smpe4SinglePointer.moveEventCurr;
+      if (nonStartEvent) {
         let currPageX: number, prevPageX: number, currPageY: number, prevPageY: number;
-        switch (snc.startEvent.identifier) {
+        switch (smpe4SinglePointer.identifier) {
           case -1: // mouse event
-            currPageX = (snc.nonStartEvent.event as MouseEvent).pageX;
-            currPageY = (snc.nonStartEvent.event as MouseEvent).pageY;
-            prevPageX = (snc.startEvent.event as MouseEvent).pageX;
-            prevPageY = (snc.startEvent.event as MouseEvent).pageY;
+            currPageX = (nonStartEvent.event as MouseEvent).pageX;
+            currPageY = (nonStartEvent.event as MouseEvent).pageY;
+            prevPageX = (startEvent.event as MouseEvent).pageX;
+            prevPageY = (startEvent.event as MouseEvent).pageY;
             break;
           default: // touch event
-            currPageX = (snc.nonStartEvent.event as TouchEvent).changedTouches.item(0).pageX;
-            currPageY = (snc.nonStartEvent.event as TouchEvent).changedTouches.item(0).pageY;
-            prevPageX = (snc.startEvent.event as TouchEvent).changedTouches.item(0).pageX;
-            prevPageY = (snc.startEvent.event as TouchEvent).changedTouches.item(0).pageY;
+            currPageX = (nonStartEvent.event as TouchEvent).changedTouches.item(0).pageX;
+            currPageY = (nonStartEvent.event as TouchEvent).changedTouches.item(0).pageY;
+            prevPageX = (startEvent.event as TouchEvent).changedTouches.item(0).pageX;
+            prevPageY = (startEvent.event as TouchEvent).changedTouches.item(0).pageY;
         }
         return {x: currPageX - prevPageX, y: currPageY - prevPageY};
       }
@@ -410,9 +605,10 @@ export class TlGestures3Directive implements OnInit {
     }
 
     return {
-      latestShortTaps: calNewLatestShortTaps(oldSMPEData, currSNC),
-      offsetFromStartPoint: calOffsetFromStart(currSNC),
-      movement: calNewMovement(oldSMPEData.smpeCombosMap.get(oldSMPEData.latestIdentifier))
+      latestShortTaps: calNewLatestShortTaps(smpeData, currSNC),
+      // offsetFromStartPoint: calOffsetFromStart(currSNC),
+      offsetFromStartPoint: calOffsetFromStart2(smpeData.smpeCombosMap.get(smpeData.latestIdentifier)),
+      movement: calNewMovement(smpeData.smpeCombosMap.get(smpeData.latestIdentifier))
     };
   }
 

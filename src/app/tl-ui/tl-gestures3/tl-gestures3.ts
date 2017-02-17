@@ -54,7 +54,7 @@ export const tlGestureEventTypes = {
   tlPanstart: 'tlPanstart',
   tlPanmove: 'tlPanmove',
   tlPanend: 'tlPanend',
-  tlPinchstart: 'tlPinstart',
+  tlPinchstart: 'tlPinchstart',
   tlPinchchange: 'tlPinchchange',
   tlPinchend: 'tlPinchend',
   tlPress: 'tlPress',
@@ -75,6 +75,8 @@ export interface StartNonStartCombo {
   startEvent: EventIT;
   nonStartEvent: EventIT;
 }
+
+
 
 /**
  * SMPE is start + move + press + end
@@ -103,18 +105,21 @@ export interface SinglePointerData {
 }
 
 export interface TwoPointerData {
-  activeTouchIdentifiers: number[];
   distanceBetweenPointersPrev?: number;
   distanceBetweenPointersCurr?: number;
   distanceBetweenPointersChange?: number;
   anglePrev?: number;
-  anguleCurr?: number;
+  angleCurr?: number;
   angleChange?: number;
 }
 
 export interface SMPEData {
   smpeCombosMap: Map<number, SMPE4SinglePointer>;
   latestIdentifier: number;
+  activeTouchIdentifiers: {
+    prev: number[];
+    curr: number[];
+  };
   singlePointerData: SinglePointerData;
   twoPointerData: TwoPointerData;
 }
@@ -128,3 +133,21 @@ export interface TlGestureEvent {
   singlePointerData?: SinglePointerData;
   twoPointerData?: TwoPointerData;
 }
+
+export interface TlGestureOptions {
+  pressInterval?: number;
+  shortTapStartEndInterval?: number;
+  dblTapsInterval?: number; // time between firstShortTap endTIme and secondeShortTap endTime
+  swipeDistanceThreshold?: number;
+}
+
+export interface TlGestureConfigs {
+  pressInterval?: number;
+  shortTapStartEndInterval?: number;
+  dblTapsInterval?: number; // time between firstShortTap endTIme and secondeShortTap endTime
+  swipeDistanceThreshold?: number;
+  logSMPEData?: boolean;
+}
+
+
+

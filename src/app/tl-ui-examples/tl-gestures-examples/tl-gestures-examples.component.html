@@ -8,23 +8,19 @@
       (tlRotate)="onTlRotate($event)"
       style="width: 200px; height: 200px; background-color: indigo">
     </div>-->
-    <div style="width: 100px; height: 100px; background-color: coral"
-      (touchstart)="onTouchstart($event);"
-    >
-    </div>
+
+    <p>try out gestures on the turquoise area below.</p>
+
+
+    <tl-dropdown [dropdownModel]="colorDropdownModel"></tl-dropdown>
+    <p>Selection: {{colorDropdownModel.itemSelectedRxx | async | json}}</p>
+
     <div style="width: 200px; height: 200px; background-color:turquoise"
       tlGestures3
-      (tlTap)="onTlEvent($event)"
-      (tlDbltap)="onTlEvent($event)"
-      (tlPress)="onTlEvent($event)"
+      [tlGestureConfig]="{logSMPEData: true}"
       (tlPanstart)="onTlEvent($event)"
       (tlPanmove)="onTlEvent($event)"
       (tlPanend)="onTlEvent($event)"
-      (tlSwipe)="onTlEvent($event)"
-      (tlPinchstart)="onTlEvent($event)"
-      (tlPinchchange)="onTlEvent($event)"
-      (tlPinchend)="onTlEvent($event)"
-
     >
 
     </div>
@@ -32,14 +28,31 @@
   </div>
 </div>
 
+
+
 <!--
 
 
 
       (tlTap)="onTlEvent($event)"
-      (tlPan)="onTlEvent($event)"
-      (tlDblTap)="onTlEvent($event)"
+      (tlDbltap)="onTlEvent($event)"
+
       (tlPress)="onTlEvent($event)"
+
       (tlSwipe)="onTlEvent($event)"
+
+      (tlPanstart)="onTlEvent($event)"
+      (tlPanmove)="onTlEvent($event)"
+      (tlPanend)="onTlEvent($event)"
+
+      (tlPinchstart)="onTlEvent($event)"
+      (tlPinchchange)="onTlEvent($event)"
+      (tlPinchend)="onTlEvent($event)"
+
+      (tlRotatestart)="onTlEvent($event)"
+      (tlRotatechange)="onTlEvent($event)"
+      (tlRotateend)="onTlEvent($event)"
+
+
 
 -->
