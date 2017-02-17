@@ -1,13 +1,13 @@
 <div [@TlSlideInOutState] class="card">
   <h4 class="card-header">tl-gestures examples</h4>
   <div class="card-block">
-    <div
+    <!--<div
       tlGestures2
 
       (tlPinch)="onTlEvent($event)"
       (tlRotate)="onTlRotate($event)"
       style="width: 200px; height: 200px; background-color: indigo">
-    </div>
+    </div>-->
     <div style="width: 100px; height: 100px; background-color: coral"
       (touchstart)="onTouchstart($event);"
     >
@@ -19,8 +19,11 @@
       (tlPress)="onTlEvent($event)"
       (tlPanstart)="onTlEvent($event)"
       (tlPanmove)="onTlEvent($event)"
+      (tlPanend)="onTlEvent($event)"
       (tlSwipe)="onTlEvent($event)"
-
+      (tlPinchstart)="onTlEvent($event)"
+      (tlPinchchange)="onTlEvent($event)"
+      (tlPinchend)="onTlEvent($event)"
 
     >
 

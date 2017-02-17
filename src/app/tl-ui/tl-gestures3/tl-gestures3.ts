@@ -55,11 +55,11 @@ export const tlGestureEventTypes = {
   tlPanmove: 'tlPanmove',
   tlPanend: 'tlPanend',
   tlPinchstart: 'tlPinstart',
-  tlPinchmove: 'tlPinchmove',
+  tlPinchchange: 'tlPinchchange',
   tlPinchend: 'tlPinchend',
   tlPress: 'tlPress',
   tlRotatestart: 'tlRotatestart',
-  tlRotatemove: 'tlRotatemove',
+  tlRotatechange: 'tlRotatechange',
   tlRotateend: 'tlRotateend',
   tlSwipe: 'tlSwipe'
 };

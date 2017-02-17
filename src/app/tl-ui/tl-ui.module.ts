@@ -14,7 +14,7 @@ import { TlModalA6Module } from './tl-modal-a6';
 import { TlCarouselModule } from './tl-carousel';
 import { TlGesturesModule } from './tl-gestures';
 import { TlTableModule } from './tl-table';
-import { TlGestures2Module } from './tl-gestures2';
+// import { TlGestures2Module } from './tl-gestures2';
 import { TlGestures3Module } from './tl-gestures3';
 
 export const tlUiModulesArr = [
@@ -31,7 +31,7 @@ export const tlUiModulesArr = [
   TlCarouselModule,
   TlGesturesModule,
   TlTableModule,
-  TlGestures2Module,
+  // TlGestures2Module,
   TlGestures3Module,
 ];
 
@@ -49,7 +49,7 @@ export const tlUiModulesWithProvidersArr = [
   TlCarouselModule,
   TlGesturesModule,
   TlTableModule,
-  TlGestures2Module,
+  // TlGestures2Module,
   TlGestures3Module,
 ];
 

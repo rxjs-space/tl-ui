@@ -1,7 +1,16 @@
 import { EventEmitter, Directive, HostListener, Output, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/merge';
+import 'rxjs/add/operator/scan';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/takeUntil';
 
 import { baseEventTypes, EventIT, TlGestureEvent, tlGestureEventTypes,
   StartNonStartCombo, SMPE4SinglePointer, SMPEData, SinglePointerData, 
@@ -22,11 +31,11 @@ export class TlGestures3Directive implements OnInit {
   @Output() tlPanmove: EventEmitter<TlGestureEvent> = new EventEmitter();
   @Output() tlPanend: EventEmitter<TlGestureEvent> = new EventEmitter();
   @Output() tlPinchstart: EventEmitter<TlGestureEvent> = new EventEmitter();
-  @Output() tlPinchmove: EventEmitter<TlGestureEvent> = new EventEmitter();
+  @Output() tlPinchchange: EventEmitter<TlGestureEvent> = new EventEmitter();
   @Output() tlPinchend: EventEmitter<TlGestureEvent> = new EventEmitter();
   @Output() tlPress: EventEmitter<TlGestureEvent> = new EventEmitter();
   @Output() tlRotatestart: EventEmitter<TlGestureEvent> = new EventEmitter();
-  @Output() tlRotatemove: EventEmitter<TlGestureEvent> = new EventEmitter();
+  @Output() tlRotatechange: EventEmitter<TlGestureEvent> = new EventEmitter();
   @Output() tlRotateend: EventEmitter<TlGestureEvent> = new EventEmitter();
   @Output() tlSwipe: EventEmitter<TlGestureEvent> = new EventEmitter();
 
@@ -188,21 +197,22 @@ export class TlGestures3Directive implements OnInit {
       });
     }
 
-    // if (listenOn(tlGestures2Directive, type)) {
-    //   // if currSmpeCombo.lastestEventType === 'mousemove' || 'touchmove'
-    //   // emit tlPan
-    //   const currSmpeCombo = smpeData.smpeCombosMap.get(smpeData.latestIdentifier).curr;
-    //   if (currSmpeCombo.latestEventType.search(/move/) > -1) {
-    //     // console.log(currSmpeCombo.movement);
-    //     tlGestures2Directive.tlPan.emit({
-    //       identifier: currSmpeCombo.identifier, 
-    //       target: currSmpeCombo.startEvent.event.target,
-    //       time: currSmpeCombo.moveEventCurr.time,
-    //       type, 
-    //       movement: currSmpeCombo.movement
-    //     });
-    //   }
-    // }
+    type = tlGestureEventTypes.tlPanend;
+    if (this.listenOn(type) && endEvent) {
+      this[type].emit({
+        identifier,
+        target: startEvent.event.target,
+        time: endEvent.time,
+        type
+      });
+    }
+
+  // tlPinchstart: 'tlPinstart',
+  // tlPinchchange: 'tlPinchchange',
+  // tlPinchend: 'tlPinchend',
+  // tlRotatestart: 'tlRotatestart',
+  // tlRotatechange: 'tlRotatechange',
+  // tlRotateend: 'tlRotateend',
 
   }
 
