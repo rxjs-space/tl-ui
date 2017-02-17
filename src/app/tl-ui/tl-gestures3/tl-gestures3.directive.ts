@@ -187,28 +187,42 @@ export class TlGestures3Directive implements OnInit {
     const firstActiveTouchIdentifiersChanged = activeTouchIdentifiers.curr[0] !== activeTouchIdentifiers.prev[0];
 
     type = tlGestureEventTypes.tlPanstart;
-    if (this.listenOn(type) && activeTouchIdentifiers.curr.length > 0 && firstActiveTouchIdentifiersChanged) {
-      const currIdentifier = activeTouchIdentifiers.curr[0];
-      const currStartEvent = smpeData.smpeCombosMap.get(currIdentifier).startEvent;
-      switch (true) {
-        case activeTouchIdentifiers.prev.length === 0:
-          this[type].emit({
-            identifier: currIdentifier,
-            target: currStartEvent.event.target,
-            time: currStartEvent.time,
-            type
-          });
-          break;
-        case activeTouchIdentifiers.prev.length > 0:
-          const prevIdentifier = activeTouchIdentifiers.prev[0];
-          const prevEndEvent = smpeData.smpeCombosMap.get(prevIdentifier).endEvent;
-          this[type].emit({
-            identifier: currIdentifier,
-            target: currStartEvent.event.target,
-            time: prevEndEvent.time,
-            type
-          });
-          break;
+    if (this.listenOn(type) && 
+      ((activeTouchIdentifiers.curr.length > 0 && firstActiveTouchIdentifiersChanged) || 
+      latestEventType === 'mousedown')
+    ) {
+      if (latestEventType === 'mousedown') {
+        this[type].emit({
+          identifier,
+          target: startEvent.event.target,
+          time: startEvent.time,
+          type
+        });
+      } else {
+
+        const currIdentifier = activeTouchIdentifiers.curr[0];
+        const currStartEvent = smpeData.smpeCombosMap.get(currIdentifier).startEvent;
+        switch (true) {
+          case activeTouchIdentifiers.prev.length === 0:
+            this[type].emit({
+              identifier: currIdentifier,
+              target: currStartEvent.event.target,
+              time: currStartEvent.time,
+              type
+            });
+            break;
+          case activeTouchIdentifiers.prev.length > 0:
+            const prevIdentifier = activeTouchIdentifiers.prev[0];
+            const prevEndEvent = smpeData.smpeCombosMap.get(prevIdentifier).endEvent;
+            this[type].emit({
+              identifier: currIdentifier,
+              target: currStartEvent.event.target,
+              time: prevEndEvent.time,
+              type
+            });
+            break;
+
+        }
 
       }
 
@@ -229,7 +243,7 @@ export class TlGestures3Directive implements OnInit {
     }
 
     type = tlGestureEventTypes.tlPanend;
-    if (this.listenOn(type) && endEvent && firstActiveTouchIdentifiersChanged) {
+    if (this.listenOn(type) && ((endEvent && firstActiveTouchIdentifiersChanged) || latestEventType === 'mouseup')) {
       this[type].emit({
         identifier,
         target: startEvent.event.target,
