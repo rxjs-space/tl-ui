@@ -2,6 +2,7 @@ import { EventEmitter, Directive, HostListener, Input, Output, OnInit } from '@a
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/observable/interval';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
@@ -87,7 +88,7 @@ export class TlGestures3Directive implements OnInit {
 
   ngOnInit() {
     // console.log('inside ngOnInit');
-    // workflow: startEvent -> StartNonStartCombo -> SMPECombo -> SMPEData -> tlGestureEvent
+    // workflow: startEvent -> StartNonStartCombo -> SMPE4SinglePointer -> SMPEData -> tlGestureEvent
 
     const startNonStartEventsComboRx: Observable<StartNonStartCombo> = this.startEventRxx
       .mergeMap(startEvent => {
