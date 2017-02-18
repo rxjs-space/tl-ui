@@ -10,7 +10,7 @@
 `@angular/material` [使用了 HammerJS][1]。[Try HammerJS out here][2].  
 如果尝试自行实现 gesture 事件，在使用 RxJS 的情况下，我的大概思路如下：  
 - 鼠标指针、一个触摸点都被认为是一个 singlePointer。依据一个或多个 singlePointer 的历史事件来判断某个 gestures 事件是否发生。比如：“mousedown 然后 mousemove 然后 mouseup”，这样一个组合（可能）会触发 swipe 事件。所以，我们需要（下一条）
-- 跟踪某个 singlePointer 从 start 到 end 的事件组合。以鼠标事件为例，在不同的事件发生时，拿到相应的事件组合对象，具体如下：
+- 跟踪某个 singlePointer 从 start 到 end 的事件组合。以鼠标事件为例，在不同的事件发生时，拿到相应的事件组合对象，具体如下：  
   |事件|对象|
   |---|---|
   |mousedown|`{startEvent: sDetails, moveEvent: null, endEvent: null}`|
